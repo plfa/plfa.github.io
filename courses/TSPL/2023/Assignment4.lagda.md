@@ -3,7 +3,7 @@ title     : "Assignment4: TSPL Assignment 4"
 permalink : /TSPL/2023/Assignment4/
 ---
 
-```
+```agda
 module Assignment4 where
 ```
 
@@ -745,7 +745,7 @@ In this case, the simulation is _not_ lock-step.
 
 ## Inference
 
-```
+```agda
 module Inference where
 ```
 
@@ -783,6 +783,7 @@ module Inference where
 ```
 
 Identifiers, types, and contexts are as before:
+
 ```agda
   Id : Set
   Id = String
@@ -797,6 +798,7 @@ Identifiers, types, and contexts are as before:
 ```
 
 The syntax of terms is defined by mutual recursion.
+
 ```agda
   data Term⁺ : Set
   data Term⁻ : Set
@@ -851,6 +853,7 @@ The syntax of terms is defined by mutual recursion.
 ## Bidirectional type checking
 
 The typing rules for variables:
+
 ```agda
   data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -867,6 +870,7 @@ The typing rules for variables:
 
 The judgments for synthesizing
 and inheriting types are mutually recursive:
+
 ```agda
   data _⊢_↑_ : Context → Term⁺ → Type → Set
   data _⊢_↓_ : Context → Term⁻ → Type → Set
@@ -955,6 +959,7 @@ Chapter [More](/More/). Please delimit any code you add as follows:
 ## Prerequisites
 
 Type equality.
+
 ```agda
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
   `ℕ      ≟Tp `ℕ              =  yes refl
@@ -968,6 +973,7 @@ Type equality.
 ```
 
 The domain and range of equal function types are equal:
+
 ```agda
   dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
   dom≡ refl = refl
@@ -977,6 +983,7 @@ The domain and range of equal function types are equal:
 ```
 
 The types `` `ℕ `` and `A ⇒ B` are not equal:
+
 ```agda
   ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
   ℕ≢⇒ ()
@@ -986,6 +993,7 @@ The types `` `ℕ `` and `A ⇒ B` are not equal:
 ## Unique types
 
 Looking up a type in the context is unique.
+
 ```agda
   uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
   uniq-∋ Z Z                 =  refl
@@ -995,6 +1003,7 @@ Looking up a type in the context is unique.
 ```
 
 Synthesizing a type is also unique.
+
 ```agda
   uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
   uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
@@ -1062,6 +1071,7 @@ Synthesizing a type is also unique.
 ```
 
 Synthesis.
+
 ```agda
   synthesize Γ (` x) with lookup Γ x
   ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })
@@ -1078,6 +1088,7 @@ Synthesis.
 ```
 
 Inheritance:
+
 ```agda
   inherit Γ (ƛ x ⇒ N) `ℕ      =  no  (λ())
   inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
@@ -1109,7 +1120,7 @@ Inheritance:
 
 ## Testing the example terms
 
-```
+```agda
   S′ : ∀ {Γ x y A B}
      → {x≢y : False (x ≟ y)}
      → Γ ∋ x ⦂ A
@@ -1120,6 +1131,7 @@ Inheritance:
 ```
 
 Typing two plus two on naturals:
+
 ```agda
   ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
   ⊢2+2 =
@@ -1145,6 +1157,7 @@ Typing two plus two on naturals:
 ```
 
 Typing two plus two with Church numerals:
+
 ```agda
   ⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
   ⊢2+2ᶜ =
@@ -1200,48 +1213,56 @@ Unbound variable:
 ```
 
 Argument in application is ill typed:
+
 ```agda
   _ : synthesize ∅ (plus · sucᶜ) ≡ no _
   _ = refl
 ```
 
 Function in application is ill typed:
+
 ```agda
   _ : synthesize ∅ (plus · sucᶜ · two) ≡ no _
   _ = refl
 ```
 
 Function in application has type natural:
+
 ```agda
   _ : synthesize ∅ ((two ↓ `ℕ) · two) ≡ no _
   _ = refl
 ```
 
 Abstraction inherits type natural:
+
 ```agda
   _ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡ no _
   _ = refl
 ```
 
 Zero inherits a function type:
+
 ```agda
   _ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡ no _
   _ = refl
 ```
 
 Successor inherits a function type:
+
 ```agda
   _ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡ no _
   _ = refl
 ```
 
 Successor of an ill-typed term:
+
 ```agda
   _ : synthesize ∅ (`suc twoᶜ ↓ `ℕ) ≡ no _
   _ = refl
 ```
 
 Case of a term with a function type:
+
 ```agda
   _ : synthesize ∅
         ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
@@ -1249,6 +1270,7 @@ Case of a term with a function type:
 ```
 
 Case of an ill-typed term:
+
 ```agda
   _ : synthesize ∅
         ((`case (twoᶜ ↓ `ℕ) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
@@ -1256,6 +1278,7 @@ Case of an ill-typed term:
 ```
 
 Inherited and synthesised types disagree in a switch:
+
 ```agda
   _ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡ no _
   _ = refl
@@ -1265,6 +1288,7 @@ Inherited and synthesised types disagree in a switch:
 ## Erasure
 
 Erase a type:
+
 ```agda
   ∥_∥Tp : Type → DB.Type
   ∥ `ℕ ∥Tp             =  DB.`ℕ
@@ -1272,6 +1296,7 @@ Erase a type:
 ```
 
 Erase a context:
+
 ```agda
   ∥_∥Cx : Context → DB.Context
   ∥ ∅ ∥Cx              =  DB.∅
@@ -1279,6 +1304,7 @@ Erase a context:
 ```
 
 Erase a lookup judgment:
+
 ```agda
   ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
   ∥ Z ∥∋               =  DB.Z
@@ -1286,6 +1312,7 @@ Erase a lookup judgment:
 ```
 
 Erase a typing judgment.
+
 ```agda
   ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
   ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
@@ -1305,6 +1332,7 @@ Erase a typing judgment.
 Erasure of the type derivations in
 this chapter yield the corresponding intrinsically-typed terms
 from the earlier chapter:
+
 ```agda
   _ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
   _ = refl
@@ -1350,7 +1378,7 @@ Please delimit any code you add as follows:
 
 ## Untyped
 
-```
+```agda
 module Untyped where
 ```
 
@@ -1372,7 +1400,7 @@ module Untyped where
 ```
 
 
-```
+```agda
   open import plfa.part2.Untyped
     hiding ()
 ```

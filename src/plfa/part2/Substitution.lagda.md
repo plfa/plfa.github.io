@@ -45,8 +45,8 @@ system that _decides_ whether any two substitutions are equal.
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; cong; cong₂; cong-app)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
-open import Function using (_∘_)
+open Eq.≡-Reasoning using (begin_; step-≡-∣; step-≡-⟩; _∎)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
      using (Type; Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
             rename; subst; ext; exts; _[_]; subst-zero)
@@ -158,7 +158,7 @@ The σ algebra includes the following equations.
 
     (sub-id)    ⟪ ids ⟫ M      ≡ M
     (sub-app)   ⟪ σ ⟫ (L · M)  ≡ (⟪ σ ⟫ L) · (⟪ σ ⟫ M)
-    (sub-abs)   ⟪ σ ⟫ (ƛ N)    ≡ ƛ ⟪ σ ⟫ N
+    (sub-abs)   ⟪ σ ⟫ (ƛ N) ≡ ƛ ⟪ (` Z) • (σ ⨟ ↑) ⟫ N
     (sub-sub)   ⟪ τ ⟫ ⟪ σ ⟫ M  ≡ ⟪ σ ⨟ τ ⟫ M
 
     (sub-idL)   ids ⨟ σ        ≡ σ
@@ -675,39 +675,35 @@ detail below.
 
 ```agda
 commute-subst-rename : ∀{Γ Δ}{M : Γ ⊢ ★}{σ : Subst Γ Δ}
-                        {ρ : ∀{Γ} → Rename Γ (Γ , ★)}
-     → (∀{x : Γ ∋ ★} → exts σ {B = ★} (ρ x) ≡ rename ρ (σ x))
-     → subst (exts σ {B = ★}) (rename ρ M) ≡ rename ρ (subst σ M)
-commute-subst-rename {M = ` x} r = r
-commute-subst-rename{Γ}{Δ}{ƛ N}{σ}{ρ} r =
+                        {ρ₁ : Rename Γ (Γ , ★)}{ρ₂ : Rename Δ (Δ , ★)}
+                     → (∀{x : Γ ∋ ★} → exts σ (ρ₁ x) ≡ rename ρ₂ (σ x))
+                     → subst (exts σ) (rename ρ₁ M) ≡ rename ρ₂ (subst σ M)
+commute-subst-rename {M = ` x} H = H
+commute-subst-rename {Γ}{Δ}{ƛ N}{σ}{ρ₁}{ρ₂} H =
    cong ƛ_ (commute-subst-rename{Γ , ★}{Δ , ★}{N}
-               {exts σ}{ρ = ρ′} (λ {x} → H {x}))
+               {exts σ}{ext ρ₁}{ext ρ₂} (λ {x} → H′ {x}))
    where
-   ρ′ : ∀ {Γ} → Rename Γ (Γ , ★)
-   ρ′ {∅} = λ ()
-   ρ′ {Γ , ★} = ext ρ
-
-   H : {x : Γ , ★ ∋ ★} → exts (exts σ) (ext ρ x) ≡ rename (ext ρ) (exts σ x)
-   H {Z} = refl
-   H {S y} =
+   H′ : {x : Γ , ★ ∋ ★} → exts (exts σ) (ext ρ₁ x) ≡ rename (ext ρ₂) (exts σ x)
+   H′ {Z} = refl
+   H′ {S y} =
      begin
-       exts (exts σ) (ext ρ (S y))
+       exts (exts σ) (ext ρ₁ (S y))
      ≡⟨⟩
-       rename S_ (exts σ (ρ y))
-     ≡⟨ cong (rename S_) r ⟩
-       rename S_ (rename ρ (σ y))
+       rename S_ (exts σ (ρ₁ y))
+     ≡⟨ cong (rename S_) H ⟩
+       rename S_ (rename ρ₂ (σ y))
      ≡⟨ compose-rename ⟩
-       rename (S_ ∘ ρ) (σ y)
-     ≡⟨ cong-rename refl ⟩
-       rename ((ext ρ) ∘ S_) (σ y)
-     ≡⟨ sym compose-rename ⟩
-       rename (ext ρ) (rename S_ (σ y))
+       rename (S_ ∘ ρ₂) (σ y)
      ≡⟨⟩
-       rename (ext ρ) (exts σ (S y))
+       rename ((ext ρ₂) ∘ S_) (σ y)
+     ≡⟨ sym compose-rename ⟩
+       rename (ext ρ₂) (rename S_ (σ y))
+     ≡⟨⟩
+       rename (ext ρ₂) (exts σ (S y))
      ∎
-commute-subst-rename {M = L · M}{ρ = ρ} r =
-   cong₂ _·_ (commute-subst-rename{M = L}{ρ = ρ} r)
-             (commute-subst-rename{M = M}{ρ = ρ} r)
+commute-subst-rename {M = L · N} H =
+  cong₂ _·_ (commute-subst-rename{M = L} H)
+            (commute-subst-rename{M = N} H)
 ```
 
 The proof is by induction on the term `M`.
@@ -718,7 +714,7 @@ The proof is by induction on the term `M`.
   `N`. However, to use the induction hypothesis, we must show
   that
 
-        exts (exts σ) (ext ρ x) ≡ rename (ext ρ) (exts σ x)
+        exts (exts σ) (ext ρ₁ x) ≡ rename (ext ρ₂) (exts σ x)
 
   We prove this equation by cases on x.
 
@@ -726,13 +722,13 @@ The proof is by induction on the term `M`.
 
     * If `x = S y`, we obtain the goal by the following equational reasoning.
 
-            exts (exts σ) (ext ρ (S y))
-          ≡ rename S_ (exts σ (ρ y))
-          ≡ rename S_ (rename S_ (σ (ρ y)      (by the premise)
-          ≡ rename (ext ρ) (exts σ (S y))      (by compose-rename)
-          ≡ rename ((ext ρ) ∘ S_) (σ y)
-          ≡ rename (ext ρ) (rename S_ (σ y))   (by compose-rename)
-          ≡ rename (ext ρ) (exts σ (S y))
+            exts (exts σ) (ext ρ₁ (S y))
+          ≡ rename S_ (exts σ (ρ₁ y))
+          ≡ rename S_ (rename ρ₂ (σ y))        (by the premise)
+          ≡ rename (S_ ∘ ρ₂) (σ y)             (by compose-rename)
+          ≡ rename ((ext ρ₂) ∘ S_) (σ y)
+          ≡ rename (ext ρ₂) (rename S_ (σ y))  (by compose-rename)
+          ≡ rename (ext ρ₂) (exts σ (S y))
 
 * If `M` is an application, we obtain the goal using the induction
   hypothesis for each subterm.
@@ -758,7 +754,7 @@ exts-seq = extensionality λ x → lemma {x = x}
        (exts σ₁ ⨟ exts σ₂) (S x)
      ≡⟨⟩
        ⟪ exts σ₂ ⟫ (rename S_ (σ₁ x))
-     ≡⟨ commute-subst-rename{M = σ₁ x}{σ = σ₂}{ρ = S_} refl ⟩
+     ≡⟨ commute-subst-rename{M = σ₁ x}{σ = σ₂}{ρ₁ = S_}{ρ₂ = S_} refl ⟩
        rename S_ (⟪ σ₂ ⟫ (σ₁ x))
      ≡⟨⟩
        rename S_ ((σ₁ ⨟ σ₂) x)

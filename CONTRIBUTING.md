@@ -55,7 +55,17 @@ make test-epubcheck     # Tests the generated EPUB using EPUBCheck
 
 ## How to make changes to PLFA
 
-The `dev` branch of the repository is write-protected, meaning that changes can only be made via pull requests, once all tests have passed. To make changes, create a new branch by running the following command from your local copy of the repository:
+The `dev` branch of the repository is write-protected, meaning that changes can only be made via pull requests, once all tests have passed.
+
+How to make changes depends on whether you are a member of the plfa organization or not.
+
+### If you are not a member of the plfa organization
+
+First make a fork of the repository. There is a button on the github interface for doing this. Then make a local copy of your fork. Then follow the same instructions (below) as for members. When you perform the `git push`, you will be given a URL with which to make the pull request.
+
+### For members of the plfa organization
+
+Create a new branch by running the following command from your local copy of the repository:
 
 ```sh
 git checkout -b [new_branch_name] [old_branch_name]

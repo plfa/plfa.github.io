@@ -50,16 +50,14 @@ four.
 ## Imports
 
 ```agda
-open import Data.Bool using (Bool; true; false; T; not)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.List using (List; _∷_; [])
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (∃-syntax; _×_)
+open import Data.Bool.Base using (Bool; true; false; T; not)
+open import Data.List.Base using (List; _∷_; [])
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base using (∃-syntax; _×_)
 open import Data.String using (String; _≟_)
-open import Data.Unit using (tt)
-open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Nullary.Decidable using (False; toWitnessFalse)
-open import Relation.Nullary.Negation using (¬?)
+open import Data.Unit.Base using (tt)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using (Dec; yes; no; False; toWitnessFalse; ¬?)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
@@ -99,6 +97,7 @@ Here is the syntax of terms in Backus-Naur Form (BNF):
       μ x ⇒ M
 
 And here it is formalised in Agda:
+
 ```agda
 Id : Set
 Id = String
@@ -118,6 +117,7 @@ data Term : Set where
   case_[zero⇒_|suc_⇒_]    :  Term → Term → Id → Term → Term
   μ_⇒_                    :  Id → Term → Term
 ```
+
 We represent identifiers by strings.  We choose precedence so that
 lambda abstraction and fixpoint bind least tightly, then application,
 then successor, and tightest of all is the constructor for variables.
@@ -128,6 +128,7 @@ Case expressions are self-bracketing.
 
 Here are a couple of example terms: the natural number two
 and a function that adds naturals:
+
 ```agda
 two : Term
 two = `suc `suc `zero
@@ -138,6 +139,7 @@ plus = μ "+" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
            [zero⇒ ` "n"
            |suc "m" ⇒ `suc (` "+" · ` "m" · ` "n") ]
 ```
+
 The recursive definition of addition is similar to our original
 definition of `_+_` for naturals, as given in
 Chapter [Naturals](/Naturals/#plus).
@@ -158,6 +160,7 @@ function that accepts two arguments and applies the first _n_ times to the
 second.  This is called the _Church representation_ of the
 naturals.  Here are a few example terms: the Church numeral two, a
 function that adds Church numerals, and a function to compute successor:
+
 ```agda
 twoᶜ : Term
 twoᶜ =  ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")
@@ -169,6 +172,7 @@ plusᶜ =  ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
 sucᶜ : Term
 sucᶜ = ƛ "n" ⇒ `suc (` "n")
 ```
+
 The Church numeral for two takes two arguments `s` and `z`
 and applies `s` twice to `z`.
 Addition takes two numerals `m` and `n`, a
@@ -214,6 +218,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
+
 ```agda
 var? : (t : Term) → Bool
 var? (` _)  =  true
@@ -246,6 +251,7 @@ implicit argument. Note the implicit argument's type reduces to `⊥`
 when term `t` is anything but a variable.
 
 The definition of `plus` can now be written as follows:
+
 ```agda
 plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
@@ -257,6 +263,7 @@ plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
   m  =  ` "m"
   n  =  ` "n"
 ```
+
 Write out the definition of multiplication in the same style.
 
 
@@ -696,6 +703,7 @@ We define reflexive and transitive closure as a sequence of zero or
 more steps of the underlying relation, along lines similar to that for
 reasoning about chains of equalities in
 Chapter [Equality](/Equality/):
+
 ```agda
 infix  2 _—↠_
 infix  1 begin_
@@ -721,6 +729,7 @@ begin_ : ∀ {M N}
   → M —↠ N
 begin M—↠N = M—↠N
 ```
+
 We can read this as follows:
 
 * From term `M`, we can take no steps, giving a step of type `M —↠ M`.
@@ -734,7 +743,7 @@ We can read this as follows:
 The notation is chosen to allow us to lay out example reductions in an
 appealing way, as we will see in the next section.
 
-Recall that in Chapter (Equality)[Equality] we defined chains of equalities
+Recall that in Chapter [Equality](/Equality/) we defined chains of equalities
 using `step-≡` with a syntax declaration to reverse the order of the
 arguments, here we similarly introduce `step—→` with a pattern declaration
 to reverse the order of the arguments.  As before, this happens to allow
@@ -744,6 +753,7 @@ chains of reductions below, so efficiency can be important.
 Alternatively, we might define reflexive and transitive closure directly
 as the smallest relation that includes `—→` and is reflexive
 and transitive.  We do so as follows:
+
 ```agda
 data _—↠′_ : Term → Term → Set where
 
@@ -762,6 +772,7 @@ data _—↠′_ : Term → Term → Set where
       -------
     → L —↠′ N
 ```
+
 The three constructors specify, respectively, that `—↠′` includes `—→`
 and is reflexive and transitive.  A good exercise is to show that
 the two definitions are equivalent (indeed, one embeds in the other).
@@ -833,6 +844,7 @@ systems studied in this text are trivially confluent.
 
 We start with a simple example. The Church numeral two applied to the
 successor function and zero yields the natural number two:
+
 ```agda
 _ : twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
 _ =
@@ -850,6 +862,7 @@ _ =
 ```
 
 Here is a sample reduction demonstrating that two plus two is four:
+
 ```agda
 _ : plus · two · two —↠ `suc `suc `suc `suc `zero
 _ =
@@ -895,6 +908,7 @@ _ =
 ```
 
 And here is a similar sample reduction for Church numerals:
+
 ```agda
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero
 _ =
@@ -1075,6 +1089,7 @@ the other variables.  For example,
 Here `` "x" ⦂ `ℕ ⇒ `ℕ `` is shadowed by `` "x" ⦂ `ℕ ``.
 
 Lookup is formalised as follows:
+
 ```agda
 infix  4  _∋_⦂_
 
@@ -1135,6 +1150,7 @@ For example:
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z") ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 Typing is formalised as follows:
+
 ```agda
 infix  4  _⊢_⦂_
 
@@ -1237,6 +1253,7 @@ The typing derivation is valid for any `Γ` and `A`, for instance,
 we might take `Γ` to be `∅` and `A` to be `` `ℕ ``.
 
 Here is the above typing derivation formalised in Agda:
+
 ```agda
 Ch : Type → Type
 Ch A = (A ⇒ A) ⇒ A ⇒ A
@@ -1249,6 +1266,7 @@ Ch A = (A ⇒ A) ⇒ A ⇒ A
 ```
 
 Here are the typings corresponding to computing two plus two:
+
 ```agda
 ⊢two : ∀ {Γ} → Γ ⊢ two ⦂ `ℕ
 ⊢two = ⊢suc (⊢suc ⊢zero)
@@ -1266,6 +1284,7 @@ Here are the typings corresponding to computing two plus two:
 ⊢2+2 : ∅ ⊢ plus · two · two ⦂ `ℕ
 ⊢2+2 = ⊢plus · ⊢two · ⊢two
 ```
+
 In contrast to our earlier examples, here we have typed `two` and `plus`
 in an arbitrary context rather than the empty context; this makes it easy
 to use them inside other binding contexts as well as at the top level.
@@ -1276,6 +1295,7 @@ contexts, the first where `"n"` is the last binding in the context, and
 the second after `"m"` is bound in the successor branch of the case.
 
 And here are typings for the remainder of the Church example:
+
 ```agda
 ⊢plusᶜ : ∀ {Γ A} → Γ  ⊢ plusᶜ ⦂ Ch A ⇒ Ch A ⇒ Ch A
 ⊢plusᶜ = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ƛ (⊢` ∋m · ⊢` ∋s · (⊢` ∋n · ⊢` ∋s · ⊢` ∋z)))))
@@ -1342,11 +1362,12 @@ will show how to use Agda to compute type derivations directly.
 
 The lookup relation `Γ ∋ x ⦂ A` is functional, in that for each `Γ` and `x`
 there is at most one `A` such that the judgment holds:
+
 ```agda
 ∋-functional : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 ∋-functional Z        Z          =  refl
-∋-functional Z        (S x≢ _)   =  ⊥-elim (x≢ refl)
-∋-functional (S x≢ _) Z          =  ⊥-elim (x≢ refl)
+∋-functional Z        (S x≢ _)   =  contradiction refl x≢
+∋-functional (S x≢ _) Z          =  contradiction refl x≢
 ∋-functional (S _ ∋x) (S _ ∋x′)  =  ∋-functional ∋x ∋x′
 ```
 
@@ -1372,10 +1393,10 @@ doing so requires types `A` and `B` such that `A ⇒ B ≡ A`:
 
 ```agda
 nope₂ : ∀ {A} → ¬ (∅ ⊢ ƛ "x" ⇒ ` "x" · ` "x" ⦂ A)
-nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  =  contradiction (∋-functional ∋x ∋x′)
+nope₂ (⊢ƛ (⊢` ∋x · ⊢` ∋x′))  = impossible (∋-functional ∋x ∋x′)
   where
-  contradiction : ∀ {A B} → ¬ (A ⇒ B ≡ A)
-  contradiction ()
+  impossible : ∀ {A B} → ¬ (A ⇒ B ≡ A)
+  impossible ()
 ```
 
 

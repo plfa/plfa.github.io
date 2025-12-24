@@ -56,14 +56,16 @@ provides evidence that `B M` holds.  In other words, evidence that
 
 Put another way, if we know that `∀ (x : A) → B x` holds and that `M`
 is a term of type `A` then we may conclude that `B M` holds:
+
 ```agda
 ∀-elim : ∀ {A : Set} {B : A → Set}
-  → (L : ∀ (x : A) → B x)
+  → (∀ (x : A) → B x)
   → (M : A)
     -----------------
   → B M
 ∀-elim L M = L M
 ```
+
 As with `→-elim`, the rule corresponds to function application.
 
 Functions arise as a special case of dependent functions,
@@ -89,36 +91,40 @@ dependent product is ambiguous.
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
+
 ```agda
 postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
+
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
-
-Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
 
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
+
 ```agda
 postulate
   ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
 #### Exercise `∀-×` (practice)
 
 Consider the following type.
+
 ```agda
 data Tri : Set where
   aa : Tri
   bb : Tri
   cc : Tri
 ```
+
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 
@@ -136,49 +142,75 @@ the proposition `B x` with each free occurrence of `x` replaced by
 `Σ[ x ∈ A ] B x`.
 
 We formalise existential quantification by declaring a suitable
-inductive type:
+record type:
+
 ```agda
-data Σ (A : Set) (B : A → Set) : Set where
-  ⟨_,_⟩ : (x : A) → B x → Σ A B
+record Σ (A : Set) (B : A → Set) : Set where
+  constructor ⟨_,_⟩
+  field
+    proj₁ : A
+    proj₂ : B proj₁
 ```
+
+Here we have a dependent record, where the type of `proj₂`
+refers to the field `proj₁`.
+Evidence that `Σ A B` holds is of the form
+
+    ⟨ M , N ⟩
+
+where `M` is a term of type `A` and `N` is a term of type `B M`.
+Equivalently, the evidence may be written in the form
+
+    record { proj₁ = M ; proj₂ = N }.
+
 We define a convenient syntax for existentials as follows:
+
 ```agda
 Σ-syntax = Σ
 infix 2 Σ-syntax
 syntax Σ-syntax A (λ x → Bx) = Σ[ x ∈ A ] Bx
 ```
-This is our first use of a syntax declaration, which specifies that
-the term on the left may be written with the syntax on the right.
-The special syntax is available only when the identifier
-`Σ-syntax` is imported.
 
-Evidence that `Σ[ x ∈ A ] B x` holds is of the form
-`⟨ M , N ⟩` where `M` is a term of type `A`, and `N` is evidence
-that `B M` holds.
+This is our first use of a syntax declaration to define binding.  It
+specifies that the term on the left may be written with the syntax on
+the right. Note that the term on the left includes a lambda
+expression, with `x` as a bound variable.  The special syntax is
+available only when the identifier `Σ-syntax` is imported.
 
-Equivalently, we could also declare existentials as a record type:
+The syntax declaration makes `Σ[ x ∈ A ] Bx` and `Σ A (λ x → Bx)`
+equivalent. In particular, instantiating `Bx` to `B x`, we have
+that `Σ[ x ∈ A ] B x` and `Σ A (λ x → B x)` are equivalent.
+By the η rule we have `(λ x → B x) ≡ B` and so they are also
+equivalent to `Σ A B`.
+
+Equivalently, we could also declare existentials as an inductive type:
+
 ```agda
-record Σ′ (A : Set) (B : A → Set) : Set where
-  field
-    proj₁′ : A
-    proj₂′ : B proj₁′
+data Σ′ (A : Set) (B : A → Set) : Set where
+  ⟨_,_⟩′ : (x : A) → B x → Σ′ A B
+
+proj₁′ : ∀ {A : Set} {B : A → Set} → Σ′ A B → A
+proj₁′ ⟨ x , y ⟩′ = x
+
+proj₂′ : ∀ {A : Set} {B : A → Set} → ∀ (w : Σ′ A B) → B (proj₁′ w)
+proj₂′ ⟨ x , y ⟩′ = y
 ```
-Here record construction
 
-    record
-      { proj₁′ = M
-      ; proj₂′ = N
-      }
-
-corresponds to the term
-
-    ⟨ M , N ⟩
-
-where `M` is a term of type `A` and `N` is a term of type `B M`.
+One consequence of the dependence is that `proj₁′` appears in the type
+signature for `proj₂′`.
 
 Products arise as a special case of existentials, where the second
-component does not depend on a variable drawn from the first
-component.  When a product is viewed as evidence of a conjunction,
+component does not depend on the first component.
+
+```agda
+_×′_ : Set → Set → Set
+A ×′ B = Σ[ x ∈ A ] B
+```
+
+(Here we prime `×` to avoid collision with product from the standard
+library, which we imported for use in exercises in the last section.)
+
+When a product is viewed as evidence of a conjunction,
 both of its components are viewed as evidence, whereas when it is
 viewed as evidence of an existential, the first component is viewed as
 an element of a datatype and the second component is viewed as
@@ -192,14 +224,16 @@ each of the types `B x₁ , ⋯ B xₙ` has `m₁ , ⋯ , mₙ` distinct members
 then `Σ[ x ∈ A ] B x` has `m₁ + ⋯ + mₙ` members, which explains the
 choice of notation for existentials, since `Σ` stands for sum.
 
-Existentials are sometimes referred to as dependent products, since
+Existentials are also sometimes referred to as dependent products, since
 products arise as a special case.  However, that choice of names is
 doubly confusing, since universals also have a claim to the name dependent
 product and since existentials also have a claim to the name dependent sum.
+We will stick with the name dependent sum.
 
 A common notation for existentials is `∃` (analogous to `∀` for universals).
 We follow the convention of the Agda standard library, and reserve this
 notation for the case where the domain of the bound variable is left implicit:
+
 ```agda
 ∃ : ∀ {A : Set} (B : A → Set) → Set
 ∃ {A} B = Σ A B
@@ -207,12 +241,14 @@ notation for the case where the domain of the bound variable is left implicit:
 ∃-syntax = ∃
 syntax ∃-syntax (λ x → B) = ∃[ x ] B
 ```
+
 The special syntax is available only when the identifier `∃-syntax` is imported.
 We will tend to use this syntax, since it is shorter and more familiar.
 
 Given evidence that `∀ x → B x → C` holds, where `C` does not contain
 `x` as a free variable, and given evidence that `∃[ x ] B x` holds, we
 may conclude that `C` holds:
+
 ```agda
 ∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C)
@@ -221,6 +257,7 @@ may conclude that `C` holds:
   → C
 ∃-elim f ⟨ x , y ⟩ = f x y
 ```
+
 In other words, if we know for every `x` of type `A` that `B x`
 implies `C`, and we know for some `x` of type `A` that `B x` holds,
 then we may conclude that `C` holds.  This is because we may
@@ -229,6 +266,7 @@ instantiate that proof that `∀ x → B x → C` to any value `x` of type
 the evidence for `∃[ x ] B x`.
 
 Indeed, the converse also holds, and the two together form an isomorphism:
+
 ```agda
 ∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set}
   → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
@@ -237,9 +275,10 @@ Indeed, the converse also holds, and the two together form an isomorphism:
     { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
     ; from    =  λ{ g → λ{ x → λ{ y → g ⟨ x , y ⟩ }}}
     ; from∘to =  λ{ f → refl }
-    ; to∘from =  λ{ g → extensionality λ{ ⟨ x , y ⟩ → refl }}
+    ; to∘from =  λ{ g → refl }
     }
 ```
+
 The result can be viewed as a generalisation of currying.  Indeed, the code to
 establish the isomorphism is identical to what we wrote when discussing
 [implication](/Connectives/#implication).
@@ -247,6 +286,7 @@ establish the isomorphism is identical to what we wrote when discussing
 #### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
+
 ```agda
 postulate
   ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
@@ -256,11 +296,13 @@ postulate
 #### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
+
 ```agda
 postulate
   ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 #### Exercise `∃-⊎` (practice)
@@ -273,6 +315,7 @@ Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 
 Recall the definitions of `even` and `odd` from
 Chapter [Relations](/Relations/):
+
 ```agda
 data even : ℕ → Set
 data odd  : ℕ → Set
@@ -292,6 +335,7 @@ data odd where
       -----------
     → odd (suc n)
 ```
+
 A number is even if it is zero or the successor of an odd number, and
 odd if it is the successor of an even number.
 
@@ -308,6 +352,7 @@ the constant term in a sum last. Here we've reversed each of those
 conventions, because doing so eases the proof.
 
 Here is the proof in the forward direction:
+
 ```agda
 even-∃ : ∀ {n : ℕ} → even n → ∃[ m ] (    m * 2 ≡ n)
 odd-∃  : ∀ {n : ℕ} →  odd n → ∃[ m ] (1 + m * 2 ≡ n)
@@ -319,6 +364,7 @@ even-∃ (even-suc o) with odd-∃ o
 odd-∃  (odd-suc e)  with even-∃ e
 ...                    | ⟨ m , refl ⟩  =  ⟨ m , refl ⟩
 ```
+
 We define two mutually recursive functions. Given
 evidence that `n` is even or odd, we return a
 number `m` and evidence that `m * 2 ≡ n` or `1 + m * 2 ≡ n`.
@@ -342,6 +388,7 @@ substituting for `n`.
 This completes the proof in the forward direction.
 
 Here is the proof in the reverse direction:
+
 ```agda
 ∃-even : ∀ {n : ℕ} → ∃[ m ] (    m * 2 ≡ n) → even n
 ∃-odd  : ∀ {n : ℕ} → ∃[ m ] (1 + m * 2 ≡ n) →  odd n
@@ -351,6 +398,7 @@ Here is the proof in the reverse direction:
 
 ∃-odd  ⟨     m , refl ⟩  =  odd-suc (∃-even ⟨ m , refl ⟩)
 ```
+
 Given a number that is twice some other number we must show it is
 even, and a number that is one more than twice some other number we
 must show it is odd.  We induct over the evidence of the existential,
@@ -397,6 +445,7 @@ of a negation.  Considering that existentials are generalised
 disjunction and universals are generalised conjunction, this
 result is analogous to the one which tells us that negation
 of a disjunction is isomorphic to a conjunction of negations:
+
 ```agda
 ¬∃≃∀¬ : ∀ {A : Set} {B : A → Set}
   → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
@@ -404,10 +453,11 @@ of a disjunction is isomorphic to a conjunction of negations:
   record
     { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
     ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
-    ; from∘to =  λ{ ¬∃xy → extensionality λ{ ⟨ x , y ⟩ → refl } }
+    ; from∘to =  λ{ ¬∃xy → refl }
     ; to∘from =  λ{ ∀¬xy → refl }
     }
 ```
+
 In the `to` direction, we are given a value `¬∃xy` of type
 `¬ ∃[ x ] B x`, and need to show that given a value
 `x` that `¬ B x` follows, in other words, from
@@ -421,13 +471,13 @@ of type `∃[ x ] B x` we can derive false.  Applying `∀¬xy`
 to `x` gives a value of type `¬ B x`, and applying that to `y` yields
 a contradiction.
 
-The two inverse proofs are straightforward, where one direction
-requires extensionality.
+The two inverse proofs are straightforward.
 
 
 #### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
+
 ```agda
 postulate
   ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
@@ -435,6 +485,7 @@ postulate
       --------------
     → ¬ (∀ x → B x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
@@ -487,6 +538,7 @@ which is a corollary of `≡Can`.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
+
 ```agda
 import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 ```

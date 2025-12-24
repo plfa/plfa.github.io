@@ -3,7 +3,7 @@ title     : "Reflection: Proof by Reflection"
 permalink : /Reflection/
 ---
 
-```
+```agda
 module plfa.Reflection where
 
 open import plfa.Lambda hiding (ƛ′_⇒_; _≠_; Ch; ⊢twoᶜ)

@@ -65,17 +65,15 @@ The rest of this chapter is organized as follows.
 ## Imports
 
 ```agda
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim) renaming (⊥ to Bot)
-open import Data.Unit
-open import Relation.Nullary using (Dec; yes; no)
-open import Function using (_∘_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Data.Empty using () renaming (⊥ to Bot)
+open import Data.Unit.Base using (tt; ⊤)
+open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
      using (Context; _⊢_; ★; _∋_; ∅; _,_; Z; S_; `_; ƛ_; _·_;
             rename; subst; ext; exts; _[_]; subst-zero;
@@ -488,7 +486,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
     where E : {c : Clos} → 𝔼 v c → above-fun w
             → Σ[ c' ∈ Clos ] (γ' ,' c) ⊢ N ⇓ c'  ×  𝕍 w c'
           E {c} 𝔼vc fw = ↓→𝔼 (λ {x} → 𝔾-ext{Γ}{γ}{γ'} 𝔾γγ' 𝔼vc {x}) d fw
-↓→𝔼 𝔾γγ' ⊥-intro f⊥ = ⊥-elim (above-fun⊥ f⊥)
+↓→𝔼 𝔾γγ' ⊥-intro f⊥ = contradiction f⊥ above-fun⊥
 ↓→𝔼 𝔾γγ' (⊔-intro{v = v₁}{w = v₂} d₁ d₂) fv12
     with above-fun? v₁ | above-fun? v₂
 ... | yes fv1 | yes fv2
@@ -601,7 +599,7 @@ Now to prove the adequacy property. We apply the above
 lemma to obtain `∅ ⊢ M ⇓ clos (ƛ N′) γ` and then
 apply `cbn→reduce` to conclude.
 
-```
+```agda
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}
    →  ℰ M ≃ ℰ (ƛ N)
    → Σ[ N′ ∈ (∅ , ★ ⊢ ★) ]
@@ -622,7 +620,7 @@ beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backwar
 direction of the if-and-only-if, leveraging our results about the
 denotational semantics.
 
-```
+```agda
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
            → M —↠ ƛ N
            → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
@@ -638,7 +636,7 @@ Putting the two directions of the if-and-only-if together, we
 establish that call-by-name evaluation is equivalent to beta reduction
 in the following sense.
 
-```
+```agda
 cbn↔reduce : ∀ {M : ∅ ⊢ ★}
            → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
              iff

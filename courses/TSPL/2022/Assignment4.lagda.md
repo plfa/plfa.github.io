@@ -3,7 +3,7 @@ title     : "Assignment4: TSPL Assignment 4"
 permalink : /TSPL/2022/Assignment4/
 ---
 
-```
+```agda
 module Assignment4 where
 ```
 
@@ -38,7 +38,7 @@ yourself, or your group in the case of group practicals).
 
 ## DeBruijn
 
-```
+```agda
 module DeBruijn where
 ```
 
@@ -53,7 +53,7 @@ module DeBruijn where
   open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-```
+```agda
   open import plfa.part2.DeBruijn
     hiding ()
 ```
@@ -91,7 +91,7 @@ Using the evaluator, confirm that two times two is four.
 
 ## More
 
-```
+```agda
 module More where
 ```
 
@@ -104,7 +104,7 @@ module More where
   open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-```
+```agda
   open import plfa.part2.More
     hiding (double-subst)
 ```
@@ -132,12 +132,14 @@ Please delimit any code you add as follows:
 
 Show that a double substitution is equivalent to two single
 substitutions.
+
 ```agda
   postulate
     double-subst :
       ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
         N [ V ][ W ] ≡ (N [ rename S_ W ]) [ V ]
 ```
+
 Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
 side to be well typed.
@@ -145,7 +147,7 @@ side to be well typed.
 
 ## Inference
 
-```
+```agda
 module Inference where
 ```
 
@@ -177,7 +179,7 @@ invoked as `Γ DB.⊢ A`, where `Γ` has type
 `DB.Context` and `A` has type `DB.Type`.
 
 
-```
+```agda
   open import plfa.part2.Inference
     hiding ()
 ```
@@ -246,7 +248,7 @@ Chapter [More](/More/).
 
 ## Untyped
 
-```
+```agda
 module Untyped where
 ```
 
@@ -268,7 +270,7 @@ module Untyped where
 ```
 
 
-```
+```agda
   open import plfa.part2.Untyped
     hiding ()
 ```

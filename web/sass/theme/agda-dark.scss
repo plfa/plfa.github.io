@@ -1,5 +1,5 @@
 @mixin code-font {
-    font-family: 'Frankenfont', 'FreeMono', 'DejaVu Sans Mono', 'mononoki', 'Source Code Pro', monospace;
+    font-family: 'JuliaMono';
     font-size: .85em;
 }
 @mixin code-container {
@@ -42,7 +42,7 @@ pre.Spec {
 .Agda .Number        { color: #b051eb }
 .Agda .Symbol        { color: #8b8b8b }
 .Agda .PrimitiveType { color: #4343ca }
-.Agda .Operator      {}
+// .Agda .Operator      {}
 
 /* NameKinds. */
 .Agda .Bound                  { color: #bbbbbb }
@@ -57,7 +57,7 @@ pre.Spec {
 .Agda .Record                 { color: #4343ca }
 
 /* OtherAspects. */
-.Agda .DottedPattern      {}
+// .Agda .DottedPattern      {}
 .Agda .UnsolvedMeta       { color: #bbbbbb; background: yellow         }
 .Agda .UnsolvedConstraint { color: #bbbbbb; background: yellow         }
 .Agda .TerminationProblem { color: #bbbbbb; background: #FFA07A        }

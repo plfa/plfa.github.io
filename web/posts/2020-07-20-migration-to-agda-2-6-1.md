@@ -28,7 +28,7 @@ The reason this works is that η-equality holds *by definition* for records. Agd
 
 The function `_≡⟨_⟩_`, part of the equational reasoning syntax, was renamed to `step-≡`, for [various reasons][step-≡]. The new function has the same semantics, but flips the order of the arguments. This does not mean you have to change your equational reasoning proofs, as the module also defines a syntax macro, which recovers the original argument order:
 
-```
+```agda
 infixr -2 step-≡
 
 step-≡ : ∀ x {y z : A} → y ≡ z → x ≡ y → x ≡ z

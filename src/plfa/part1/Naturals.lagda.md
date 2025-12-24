@@ -15,7 +15,6 @@ But the number of stars is finite, while natural numbers are infinite.
 Count all the stars, and you will still have as many natural numbers
 left over as you started with.
 
-
 ## The naturals are an inductive datatype
 
 Everyone is familiar with the natural numbers
@@ -42,6 +41,7 @@ as a pair of inference rules:
     suc m : ℕ
 
 And here is the definition in Agda:
+
 ```agda
 data ℕ : Set where
   zero : ℕ
@@ -75,14 +75,14 @@ successor of two; and so on.
 
 #### Exercise `seven` (practice) {#seven}
 
-Write out `7` in longhand.
+Write out `7` in longhand. The suggestion below loads but is, of course, incorrect.
 
 ```agda
--- Your code goes here
+seven : ℕ
+seven = zero
 ```
 
-You will need to give both a type signature and definition for the
-variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
+Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
 ## Unpacking the inference rules
@@ -234,9 +234,11 @@ code, with the exception of one special kind of comment, called a
 _pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
+
 ```agda
 {-# BUILTIN NATURAL ℕ #-}
 ```
+
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
@@ -262,7 +264,7 @@ about it from the Agda standard library:
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; step-≡-∣; _∎)
 ```
 
 The first line brings the standard library module that defines
@@ -273,7 +275,9 @@ are `_≡_`, the equality operator, and `refl`, the name for evidence
 that two terms are equal.  The third line takes a module that
 specifies operators to support reasoning about equivalence, and adds
 all the names specified in the `using` clause into the current scope.
-In this case, the names added are `begin_`, `_≡⟨⟩_`, and `_∎`.  We
+In this case, the names added are `begin_`, `step-≡-|`, and `_∎`.
+Furthermore this also brings in to scope `_≡⟨⟩_` which is a mixfix
+synonym for `step-≡-∣`. We
 will see how these are used below.  We take these as givens for now,
 but will see how they are defined in
 Chapter [Equality](/Equality/).
@@ -301,6 +305,7 @@ instances of addition and multiplication can be specified in
 just a couple of lines.
 
 Here is the definition of addition in Agda:
+
 ```agda
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
@@ -346,6 +351,7 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -363,8 +369,10 @@ _ =
     5
   ∎
 ```
+
 We can write the same derivation more compactly by only
 expanding shorthand as needed:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -380,6 +388,7 @@ _ =
     5
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -405,10 +414,12 @@ definition of that symbol.
 
 In fact, both proofs above are longer than need be, and Agda is satisfied
 with the following:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ = refl
 ```
+
 Agda knows how to
 compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  A binary relation is said to be _reflexive_
@@ -445,11 +456,13 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations, using the e
 
 Once we have defined addition, we can define multiplication
 as repeated addition:
+
 ```agda
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
 ```
+
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:
@@ -472,6 +485,7 @@ Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
+
 ```agda
 _ =
   begin
@@ -486,6 +500,7 @@ _ =
     6
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -527,12 +542,14 @@ subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
 matching against both arguments:
+
 ```agda
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
 zero  ∸ suc n  =  zero
 suc m ∸ suc n  =  m ∸ n
 ```
+
 We can do a simple analysis to show that all the cases are covered.
 
   * Consider the second argument.
@@ -547,6 +564,7 @@ founded because monus on bigger numbers is defined in terms of monus
 on smaller numbers.
 
 For example, let's subtract two from three:
+
 ```agda
 _ =
   begin
@@ -559,8 +577,10 @@ _ =
     1
   ∎
 ```
+
 We did not use the second equation at all, but it will be required
 if we try to subtract a larger number from a smaller one:
+
 ```agda
 _ =
   begin
@@ -612,10 +632,12 @@ so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared:
+
 ```agda
 infixl 6  _+_  _∸_
 infixl 7  _*_
 ```
+
 This states operators `_+_` and `_∸_` have precedence level 6,
 and operator `_*_` has precedence level 7.
 Addition and monus bind less tightly than multiplication
@@ -782,6 +804,10 @@ Agda is designed to be used with the Emacs text editor, and the two
 in combination provide features that help to create definitions
 and proofs interactively.
 
+Let's consider how to define addition interactively. (If you want to
+follow along, use a name other than `_+_` to avoid conflict with the
+definition above.)
+
 Begin by typing:
 
     _+_ : ℕ → ℕ → ℕ
@@ -879,11 +905,13 @@ a program this simple, using `C-c C-c` to split cases can be helpful.
 ## More pragmas
 
 Including the lines
+
 ```agda
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
 ```
+
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
 Haskell operators on the arbitrary-precision integer type.
@@ -901,12 +929,14 @@ _m_ and _n_.
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
+
 ```agda
 data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
   _I : Bin → Bin
 ```
+
 For instance, the bitstring
 
     1011

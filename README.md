@@ -59,11 +59,11 @@ or using `ghcup tui` and choosing to `set` the appropriate tools.
 
 ### Install Agda
 
-The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.6.3. Run the following command:
+The easiest way to install Agda is using Cabal. PLFA uses Agda version 2.7.0. Run the following command:
 
 ```bash
 cabal update
-cabal install Agda-2.6.3
+cabal install Agda-2.7.0
 ```
 
 This step will take a long time and a lot of memory to complete.
@@ -77,10 +77,14 @@ If you'd like, you can [test to see if you've installed Agda correctly][agda-rea
 We recommend installing PLFA from Github into your home directory, by running the following command:
 
 ```bash
-git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/plfa/plfa.github.io plfa
+git clone --depth 1 https://github.com/plfa/plfa.github.io plfa
 ```
 
-PLFA ships with the required version of the Agda standard library, so if you cloned with the `--recurse-submodules` flag, you’ve already got it, in the `standard-library` directory!
+PLFA ships with the required version of the Agda standard library. You can download it by running the following command from the directory where you installed PLFA:
+
+```bash
+git submodule update --init
+```
 
 Finally, we need to let Agda know where to find the Agda standard library and PLFA. Two configuration files are required, one which lists paths to the libraries and one which specifies which libraries to load by default.
 
@@ -141,16 +145,18 @@ Since version 2.6.0, Agda has had support for literate editing with Markdown, us
 
 If you already have settings which change your `auto-mode-alist` in your configuration, put these _after_ the ones you already have or combine them if you are comfortable with Emacs Lisp. The configuration file for Emacs is normally located in `HOME/.emacs` or `HOME/.emacs.d/init.el`, but Aquamacs users might need to move their startup settings to the “Preferences.el” file in `HOME/Library/Preferences/Aquamacs Emacs/Preferences`. For Windows, see [the GNU Emacs documentation][emacs-home] for a description of where the Emacs configuration is located.
 
-#### Optional: using the mononoki font with Emacs
+#### Optional: using the JuliaMono font with Emacs
 
-Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [mononoki][font-mononoki], fonts such as [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
+Agda uses Unicode characters for many key symbols, and it is important that the font which you use to view and edit Agda programs shows these symbols correctly. The most important part is that the font you use has good Unicode support, so while we recommend [JuliaMono][font-JuliaMono], fonts such as [mononoki][font-mononoki], [Source Code Pro][font-sourcecodepro], [DejaVu Sans Mono][font-dejavusansmono], and [FreeMono][font-freemono] are all good alternatives.
 
-You can download and install mononoki directly from [the website][font-mononoki]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file. If your package manager offers a package for mononoki, that might be easier. For instance, Homebrew on macOS offers the `font-mononoki` package, and APT on Debian offers the `fonts-mononoki` package. To configure Emacs to use mononoki as its default font, add the following to the end of your Emacs configuration file:
+You can download and install JuliaMono directly from [the website][font-JuliaMono]. For most systems, installing a font is merely a matter of clicking the downloaded `.otf` or `.ttf` file.
+If your package manager offers a package for JuliaMono, that might be easier. For instance, Homebrew on macOS offers the [`font-juliamono`][[font-JuliaMono-homebrew]] cask.
+To configure Emacs to use JuliaMono as its default font, add the following to the end of your Emacs configuration file:
 
 ```elisp
-;; default to mononoki
+;; default to JuliaMono
 (set-face-attribute 'default nil
-                    :family "mononoki"
+                    :family "JuliaMono"
                     :height 120
                     :weight 'normal
                     :width  'normal)
@@ -260,22 +266,22 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [pre-commit-status-url]: https://results.pre-commit.ci/latest/github/plfa/plfa.github.io/dev
 [plfa-badge-version-svg]: https://img.shields.io/github/v/tag/plfa/plfa.github.io?label=release
 [plfa-badge-version-url]: https://github.com/plfa/plfa.github.io/releases/latest
-[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.6.3-blue.svg
-[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.6.3.
-[agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v1.7.2-blue.svg
-[agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v1.7.2
+[agda-badge-version-svg]: https://img.shields.io/badge/agda-v2.7.0-blue.svg
+[agda-badge-version-url]: https://github.com/agda/agda/releases/tag/v2.7.0.
+[agda-stdlib-version-svg]: https://img.shields.io/badge/agda--stdlib-v2.1-blue.svg
+[agda-stdlib-version-url]: https://github.com/agda/agda-stdlib/releases/tag/v2.1
 [plfa]: https://plfa.inf.ed.ac.uk
 [plfa-epub]: https://plfa.github.io/plfa.epub
 [plfa-contributing]: https://plfa.github.io/Contributing/
 [ghcup]: https://www.haskell.org/ghcup/
 [git]: https://git-scm.com/downloads
 [xcode]: https://developer.apple.com/xcode/
-[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.6.3/getting-started/installation.html
-[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.6.3/getting-started/hello-world.html
-[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.6.3/getting-started/a-taste-of-agda.html#preliminaries
-[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html
-[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.6.3/tools/emacs-mode.html#notation-for-key-combinations
-[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.6.3/tools/package-system.html#example-using-the-standard-library
+[agda-readthedocs-installation]: https://agda.readthedocs.io/en/v2.7.0/getting-started/installation.html
+[agda-readthedocs-hello-world]: https://agda.readthedocs.io/en/v2.7.0/getting-started/hello-world.html
+[agda-readthedocs-holes]: https://agda.readthedocs.io/en/v2.7.0/getting-started/a-taste-of-agda.html#preliminaries
+[agda-readthedocs-emacs-mode]: https://agda.readthedocs.io/en/v2.7.0/tools/emacs-mode.html
+[agda-readthedocs-emacs-notation]: https://agda.readthedocs.io/en/v2.7.0/tools/emacs-mode.html#notation-for-key-combinations
+[agda-readthedocs-package-system]: https://agda.readthedocs.io/en/v2.7.0/tools/package-system.html#example-using-the-standard-library
 [emacs]: https://www.gnu.org/software/emacs/download.html
 [emacs-tour]: https://www.gnu.org/software/emacs/tour/
 [emacs-home]: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
@@ -286,6 +292,8 @@ If you plan to build PLFA locally, please refer to [Contributing][plfa-contribut
 [vscode-agda]: https://marketplace.visualstudio.com/items?itemName=banacorn.agda-mode
 [font-sourcecodepro]: https://github.com/adobe-fonts/source-code-pro
 [font-dejavusansmono]: https://dejavu-fonts.github.io/
+[font-JuliaMono]: https://juliamono.netlify.app/download/
+[font-JuliaMono-homebrew]: https://juliamono.netlify.app/download/#macos_homebrew
 [font-freemono]: https://www.gnu.org/software/freefont/
 [font-mononoki]: https://madmalik.github.io/mononoki/
 [font-mononoki-debian]: https://packages.debian.org/sid/fonts/fonts-mononoki

@@ -13,16 +13,22 @@ on:
   merge_group:
 
 env:
-  DEFAULT_AGDA_VERSION: "2.6.3"
-  DEFAULT_AGDA_STDLIB_VERSION: "1.7.2"
+  DEFAULT_AGDA_VERSION: "2.7.0"
+  DEFAULT_AGDA_STDLIB_VERSION: "2.1"
   DEFAULT_GHC_VERSION: "9.4.8"
   DEFAULT_CABAL_VERSION: "3.10.1.0"
   DEFAULT_EPUBCHECK_VERSION: "4.2.6"
   NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
+# Use PowerShell by default
 defaults:
   run:
     shell: pwsh
+
+# Limit concurrent runs to one per branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -38,25 +44,35 @@ jobs:
             os: windows-latest
 
           # Older versions of Agda
-          - name: "Build with older Agda 2.6.2.2"
-            agda-version: "2.6.2.2"
-            agda-stdlib-version: "1.7.1"
-          - name: "Build with older Agda 2.6.2.1"
-            agda-version: "2.6.2.1"
-            agda-stdlib-version: "1.7.1"
-          - name: "Build with older Agda 2.6.2"
-            agda-version: "2.6.2"
-            agda-stdlib-version: "1.7.1"
-          - name: "Build with older Agda 2.6.1.3"
-            agda-version: "2.6.1.3"
-            agda-stdlib-version: "1.6"
+          - name: "Build with older Agda 2.6.4.3"
+            agda-version: "2.6.4.3"
+            agda-stdlib-version: "2.0"
+
+          # 2024-09-05:
+          #   Version 2.0 of the standard library breaks backwards compatibility.
+          #   Therefore, versions of Agda before 2.6.4.3 are no longer supported.
+          #
+          # - name: "Build with older Agda 2.6.4.3"
+          #   agda-version: "2.6.4.3"
+          #   agda-stdlib-version: "1.7.2"
+          # - name: "Build with older Agda 2.6.2.2"
+          #   agda-version: "2.6.2.2"
+          #   agda-stdlib-version: "1.7.1"
+          # - name: "Build with older Agda 2.6.2.1"
+          #   agda-version: "2.6.2.1"
+          #   agda-stdlib-version: "1.7.1"
+          # - name: "Build with older Agda 2.6.2"
+          #   agda-version: "2.6.2"
+          #   agda-stdlib-version: "1.7.1"
+          # - name: "Build with older Agda 2.6.1.3"
+          #   agda-version: "2.6.1.3"
+          #   agda-stdlib-version: "1.6"
 
           # Newer versions of GHC
-          # - name: "Build with newer GHC 9.8.1"
-          #   ghc-version: "9.8.1"
-          #   experimental: true
-          - name: "Build with newer GHC 9.6.3"
-            ghc-version: "9.6.3"
+          - name: "Build with newer GHC 9.8.2"
+            ghc-version: "9.8.2"
+          - name: "Build with newer GHC 9.6.6"
+            ghc-version: "9.6.6"
 
           # Older versions of GHC
           - name: "Build with older GHC 9.2.8"
@@ -71,7 +87,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental || false }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -82,7 +98,7 @@ jobs:
           cabal-version: "${{ env.DEFAULT_CABAL_VERSION }}"
 
       - name: "Setup Agda"
-        uses: wenkokke/setup-agda@latest
+        uses: wenkokke/setup-agda@v2
         with:
           agda-version: "${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }}"
           force-no-build: "true"
@@ -105,7 +121,7 @@ jobs:
         uses: ./.github/actions/setup-calibre
 
       - name: "Cache build"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: _cache
           key: build-${{ runner.os }}-${{ secrets.BUILD_CACHE_VERSION }}
@@ -134,7 +150,7 @@ jobs:
 
       - name: "Upload latest artifact"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: "Website HEAD ${{ runner.os }} Agda-${{ matrix.agda-version || env.DEFAULT_AGDA_VERSION }} GHC-${{ matrix.ghc-version || env.DEFAULT_GHC_VERSION }}"
           path: "_site"
@@ -148,12 +164,12 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"
@@ -174,7 +190,7 @@ jobs:
           path: "site"
 
       - name: Publish to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.6.0
+        uses: JamesIves/github-pages-deploy-action@v4.7.6
         with:
           branch: web
           folder: "site"
@@ -187,7 +203,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -203,7 +219,7 @@ jobs:
         shell: pwsh
 
       - name: Download latest artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: "Website HEAD Linux Agda-${{ env.DEFAULT_AGDA_VERSION }} GHC-${{ env.DEFAULT_GHC_VERSION }}"
           path: "site"

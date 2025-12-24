@@ -42,6 +42,18 @@ $endfor$
 
 ### Courses taught from the textbook
 
+#### 2025
+  * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2025]
+  * [Joseph Eremondi, University of Regina][EremondiPage]
+
+[Freiburg-2025]: https://proglang.github.io/teaching/25ss/eopl.html
+[EremondiPage]: https://www2.cs.uregina.ca/~eremondj/
+
+#### 2024
+  * [Philip Wadler, University of Edinburgh][TSPL-2024]
+
+[TSPL-2024]: /TSPL/2024/
+
 #### 2023
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2023]
   * [Philip Wadler, University of Edinburgh][TSPL-2023]
@@ -106,6 +118,11 @@ $endfor$
 
 [TSPL-2018]: https://plfa.github.io/19.08/TSPL/2018/
 [UVM-2018]: https://web.archive.org/web/20190324115921/https://david.darais.com/courses/fa2018-cs295A/
+
+### Derived works
+
+* [PLFArend](https://github.com/marat-rkh/PLFArend): the PLFA book with all code snippets rewritten in Arend.
+* [PLFaLean](https://github.com/rami3l/PLFaLean): PLFA proofs implemented in Lean 4, covering Parts 2-3 of the v22.08 release of the book.
 
 Please tell us of others!
 

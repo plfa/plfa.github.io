@@ -32,6 +32,7 @@ open import plfa.part1.Isomorphism using (_≃_; _⇔_)
 ## Lists
 
 Lists are defined in Agda as follows:
+
 ```agda
 data List (A : Set) : Set where
   []  : List A
@@ -39,6 +40,7 @@ data List (A : Set) : Set where
 
 infixr 5 _∷_
 ```
+
 Let's unpack this definition. If `A` is a set, then `List A` is a set.
 The next two lines tell us that `[]` (pronounced _nil_) is a list of
 type `A` (often called the _empty_ list), and that `_∷_` (pronounced
@@ -47,10 +49,12 @@ of type `List A` and returns a value of type `List A`.  Operator `_∷_`
 has precedence level 5 and associates to the right.
 
 For example,
+
 ```agda
 _ : List ℕ
 _ = 0 ∷ 1 ∷ 2 ∷ []
 ```
+
 denotes the list of the first three natural numbers.  Since `_∷_`
 associates to the right, the term parses as `0 ∷ (1 ∷ (2 ∷ []))`.
 Here `0` is the first element of the list, called the _head_,
@@ -58,19 +62,27 @@ and `1 ∷ (2 ∷ [])` is a list of the remaining elements, called the
 _tail_. A list is a strange beast: it has a head and a tail,
 nothing in between, and the tail is itself another list!
 
-As we've seen, parameterised types can be translated to
-indexed types. The definition above is equivalent to the following:
+As we've seen, some parameterised types can be translated to
+indexed types. The definition above translates to the following:
+
 ```agda
-data List′ : Set → Set where
+data List′ : Set → Set₁ where
   []′  : ∀ {A : Set} → List′ A
   _∷′_ : ∀ {A : Set} → A → List′ A → List′ A
 ```
-Each constructor takes the parameter as an implicit argument.
+
+This is almost equivalent, save that with parametrised types the result
+can be in `Set`, whereas for technical reasons indexed types require the
+result to be `Set₁`.
+
+Each constructor of `List` takes the parameter as an implicit argument.
 Thus, our example list could also be written:
+
 ```agda
 _ : List ℕ
 _ = _∷_ {ℕ} 0 (_∷_ {ℕ} 1 (_∷_ {ℕ} 2 ([] {ℕ})))
 ```
+
 where here we have provided the implicit parameters explicitly.
 
 Including the pragma:
@@ -85,6 +97,7 @@ cons respectively, allowing a more efficient representation of lists.
 ## List syntax
 
 We can write lists more conveniently by introducing the following definitions:
+
 ```agda
 pattern [_] z = z ∷ []
 pattern [_,_] y z = y ∷ z ∷ []
@@ -93,6 +106,7 @@ pattern [_,_,_,_] w x y z = w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_] v w x y z = v ∷ w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_,_] u v w x y z = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 ```
+
 This is our first use of pattern declarations.  For instance,
 the third line tells us that `[ x , y , z ]` is equivalent to
 `x ∷ y ∷ z ∷ []`, and permits the former to appear either in
@@ -112,6 +126,7 @@ _++_ : ∀ {A : Set} → List A → List A → List A
 []       ++ ys  =  ys
 (x ∷ xs) ++ ys  =  x ∷ (xs ++ ys)
 ```
+
 The type `A` is an implicit argument to append, making it a _polymorphic_
 function (one that can be used at many types). A list appended to the empty list
 yields the list itself. A list appended to a non-empty list yields a list with
@@ -120,6 +135,7 @@ other list appended to tail of the non-empty list.
 
 Here is an example, showing how to compute the result
 of appending two lists:
+
 ```agda
 _ : [ 0 , 1 , 2 ] ++ [ 3 , 4 ] ≡ [ 0 , 1 , 2 , 3 , 4 ]
 _ =
@@ -135,6 +151,7 @@ _ =
     0 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ []
   ∎
 ```
+
 Appending two lists requires time linear in the
 number of elements in the first list.
 
@@ -143,6 +160,7 @@ number of elements in the first list.
 
 We can reason about lists in much the same way that we reason
 about numbers.  Here is the proof that append is associative:
+
 ```agda
 ++-assoc : ∀ {A : Set} (xs ys zs : List A)
   → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
@@ -167,6 +185,7 @@ about numbers.  Here is the proof that append is associative:
     x ∷ xs ++ (ys ++ zs)
   ∎
 ```
+
 The proof is by induction on the first argument. The base case instantiates
 to `[]`, and follows by straightforward computation.
 The inductive case instantiates to `x ∷ xs`,
@@ -187,6 +206,7 @@ which is needed in the proof.
 
 It is also easy to show that `[]` is a left and right identity for `_++_`.
 That it is a left identity is immediate from the definition:
+
 ```agda
 ++-identityˡ : ∀ {A : Set} (xs : List A) → [] ++ xs ≡ xs
 ++-identityˡ xs =
@@ -196,7 +216,9 @@ That it is a left identity is immediate from the definition:
     xs
   ∎
 ```
+
 That it is a right identity follows by simple induction:
+
 ```agda
 ++-identityʳ : ∀ {A : Set} (xs : List A) → xs ++ [] ≡ xs
 ++-identityʳ [] =
@@ -214,6 +236,7 @@ That it is a right identity follows by simple induction:
     x ∷ xs
   ∎
 ```
+
 As we will see later,
 these three properties establish that `_++_` and `[]` form
 a _monoid_ over lists.
@@ -221,17 +244,20 @@ a _monoid_ over lists.
 ## Length
 
 Our next function finds the length of a list:
+
 ```agda
 length : ∀ {A : Set} → List A → ℕ
 length []        =  zero
 length (x ∷ xs)  =  suc (length xs)
 ```
+
 Again, it takes an implicit parameter `A`.
 The length of the empty list is zero.
 The length of a non-empty list
 is one greater than the length of the tail of the list.
 
 Here is an example showing how to compute the length of a list:
+
 ```agda
 _ : length [ 0 , 1 , 2 ] ≡ 3
 _ =
@@ -247,6 +273,7 @@ _ =
     suc (suc (suc zero))
   ∎
 ```
+
 Computing the length of a list requires time
 linear in the number of elements in the list.
 
@@ -259,6 +286,7 @@ has insufficient information to infer the implicit parameter.
 
 The length of one list appended to another is the
 sum of the lengths of the lists:
+
 ```agda
 length-++ : ∀ {A : Set} (xs ys : List A)
   → length (xs ++ ys) ≡ length xs + length ys
@@ -281,6 +309,7 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 ```
+
 The proof is by induction on the first argument. The base case
 instantiates to `[]`, and follows by straightforward computation.  As
 before, Agda cannot infer the implicit type parameter to `length`, and
@@ -294,17 +323,20 @@ and it is promoted by the congruence `cong suc`.
 ## Reverse
 
 Using append, it is easy to formulate a function to reverse a list:
+
 ```agda
 reverse : ∀ {A : Set} → List A → List A
 reverse []        =  []
 reverse (x ∷ xs)  =  reverse xs ++ [ x ]
 ```
+
 The reverse of the empty list is the empty list.
 The reverse of a non-empty list
 is the reverse of its tail appended to a unit list
 containing its head.
 
 Here is an example showing how to reverse a list:
+
 ```agda
 _ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 _ =
@@ -336,6 +368,7 @@ _ =
     [ 2 , 1 , 0 ]
   ∎
 ```
+
 Reversing a list in this way takes time _quadratic_ in the length of
 the list. This is because reverse ends up appending lists of lengths
 `1`, `2`, up to `n - 1`, where `n` is the length of the list being
@@ -372,16 +405,19 @@ as the identity function.  Show that reverse is an involution:
 The definition above, while easy to reason about, is less efficient than
 one might expect since it takes time quadratic in the length of the list.
 The idea is that we generalise reverse to take an additional argument:
+
 ```agda
 shunt : ∀ {A : Set} → List A → List A → List A
 shunt []       ys  =  ys
 shunt (x ∷ xs) ys  =  shunt xs (x ∷ ys)
 ```
+
 The definition is by recursion on the first argument. The second argument
 actually becomes _larger_, but this is not a problem because the argument
 on which we recurse becomes _smaller_.
 
 Shunt is related to reverse as follows:
+
 ```agda
 shunt-reverse : ∀ {A : Set} (xs ys : List A)
   → shunt xs ys ≡ reverse xs ++ ys
@@ -408,6 +444,7 @@ shunt-reverse (x ∷ xs) ys =
     reverse (x ∷ xs) ++ ys
   ∎
 ```
+
 The proof is by induction on the first argument.
 The base case instantiates to `[]`, and follows by straightforward computation.
 The inductive case instantiates to `x ∷ xs` and follows by the inductive
@@ -421,6 +458,7 @@ your quiver of arrows, ready to slay the right problem.
 
 Having defined shunt by generalisation, it is now easy to respecialise to
 give a more efficient definition of reverse:
+
 ```agda
 reverse′ : ∀ {A : Set} → List A → List A
 reverse′ xs = shunt xs []
@@ -428,6 +466,7 @@ reverse′ xs = shunt xs []
 
 Given our previous lemma, it is straightforward to show
 the two definitions equivalent:
+
 ```agda
 reverses : ∀ {A : Set} (xs : List A)
   → reverse′ xs ≡ reverse xs
@@ -444,6 +483,7 @@ reverses xs =
 ```
 
 Here is an example showing fast reverse of the list `[ 0 , 1 , 2 ]`:
+
 ```agda
 _ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
 _ =
@@ -461,6 +501,7 @@ _ =
     2 ∷ 1 ∷ 0 ∷ []
   ∎
 ```
+
 Now the time to reverse a list is linear in the length of the list.
 
 ## Map {#Map}
@@ -468,17 +509,20 @@ Now the time to reverse a list is linear in the length of the list.
 Map applies a function to every element of a list to generate a corresponding list.
 Map is an example of a _higher-order function_, one which takes a function as an
 argument or returns a function as a result:
+
 ```agda
 map : ∀ {A B : Set} → (A → B) → List A → List B
 map f []        =  []
 map f (x ∷ xs)  =  f x ∷ map f xs
 ```
+
 Map of the empty list is the empty list.
 Map of a non-empty list yields a list
 with head the same as the function applied to the head of the given list,
 and tail the same as map of the function applied to the tail of the given list.
 
 Here is an example showing how to use map to increment every element of a list:
+
 ```agda
 _ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
 _ =
@@ -496,11 +540,13 @@ _ =
     1 ∷ 2 ∷ 3 ∷ []
   ∎
 ```
+
 Map requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
 map to a function to yield a new function, and at a later
 point applying the resulting function:
+
 ```agda
 sucs : List ℕ → List ℕ
 sucs = map suc
@@ -550,11 +596,13 @@ Prove the following relationship between map and append:
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
+
 ```agda
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 ```
+
 Define a suitable map operator over trees:
 
     map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
@@ -568,16 +616,19 @@ Define a suitable map operator over trees:
 Fold takes an operator and a value, and uses the operator to combine
 each of the elements of the list, taking the given value as the result
 for the empty list:
+
 ```agda
 foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
 foldr _⊗_ e []        =  e
 foldr _⊗_ e (x ∷ xs)  =  x ⊗ foldr _⊗_ e xs
 ```
+
 Fold of the empty list is the given value.
 Fold of a non-empty list uses the operator to combine
 the head of the list and the fold of the tail of the list.
 
 Here is an example showing how to use fold to find the sum of a list:
+
 ```agda
 _ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
 _ =
@@ -595,12 +646,14 @@ _ =
     1 + (2 + (3 + (4 + 0)))
   ∎
 ```
+
 Here we have an instance of `foldr` where `A` and `B` are both `ℕ`.
 Fold requires time linear in the length of the list.
 
 It is often convenient to exploit currying by applying
 fold to an operator and a value to yield a new function,
 and at a later point applying the resulting function:
+
 ```agda
 sum : List ℕ → ℕ
 sum = foldr _+_ 0
@@ -649,7 +702,11 @@ For example:
 
 Show that fold and append are related as follows:
 
+```agda
+postulate
+  foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+```
 
 ```agda
 -- Your code goes here
@@ -704,16 +761,20 @@ Demonstrate an analogue of `map-is-foldr` for the type of trees.
 #### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
+
 ```agda
 downFrom : ℕ → List ℕ
 downFrom zero     =  []
 downFrom (suc n)  =  n ∷ downFrom n
 ```
+
 For example:
+
 ```agda
 _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
 _ = refl
 ```
+
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
 
@@ -730,6 +791,7 @@ value is a left and right identity for the operator, meaning that the
 operator and the value form a _monoid_.
 
 We can define a monoid as a suitable record type:
+
 ```agda
 record IsMonoid {A : Set} (_⊗_ : A → A → A) (e : A) : Set where
   field
@@ -742,6 +804,7 @@ open IsMonoid
 
 As examples, sum and zero, multiplication and one, and append and the empty
 list, are all examples of monoids:
+
 ```agda
 +-monoid : IsMonoid _+_ 0
 +-monoid =
@@ -770,6 +833,7 @@ list, are all examples of monoids:
 
 If `_⊗_` and `e` form a monoid, then we can re-express fold on the
 same operator and an arbitrary value:
+
 ```agda
 foldr-monoid : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
   ∀ (xs : List A) (y : A) → foldr _⊗_ y xs ≡ foldr _⊗_ e xs ⊗ y
@@ -797,15 +861,13 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ∎
 ```
 
-In a previous exercise we showed the following.
-```agda
-postulate
-  foldr-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) (xs ys : List A) →
+In exercise `foldr-++` above we showed the following:
+
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
-```
 
 As a consequence we can decompose fold over append in a monoid
 into two folds as follows.
+
 ```agda
 foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
   ∀ (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
@@ -848,11 +910,13 @@ We can also define predicates over lists. Two of the most important
 are `All` and `Any`.
 
 Predicate `All P` holds if predicate `P` is satisfied by every element of a list:
+
 ```agda
 data All {A : Set} (P : A → Set) : List A → Set where
   []  : All P []
   _∷_ : ∀ {x : A} {xs : List A} → P x → All P xs → All P (x ∷ xs)
 ```
+
 The type has two constructors, reusing the names of the same constructors for lists.
 The first asserts that `P` holds for every element of the empty list.
 The second asserts that if `P` holds of the head of a list and for every
@@ -864,10 +928,12 @@ For example, `All (_≤ 2)` holds of a list where every element is less
 than or equal to two.  Recall that `z≤n` proves `zero ≤ n` for any
 `n`, and that if `m≤n` proves `m ≤ n` then `s≤s m≤n` proves `suc m ≤
 suc n`, for any `m` and `n`:
+
 ```agda
 _ : All (_≤ 2) [ 0 , 1 , 2 ]
 _ = z≤n ∷ s≤s z≤n ∷ s≤s (s≤s z≤n) ∷ []
 ```
+
 Here `_∷_` and `[]` are the constructors of `All P` rather than of `List A`.
 The three items are proofs of `0 ≤ 2`, `1 ≤ 2`, and `2 ≤ 2`, respectively.
 
@@ -881,15 +947,18 @@ scope when the pattern is declared.  That's not the case here, since
 ## Any
 
 Predicate `Any P` holds if predicate `P` is satisfied by some element of a list:
+
 ```agda
 data Any {A : Set} (P : A → Set) : List A → Set where
   here  : ∀ {x : A} {xs : List A} → P x → Any P (x ∷ xs)
   there : ∀ {x : A} {xs : List A} → Any P xs → Any P (x ∷ xs)
 ```
+
 The first constructor provides evidence that the head of the list
 satisfies `P`, while the second provides evidence that some element of
 the tail of the list satisfies `P`.  For example, we can define list
 membership as follows:
+
 ```agda
 infix 4 _∈_ _∉_
 
@@ -899,9 +968,11 @@ x ∈ xs = Any (x ≡_) xs
 _∉_ : ∀ {A : Set} (x : A) (xs : List A) → Set
 x ∉ xs = ¬ (x ∈ xs)
 ```
+
 For example, zero is an element of the list `[ 0 , 1 , 0 , 2 ]`.  Indeed, we can demonstrate
 this fact in two different ways, corresponding to the two different
 occurrences of zero in the list, as the first element and as the third element:
+
 ```agda
 _ : 0 ∈ [ 0 , 1 , 0 , 2 ]
 _ = here refl
@@ -909,8 +980,10 @@ _ = here refl
 _ : 0 ∈ [ 0 , 1 , 0 , 2 ]
 _ = there (there (here refl))
 ```
+
 Further, we can demonstrate that three is not in the list, because
 any possible proof that it is in the list leads to contradiction:
+
 ```agda
 not-in : 3 ∉ [ 0 , 1 , 0 , 2 ]
 not-in (here ())
@@ -919,6 +992,7 @@ not-in (there (there (here ())))
 not-in (there (there (there (here ()))))
 not-in (there (there (there (there ()))))
 ```
+
 The five occurrences of `()` attest to the fact that there is no
 possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 `3 ∈ []`, respectively.
@@ -927,6 +1001,7 @@ possible evidence for `3 ≡ 0`, `3 ≡ 1`, `3 ≡ 0`, `3 ≡ 2`, and
 
 A predicate holds for every element of one list appended to another if and
 only if it holds for every element of both lists:
+
 ```agda
 All-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
   All P (xs ++ ys) ⇔ (All P xs × All P ys)
@@ -991,7 +1066,6 @@ If so, prove; if not, explain why.
 #### Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
-You will need to use extensionality.
 
 ```agda
 -- Your code goes here
@@ -1020,10 +1094,12 @@ Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 If we consider a predicate as a function that yields a boolean,
 it is easy to define an analogue of `All`, which returns true if
 a given predicate returns true for every element of a list:
+
 ```agda
 all : ∀ {A : Set} → (A → Bool) → List A → Bool
 all p  =  foldr _∧_ true ∘ map p
 ```
+
 The function can be written in a particularly compact style by
 using the higher-order functions `map` and `foldr`.
 
@@ -1032,12 +1108,15 @@ an analogue of `All`.  First, return to the notion of a predicate `P` as
 a function of type `A → Set`, taking a value `x` of type `A` into evidence
 `P x` that a property holds for `x`.  Say that a predicate `P` is _decidable_
 if we have a function that for a given `x` can decide `P x`:
+
 ```agda
 Decidable : ∀ {A : Set} → (A → Set) → Set
 Decidable {A} P  =  ∀ (x : A) → Dec (P x)
 ```
+
 Then if predicate `P` is decidable, it is also decidable whether every
 element of a list satisfies the predicate:
+
 ```agda
 All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
 All? P? []                                 =  yes []
@@ -1046,6 +1125,7 @@ All? P? (x ∷ xs) with P? x   | All? P? xs
 ...                 | no ¬Px | _           =  no λ{ (Px ∷ Pxs) → ¬Px Px   }
 ...                 | _      | no ¬Pxs     =  no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
 ```
+
 If the list is empty, then trivially `P` holds for every element of
 the list.  Otherwise, the structure of the proof is similar to that
 showing that the conjunction of two decidable propositions is itself
@@ -1068,6 +1148,7 @@ for some element of a list.  Give their definitions.
 #### Exercise `split` (stretch)
 
 The relation `merge` holds when two lists merge to give a third list.
+
 ```agda
 data merge {A : Set} : (xs ys zs : List A) → Set where
 
@@ -1087,6 +1168,7 @@ data merge {A : Set} : (xs ys zs : List A) → Set where
 ```
 
 For example,
+
 ```agda
 _ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
 _ = left-∷ (right-∷ (right-∷ (left-∷ [])))
@@ -1113,18 +1195,19 @@ with their corresponding proofs.
 ## Standard Library
 
 Definitions similar to those in this chapter can be found in the standard library:
+
 ```agda
 import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
 import Data.List.Relation.Unary.All using (All; []; _∷_)
 import Data.List.Relation.Unary.Any using (Any; here; there)
 import Data.List.Membership.Propositional using (_∈_)
 import Data.List.Properties
-  using (reverse-++-commute; map-compose; map-++-commute; foldr-++)
-  renaming (mapIsFold to map-is-foldr)
+  using (reverse-++-commute; map-compose; map-++-commute; foldr-++; map-is-foldr)
 import Algebra.Structures using (IsMonoid)
 import Relation.Unary using (Decidable)
 import Relation.Binary using (Decidable)
 ```
+
 The standard library version of `IsMonoid` differs from the
 one given here, in that it is also parameterised on an equivalence relation.
 

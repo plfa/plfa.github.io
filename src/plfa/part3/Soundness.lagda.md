@@ -31,15 +31,12 @@ expansion is false for most typed lambda calculi!
 
 ```agda
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+  using (_≡_; _≢_; refl; sym)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Agda.Primitive using (lzero)
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Function using (_∘_)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
      using (Context; _,_; _∋_; _⊢_; ★; Z; S_; `_; ƛ_; _·_;
             subst; _[_]; subst-zero; ext; rename; exts;
@@ -237,6 +234,7 @@ we prove the opposite, that it reflects meaning. That is,
 if `δ ⊢ rename ρ M ↓ v`, then `γ ⊢ M ↓ v`, where ``(δ ∘ ρ) `⊑ γ``.
 
 First, we need a variant of a lemma given earlier.
+
 ```agda
 ext-`⊑ : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ}
   → (ρ : Rename Γ Δ)
@@ -248,6 +246,7 @@ ext-`⊑ ρ lt (S x) = lt x
 ```
 
 The proof is then as follows.
+
 ```agda
 rename-reflect : ∀ {Γ Δ v} {γ : Env Γ} {δ : Env Δ} { M : Γ ⊢ ★}
   → {ρ : Rename Γ Δ}
@@ -363,7 +362,7 @@ diff-const-env : ∀{Γ} {x y : Γ ∋ ★} {v}
     -------------------
   → const-env x v y ≡ ⊥
 diff-const-env {Γ} {x} {y} neq with x var≟ y
-...  | yes eq  =  ⊥-elim (neq eq)
+...  | yes eq  =  contradiction eq neq
 ...  | no _    =  refl
 ```
 
@@ -397,7 +396,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
   const-env-ok : γ `⊢ σ ↓ const-env x v
   const-env-ok y with x var≟ y
   ... | yes x≡y rewrite sym x≡y | same-const-env {Γ}{x}{v} = xv
-  ... | no x≢y rewrite diff-const-env {Γ}{x}{y}{v} x≢y = ⊥-intro
+  ... | no x≢y = ⊥-intro
 ```
 
 

@@ -3,7 +3,7 @@ title     : "Assignment3: TSPL Assignment 3"
 permalink : /TSPL/2023/Assignment3/
 ---
 
-```
+```agda
 module Assignment3 where
 ```
 
@@ -39,7 +39,7 @@ yourself, or your group in the case of group practicals).
 
 ## Lists
 
-```
+```agda
 module Lists where
 ```
 
@@ -61,7 +61,7 @@ module Lists where
 ```
 
 
-```
+```agda
   open import plfa.part1.Lists
     hiding (downFrom; Tree; leaf; node; merge)
 ```
@@ -108,11 +108,13 @@ Prove the following relationship between map and append:
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
+
 ```agda
   data Tree (A B : Set) : Set where
     leaf : A → Tree A B
     node : Tree A B → B → Tree A B → Tree A B
 ```
+
 Define a suitable map operator over trees:
 
     map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
@@ -191,16 +193,20 @@ Demonstrate an analogue of `map-is-foldr` for the type of trees.
 #### Exercise `sum-downFrom` (practice) (was stretch)
 
 Define a function that counts down as follows:
+
 ```agda
   downFrom : ℕ → List ℕ
   downFrom zero     =  []
   downFrom (suc n)  =  n ∷ downFrom n
 ```
+
 For example:
+
 ```agda
   _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
   _ = refl
 ```
+
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
 
@@ -314,6 +320,7 @@ for some element of a list.  Give their definitions.
 #### Exercise `split` (practice) (was stretch)
 
 The relation `merge` holds when two lists merge to give a third list.
+
 ```agda
   data merge {A : Set} : (xs ys zs : List A) → Set where
 
@@ -333,6 +340,7 @@ The relation `merge` holds when two lists merge to give a third list.
 ```
 
 For example,
+
 ```agda
   _ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
   _ = left-∷ (right-∷ (right-∷ (left-∷ [])))
@@ -359,7 +367,7 @@ with their corresponding proofs.
 
 ## Lambda
 
-```
+```agda
 module Lambda where
 ```
 
@@ -379,7 +387,7 @@ module Lambda where
   open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 ```
 
-```
+```agda
   open import plfa.part2.Lambda
     hiding (var?; ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
 ```
@@ -412,6 +420,7 @@ definition may use `plusᶜ` as defined earlier (or may not
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
+
 ```agda
   var? : (t : Term) → Bool
   var? (` _)  =  true
@@ -444,6 +453,7 @@ implicit argument. Note the implicit argument's type reduces to `⊥`
 when term `t` is anything but a variable.
 
 The definition of `plus` can now be written as follows:
+
 ```agda
   plus′ : Term
   plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
@@ -455,6 +465,7 @@ The definition of `plus` can now be written as follows:
     m  =  ` "m"
     n  =  ` "n"
 ```
+
 Write out the definition of multiplication in the same style.
 
 
@@ -527,7 +538,7 @@ showing that it is well typed.
 
 ## Properties
 
-```
+```agda
 module Properties where
 ```
 
@@ -550,7 +561,7 @@ module Properties where
 ```
 
 
-```
+```agda
   open import plfa.part2.Properties
     hiding (value?; Canonical_⦂_; unstuck; preserves; wttdgs)
   -- open Lambda using (mul; ⊢mul)
@@ -565,6 +576,7 @@ and a zero or successor expression must be a natural.
 Further, the body of a function must be well typed in a context
 containing only its bound variable, and the argument of successor
 must itself be canonical:
+
 ```agda
   infix  4 Canonical_⦂_
 
@@ -588,7 +600,7 @@ must itself be canonical:
 Show that `Canonical V ⦂ A` is isomorphic to `(∅ ⊢ V ⦂ A) × (Value V)`,
 that is, the canonical forms are exactly the well-typed values.
 
-```
+```agda
   -- Your code goes here
 ```
 
@@ -613,6 +625,7 @@ proof of `progress` above.
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
+
 ```agda
   postulate
     value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
@@ -685,7 +698,7 @@ Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` abo
 
 ## DeBruijn
 
-```
+```agda
 module DeBruijn where
 ```
 
@@ -700,7 +713,7 @@ module DeBruijn where
   open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-```
+```agda
   open import plfa.part2.DeBruijn
     hiding ()
 ```

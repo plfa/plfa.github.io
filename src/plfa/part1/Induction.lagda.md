@@ -21,14 +21,16 @@ _induction_.
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
-`cong`, `sym`, and `_≡⟨_⟩_`, which are explained below:
+`cong`, `sym`, `_≡⟨⟩_` and `_≡⟨_⟩_`, which are explained below:
+
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_;_^_)
+open Eq.≡-Reasoning using (begin_; step-≡-∣; step-≡-⟩; _∎)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_)
 ```
-(Importing `step-≡` defines `_≡⟨_⟩_`.)
+
+(Importing `step-≡-∣` defines `_≡⟨⟩_` and importing `step-≡-⟩` defines `_≡⟨_⟩_`.)
 
 
 ## Properties of operators
@@ -91,6 +93,7 @@ Here `m`, `n`, and `p` are variables that range over all natural numbers.
 
 We can test the proposition by choosing specific numbers for the three
 variables:
+
 ```agda
 _ : (3 + 4) + 5 ≡ 3 + (4 + 5)
 _ =
@@ -106,6 +109,7 @@ _ =
     3 + (4 + 5)
   ∎
 ```
+
 Here we have displayed the computation as a chain of equations,
 one term to a line.  It is often easiest to read such chains from the top down
 until one reaches the simplest term (in this case, `12`), and
@@ -221,6 +225,7 @@ If we can demonstrate both of these, then associativity of addition
 follows by induction.
 
 Here is the proposition's statement and proof:
+
 ```agda
 +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc zero n p =
@@ -244,6 +249,7 @@ Here is the proposition's statement and proof:
     suc m + (n + p)
   ∎
 ```
+
 We have named the proof `+-assoc`.  In Agda, identifiers can consist of
 any sequence of characters not including spaces or the characters `@.(){};_`.
 
@@ -415,6 +421,7 @@ Our first lemma states that zero is also a right-identity:
     m + zero ≡ m
 
 Here is the lemma's statement and proof:
+
 ```agda
 +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
 +-identityʳ zero =
@@ -432,6 +439,7 @@ Here is the lemma's statement and proof:
     suc m
   ∎
 ```
+
 The signature states that we are defining the identifier `+-identityʳ` which
 provides evidence for the proposition:
 
@@ -482,6 +490,7 @@ Our second lemma does the same for `suc` on the second argument:
     m + suc n ≡ suc (m + n)
 
 Here is the lemma's statement and proof:
+
 ```agda
 +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
 +-suc zero n =
@@ -503,6 +512,7 @@ Here is the lemma's statement and proof:
     suc (suc m + n)
   ∎
 ```
+
 The signature states that we are defining the identifier `+-suc` which provides
 evidence for the proposition:
 
@@ -544,6 +554,7 @@ yield the needed equation.  This completes the second lemma.
 ### The proposition
 
 Finally, here is our proposition's statement and proof:
+
 ```agda
 +-comm : ∀ (m n : ℕ) → m + n ≡ n + m
 +-comm m zero =
@@ -565,6 +576,7 @@ Finally, here is our proposition's statement and proof:
     suc n + m
   ∎
 ```
+
 The first line states that we are defining the identifier
 `+-comm` which provides evidence for the proposition:
 
@@ -617,6 +629,7 @@ will suggest what lemmas to prove.
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
+
 ```agda
 +-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
 +-rearrange m n p q =
@@ -628,6 +641,7 @@ Here is an example:
     (m + (n + p)) + q
   ∎
 ```
+
 No induction is required, we simply apply associativity twice.
 A few points are worthy of note.
 
@@ -649,7 +663,7 @@ evidence for `y ≡ x`.
 Third, Agda supports a variant of the _section_ notation introduced by
 Richard Bird.  We write `(_+ y)` for the function that applied to `x`
 returns `x + y`.  Thus, applying the congruence `cong (_+ q)` to
-`assoc m n p` takes the equation:
+`+-assoc m n p` takes the equation:
 
     (m + n) + p  ≡  m + (n + p)
 
@@ -726,6 +740,7 @@ first four days using a finite story of creation, as
 There is more than one way to skin a cat.  Here is a second proof of
 associativity of addition in Agda, using `rewrite` rather than chains of
 equations:
+
 ```agda
 +-assoc′ : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc′ zero    n p                          =  refl
@@ -766,6 +781,7 @@ not only chains of equations but also the need to invoke `cong`.
 
 Here is a second proof of commutativity of addition, using `rewrite` rather than
 chains of equations:
+
 ```agda
 +-identity′ : ∀ (n : ℕ) → n + zero ≡ n
 +-identity′ zero = refl
@@ -779,6 +795,7 @@ chains of equations:
 +-comm′ m zero rewrite +-identity′ m = refl
 +-comm′ m (suc n) rewrite +-suc′ m n | +-comm′ m n = refl
 ```
+
 In the final line, rewriting with two equations is
 indicated by separating the two proofs of the relevant equations by a
 vertical bar; the rewrite on the left is performed before that on the
@@ -970,7 +987,7 @@ Show the following three laws
 
 for all `m`, `n`, and `p`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -1003,6 +1020,7 @@ For each law: if it holds, prove; if not, give a counterexample.
 ## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
+
 ```agda
 import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```

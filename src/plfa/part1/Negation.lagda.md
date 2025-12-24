@@ -17,7 +17,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+open import Relation.Nullary.Negation using (contradiction)
 open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
 
@@ -27,10 +28,12 @@ open import plfa.part1.Isomorphism using (_≃_; extensionality)
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
 as implication of false:
+
 ```agda
 ¬_ : Set → Set
 ¬ A = A → ⊥
 ```
+
 This is a form of _reductio ad absurdum_: if assuming `A` leads
 to the conclusion `⊥` (an absurdity), then we must have `¬ A`.
 
@@ -44,6 +47,7 @@ that `A` holds into evidence that `⊥` holds.
 
 Given evidence that both `¬ A` and `A` hold, we can conclude that `⊥` holds.
 In other words, if both `¬ A` and `A` hold, then we have a contradiction:
+
 ```agda
 ¬-elim : ∀ {A : Set}
   → ¬ A
@@ -52,20 +56,24 @@ In other words, if both `¬ A` and `A` hold, then we have a contradiction:
   → ⊥
 ¬-elim ¬x x = ¬x x
 ```
+
 Here we write `¬x` for evidence of `¬ A` and `x` for evidence of `A`.  This
 means that `¬x` must be a function of type `A → ⊥`, and hence the application
 `¬x x` must be of type `⊥`.  Note that this rule is just a special case of `→-elim`.
 
 We set the precedence of negation so that it binds more tightly
 than disjunction and conjunction, but less tightly than anything else:
+
 ```agda
 infix 3 ¬_
 ```
+
 Thus, `¬ A × ¬ B` parses as `(¬ A) × (¬ B)` and `¬ m ≡ n` as `¬ (m ≡ n)`.
 
 In _classical_ logic, we have that `A` is equivalent to `¬ ¬ A`.
 As we discuss below, in Agda we use _intuitionistic_ logic, where
 we have only half of this equivalence, namely that `A` implies `¬ ¬ A`:
+
 ```agda
 ¬¬-intro : ∀ {A : Set}
   → A
@@ -73,6 +81,7 @@ we have only half of this equivalence, namely that `A` implies `¬ ¬ A`:
   → ¬ ¬ A
 ¬¬-intro x  =  λ{¬x → ¬x x}
 ```
+
 Let `x` be evidence of `A`. We show that assuming
 `¬ A` leads to a contradiction, and hence `¬ ¬ A` must hold.
 Let `¬x` be evidence of `¬ A`.  Then from `A` and `¬ A`
@@ -80,6 +89,7 @@ we have a contradiction, evidenced by `¬x x`.  Hence, we have
 shown `¬ ¬ A`.
 
 An equivalent way to write the above is as follows:
+
 ```agda
 ¬¬-intro′ : ∀ {A : Set}
   → A
@@ -87,19 +97,22 @@ An equivalent way to write the above is as follows:
   → ¬ ¬ A
 ¬¬-intro′ x ¬x = ¬x x
 ```
+
 Here we have simply converted the argument of the lambda term
 to an additional argument of the function.  We will usually
 use this latter style, as it is more compact.
 
 We cannot show that `¬ ¬ A` implies `A`, but we can show that
 `¬ ¬ ¬ A` implies `¬ A`:
+
 ```agda
 ¬¬¬-elim : ∀ {A : Set}
   → ¬ ¬ ¬ A
     -------
   → ¬ A
-¬¬¬-elim ¬¬¬x  =  λ x → ¬¬¬x (¬¬-intro x)
+¬¬¬-elim ¬¬¬x x  =  ¬¬¬x (¬¬-intro x)
 ```
+
 Let `¬¬¬x` be evidence of `¬ ¬ ¬ A`. We will show that assuming
 `A` leads to a contradiction, and hence `¬ A` must hold.
 Let `x` be evidence of `A`. Then by the previous result, we
@@ -109,6 +122,7 @@ can conclude `¬ ¬ A`, evidenced by `¬¬-intro x`.  Then from
 
 Another law of logic is _contraposition_,
 stating that if `A` implies `B`, then `¬ B` implies `¬ A`:
+
 ```agda
 contraposition : ∀ {A B : Set}
   → (A → B)
@@ -116,6 +130,7 @@ contraposition : ∀ {A B : Set}
   → (¬ B → ¬ A)
 contraposition f ¬y x = ¬y (f x)
 ```
+
 Let `f` be evidence of `A → B` and let `¬y` be evidence of `¬ B`.  We
 will show that assuming `A` leads to a contradiction, and hence `¬ A`
 must hold. Let `x` be evidence of `A`.  Then from `A → B` and `A` we
@@ -123,25 +138,31 @@ may conclude `B`, evidenced by `f x`, and from `B` and `¬ B` we may
 conclude `⊥`, evidenced by `¬y (f x)`.  Hence, we have shown `¬ A`.
 
 Using negation, it is straightforward to define inequality:
+
 ```agda
 _≢_ : ∀ {A : Set} → A → A → Set
 x ≢ y  =  ¬ (x ≡ y)
 ```
+
 It is trivial to show distinct numbers are not equal:
+
 ```agda
 _ : 1 ≢ 2
 _ = λ()
 ```
+
 This is our first use of an absurd pattern in a lambda expression.
 The type `M ≡ N` is occupied exactly when `M` and `N` simplify to
 identical terms. Since `1` and `2` simplify to distinct normal forms,
 Agda determines that there is no possible evidence that `1 ≡ 2`.
 As a second example, it is also easy to validate
 Peano's postulate that zero is not the successor of any number:
+
 ```agda
 peano : ∀ {m : ℕ} → zero ≢ suc m
 peano = λ()
 ```
+
 The evidence is essentially the same, as the absurd pattern matches
 all possible evidence of type `zero ≡ suc m`.
 
@@ -155,6 +176,7 @@ we know for arithmetic, where
 
 Indeed, there is exactly one proof of `⊥ → ⊥`.  We can write
 this proof two different ways:
+
 ```agda
 id : ⊥ → ⊥
 id x = x
@@ -162,20 +184,25 @@ id x = x
 id′ : ⊥ → ⊥
 id′ ()
 ```
+
 But, using extensionality, we can prove these equal:
+
 ```agda
 id≡id′ : id ≡ id′
 id≡id′ = extensionality (λ())
 ```
+
 By extensionality, `id ≡ id′` holds if for every
 `x` in their domain we have `id x ≡ id′ x`. But there
 is no `x` in their domain, so the equality holds trivially.
 
 Indeed, we can show any two proofs of a negation are equal:
+
 ```agda
 assimilation : ∀ {A : Set} (¬x ¬x′ : ¬ A) → ¬x ≡ ¬x′
-assimilation ¬x ¬x′ = extensionality (λ x → ⊥-elim (¬x x))
+assimilation ¬x ¬x′ = extensionality (λ x → contradiction x ¬x)
 ```
+
 Evidence for `¬ A` implies that any evidence of `A`
 immediately leads to a contradiction.  But extensionality
 quantifies over all `x` such that `A` holds, hence any
@@ -279,18 +306,22 @@ _Communications of the ACM_, December 2015.)
 ## Excluded middle is irrefutable
 
 The law of the excluded middle can be formulated as follows:
+
 ```agda
 postulate
   em : ∀ {A : Set} → A ⊎ ¬ A
 ```
+
 As we noted, the law of the excluded middle does not hold in
 intuitionistic logic.  However, we can show that it is _irrefutable_,
 meaning that the negation of its negation is provable (and hence that
 its negation is never provable):
+
 ```agda
 em-irrefutable : ∀ {A : Set} → ¬ ¬ (A ⊎ ¬ A)
 em-irrefutable = λ k → k (inj₂ (λ x → k (inj₁ x)))
 ```
+
 The best way to explain this code is to develop it interactively:
 
     em-irrefutable k = ?
@@ -385,10 +416,12 @@ Show that each of these implies all the others.
 #### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
+
 ```agda
 Stable : Set → Set
 Stable A = ¬ ¬ A → A
 ```
+
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 
@@ -396,13 +429,17 @@ of two stable formulas is stable.
 -- Your code goes here
 ```
 
-## Standard Prelude
+## Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
+
 ```agda
 import Relation.Nullary using (¬_)
-import Relation.Nullary.Negation using (contraposition)
+import Relation.Nullary.Negation using (contradiction; contraposition)
 ```
+
+The standard library uses `contradiction`, which combines our
+`¬-elim` and `⊥-elim`.
 
 ## Unicode
 

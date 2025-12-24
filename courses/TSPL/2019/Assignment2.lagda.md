@@ -3,7 +3,7 @@ title     : "Assignment2: TSPL Assignment 2"
 permalink : /TSPL/2019/Assignment2/
 ---
 
-```
+```agda
 module Assignment2 where
 ```
 
@@ -19,9 +19,11 @@ You don't need to do all of these, but should attempt at least a few.
 Exercises labelled "(practice)" are included for those who want extra practice.
 
 Submit your homework using the "submit" command.
+
 ```bash
 submit tspl cw2 Assignment2.lagda.md
 ```
+
 Please ensure your files execute correctly under Agda!
 
 
@@ -41,7 +43,7 @@ yourself, or your group in the case of group practicals).
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -53,12 +55,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
-open import Relation.Nullary using (¬_; Dec; yes; no)
-open import Relation.Nullary.Decidable using (⌊_⌋; toWitness; fromWitness)
-open import Relation.Nullary.Negation using (¬?)
-open import Relation.Nullary.Product using (_×-dec_)
-open import Relation.Nullary.Sum using (_⊎-dec_)
-open import Relation.Nullary.Negation using (contraposition)
+open import Relation.Nullary using (¬_; Dec; yes; no; ⌊_⌋; toWitness; fromWitness; ¬?; _×-dec_; _⊎-dec_; contraposition)
 open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 open import plfa.part1.Relations using (_<_; z<s; s<s)
 open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; extensionality)
@@ -86,7 +83,7 @@ notation for `≡-Reasoning`.  Define `≤-Reasoning` analogously, and use
 it to write out an alternative proof that addition is monotonic with
 regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mono-≤`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -95,7 +92,9 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 #### Exercise `≃-implies-≲` (practice)
 
 Show that every isomorphism implies an embedding.
-```
+
+```agda
+
 postulate
   ≃-implies-≲ : ∀ {A B : Set}
     → A ≃ B
@@ -103,22 +102,24 @@ postulate
     → A ≲ B
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `_⇔_` (practice) {#iff}
 
 Define equivalence of propositions (also known as "if and only if") as follows:
-```
+
+```agda
 record _⇔_ (A B : Set) : Set where
   field
     to   : A → B
     from : B → A
 ```
+
 Show that equivalence is reflexive, symmetric, and transitive.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -138,7 +139,8 @@ which satisfy the following property:
     from (to n) ≡ n
 
 Using the above, establish that there is an embedding of `ℕ` into `Bin`.
-```
+
+```agda
 -- Your code goes here
 ```
 
@@ -151,7 +153,7 @@ Why do `to` and `from` not form an isomorphism?
 Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -159,7 +161,7 @@ is isomorphic to `(A → B) × (B → A)`.
 
 Show sum is commutative up to isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -167,7 +169,7 @@ Show sum is commutative up to isomorphism.
 
 Show sum is associative up to isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -175,7 +177,7 @@ Show sum is associative up to isomorphism.
 
 Show empty is the left identity of sums up to isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -183,21 +185,23 @@ Show empty is the left identity of sums up to isomorphism.
 
 Show empty is the right identity of sums up to isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
-```
+
+```agda
 postulate
   ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 ```
+
 This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -205,13 +209,15 @@ distributive law, and explain how it relates to the weak version.
 #### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
-```
+
+```agda
 postulate
   ⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
 ```
+
 Does the converse hold? If so, prove; if not, give a counterexample.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -223,7 +229,7 @@ Using negation, show that
 [strict inequality](/Relations/#strict-inequality)
 is irreflexive, that is, `n < n` holds for no `n`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -241,7 +247,7 @@ that is, for any naturals `m` and `n` exactly one of the following holds:
 Here "exactly one" means that not only one of the three must hold,
 but that when one holds the negation of the other two must also hold.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -254,7 +260,7 @@ version of De Morgan's Law.
 
 This result is an easy consequence of something we've proved previously.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -278,7 +284,7 @@ Consider the following principles:
 
 Show that each of these implies all the others.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -286,14 +292,16 @@ Show that each of these implies all the others.
 #### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
-```
+
+```agda
 Stable : Set → Set
 Stable A = ¬ ¬ A → A
 ```
+
 Show that any negated formula is stable, and that the conjunction
 of two stable formulas is stable.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -303,11 +311,13 @@ of two stable formulas is stable.
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
-```
+
+```agda
 postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
 ```
+
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives](/Connectives/).
 
@@ -315,23 +325,27 @@ Chapter [Connectives](/Connectives/).
 #### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
-```
+
+```agda
 postulate
   ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
 #### Exercise `∀-×` (practice)
 
 Consider the following type.
-```
+
+```agda
 data Tri : Set where
   aa : Tri
   bb : Tri
   cc : Tri
 ```
+
 Let `B` be a type indexed by `Tri`, that is `B : Tri → Set`.
 Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 
@@ -339,7 +353,8 @@ Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 #### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
-```
+
+```agda
 postulate
   ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
@@ -349,11 +364,13 @@ postulate
 #### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
-```
+
+```agda
 postulate
   ∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
     ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
@@ -369,7 +386,7 @@ How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
 restated in this way.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -378,7 +395,7 @@ restated in this way.
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -386,13 +403,15 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 #### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
-```
+
+```agda
 postulate
   ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
     → ∃[ x ] (¬ B x)
       --------------
     → ¬ (∀ x → B x)
 ```
+
 Does the converse hold? If so, prove; if not, explain why.
 
 
@@ -423,7 +442,7 @@ And to establish the following properties:
 Using the above, establish that there is an isomorphism between `ℕ` and
 `∃[ b ](Can b)`.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -433,24 +452,26 @@ Using the above, establish that there is an isomorphism between `ℕ` and
 #### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
-```
+
+```agda
 postulate
   _<?_ : ∀ (m n : ℕ) → Dec (m < n)
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
 #### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
-```
+
+```agda
 postulate
   _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -458,7 +479,8 @@ postulate
 #### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
-```
+
+```agda
 postulate
   ∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
   ∨-⊎ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
@@ -470,13 +492,14 @@ postulate
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
-```
+
+```agda
 postulate
   _iff_ : Bool → Bool → Bool
   _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
   iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
 ```
 
-```
+```agda
 -- Your code goes here
 ```

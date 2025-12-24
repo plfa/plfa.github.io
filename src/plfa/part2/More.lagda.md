@@ -268,7 +268,7 @@ One might think that we could instead use a more compact translation:
     -- WRONG
       (case× L [⟨ x , y ⟩⇒ N ]) †
     =
-      (N †) [ x := `proj₁ (L †) ] [ y := `proj₂ (L †) ]
+      (N †) [ x := `proj₁ (L †) ][ y := `proj₂ (L †) ]
 
 But this behaves differently.  The first term always reduces `L`
 before `N`, and it computes `` `proj₁ `` and `` `proj₂ `` exactly once.  The
@@ -553,10 +553,9 @@ and leave formalisation of the remaining constructs as an exercise.
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc; _*_; _<_; _≤?_; z≤n; s≤s)
-open import Relation.Nullary using (¬_)
+open Eq using (_≡_; refl; cong)
+open import Data.Nat using (ℕ; zero; suc; _*_; _<_; z<s; s<s; _≤_; z≤n; s≤s; _≤?_)
+open import Relation.Nullary.Negation using (¬_)
 open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
@@ -716,21 +715,21 @@ data _⊢_ : Context → Type → Set where
 ### Abbreviating de Bruijn indices
 
 ```agda
-length : Context → ℕ
-length ∅        =  zero
-length (Γ , _)  =  suc (length Γ)
+size : Context → ℕ
+size ∅        =  zero
+size (Γ , _)  =  suc (size Γ)
 
-lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup : {Γ : Context} → {n : ℕ} → (p : n < size Γ) → Type
 lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
 lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 
-count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count : ∀ {Γ} → {n : ℕ} → (p : n < size Γ) → Γ ∋ lookup p
 count {_ , _} {zero}    (s≤s z≤n)  =  Z
 count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 
 #_ : ∀ {Γ}
   → (n : ℕ)
-  → {n∈Γ : True (suc n ≤? length Γ)}
+  → {n∈Γ : True (suc n ≤? size Γ)}
     --------------------------------
   → Γ ⊢ lookup (toWitness n∈Γ)
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
@@ -1099,42 +1098,37 @@ progress (case× L M) with progress L
 ## Evaluation
 
 ```agda
-record Gas : Set where
-  constructor gas
-  field
-    amount : ℕ
+length : ∀ {A} {M N : ∅ ⊢ A} → M —↠ N → ℕ
+length (M ∎)                =  zero
+length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 
-data Finished {Γ A} (N : Γ ⊢ A) : Set where
+data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
 
-   done :
-       Value N
-       ----------
-     → Finished N
+  out-of-gas : {N : ∅ ⊢ A}
+    → (M—↠N : M —↠ N)
+    → length M—↠N ≡ g
+      ---------------
+    → Eval M g
 
-   out-of-gas :
-       ----------
-       Finished N
-
-data Steps {A} : ∅ ⊢ A → Set where
-
-  steps : {L N : ∅ ⊢ A}
-    → L —↠ N
-    → Finished N
-      ----------
-    → Steps L
+  terminates : {N : ∅ ⊢ A}
+    → (M—↠N : M —↠ N)
+    → length M—↠N < g
+    → Value N
+      ---------------
+    → Eval M g
 
 eval : ∀ {A}
-  → Gas
+  → (g : ℕ)
   → (L : ∅ ⊢ A)
-    -----------
-  → Steps L
-eval (gas zero)    L                     =  steps (L ∎) out-of-gas
-eval (gas (suc m)) L with progress L
-... | done VL                            =  steps (L ∎) (done VL)
-... | step {M} L—→M with eval (gas m) M
-...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+    ---------
+  → Eval L g
+eval zero L            =  out-of-gas (L ∎) refl
+eval (suc g) L with progress L
+... | done VL                  =  terminates (L ∎) z<s VL
+... | step {M} L—→M with eval g M
+...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
+...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
-
 
 ## Examples
 
@@ -1234,12 +1228,14 @@ Please delimit any code you add as follows:
 
 Show that a double substitution is equivalent to two single
 substitutions.
+
 ```agda
 postulate
   double-subst :
     ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {N : Γ , A , B ⊢ C} →
       N [ V ][ W ] ≡ (N [ rename S_ W ]) [ V ]
 ```
+
 Note the arguments need to be swapped and `W` needs to have
 its context adjusted via renaming in order for the right-hand
 side to be well typed.
@@ -1248,6 +1244,7 @@ side to be well typed.
 
 We repeat the [test examples](/DeBruijn/#examples) from Chapter [DeBruijn](/DeBruijn/),
 in order to make sure we have not broken anything in the process of extending our base calculus.
+
 ```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero

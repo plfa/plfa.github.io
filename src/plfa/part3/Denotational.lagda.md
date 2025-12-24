@@ -52,17 +52,15 @@ down a denotational semantics of the lambda calculus.
 ## Imports
 
 ```agda
-open import Agda.Primitive using (lzero; lsuc)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
   renaming (_,_ to ⟨_,_⟩)
-open import Data.Sum
-open import Data.Vec using (Vec; []; _∷_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Vec.Base using (Vec; []; _∷_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; cong; cong₂; cong-app)
-open import Relation.Nullary using (¬_)
-open import Relation.Nullary.Negation using (contradiction)
-open import Function using (_∘_)
+  using (_≡_; refl)
+open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Function.Base using (_∘_)
 open import plfa.part2.Untyped
   using (Context; ★; _∋_; ∅; _,_; Z; S_; _⊢_; `_; _·_; ƛ_;
          #_; twoᶜ; ext; rename; exts; subst; subst-zero; _[_])
@@ -224,6 +222,7 @@ Env Γ = ∀ (x : Γ ∋ ★) → Value
 ```
 
 We have the empty environment, and we can extend an environment.
+
 ```agda
 `∅ : Env ∅
 `∅ ()
@@ -237,6 +236,7 @@ _`,_ : ∀ {Γ} → Env Γ → Value → Env (Γ , ★)
 
 We can recover the previous environment from an extended environment,
 and the last value. Putting them together again takes us back to where we started.
+
 ```agda
 init : ∀ {Γ} → Env (Γ , ★) → Env Γ
 init γ x = γ (S x)
