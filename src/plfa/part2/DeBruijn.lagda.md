@@ -1177,7 +1177,7 @@ require about 1.6 times as much code as intrinsically-typed.
 This chapter uses the following unicode:
 
     σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
-    ₀  U+2080  SUBSCRIPT ZERO (\_0)
+    ₀  U+20R0  SUBSCRIPT ZERO (\_0)
     ₁  U+2081  SUBSCRIPT ONE (\_1)
     ₂  U+2082  SUBSCRIPT TWO (\_2)
     ₃  U+2083  SUBSCRIPT THREE (\_3)
@@ -1188,20 +1188,23 @@ This chapter uses the following unicode:
     ≠  U+2260  NOT EQUAL TO (\=n)
 
 
--- Following omitted as for some reason they vastly increase
--- time for Agda to check the file.
+<!--
+Following omitted as for some reason they vastly increase
+time for Agda to check the file.
 
--- ## Examples
+## Examples
 
--- We reiterate each of our previous examples.  We re-define the term
--- `sucμ` that loops forever:
--- ```agda
+We reiterate each of our previous examples.  We re-define the term
+`sucμ` that loops forever:
+```agda
 -- sucμ : ∅ ⊢ `ℕ
 -- sucμ = μ (`suc (# 0))
--- ```
--- To compute the first three steps of the infinite reduction sequence,
--- we evaluate with three steps worth of gas:
--- ```agda
+```
+
+To compute the first three steps of the infinite reduction sequence,
+we evaluate with three steps worth of gas:
+
+```agda
 -- _ : eval 3 sucμ ≡
 --   out-of-gas
 --    (μ `suc ` Z
@@ -1214,10 +1217,11 @@ This chapter uses the following unicode:
 --    ∎)
 --    refl
 -- _ = refl
--- ```
+```
 
--- The Church numeral two applied to successor and zero:
--- ```agda
+The Church numeral two applied to successor and zero:
+
+```agda
 -- _ : eval 100 (twoᶜ · sucᶜ · `zero) ≡
 --   terminates
 --    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero
@@ -1233,14 +1237,14 @@ This chapter uses the following unicode:
 --    (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
 --    (V-suc (V-suc V-zero))
 -- _ = refl
--- ```
+```
 
--- We omit the proof that reduction is deterministic, since it is
--- tedious and almost identical to the previous proof.
+We omit the proof that reduction is deterministic, since it is
+tedious and almost identical to the previous proof.
 
+Two plus two is four:
 
--- Two plus two is four:
--- ```agda
+```agda
 -- _ : eval 100 (plus · two · two) ≡
 --   terminates
 --    ((μ
@@ -1383,10 +1387,11 @@ This chapter uses the following unicode:
 --       (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
 --    (V-suc (V-suc (V-suc (V-suc V-zero))))
 -- _ = refl
--- ```
+```
 
--- And the corresponding term for Church numerals:
--- ```agda
+And the corresponding term for Church numerals:
+
+```agda
 -- _ : eval 100 (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
 --   terminates
 --    ((ƛ
@@ -1447,4 +1452,5 @@ This chapter uses the following unicode:
 --       (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
 --    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 -- _ = refl
--- ```
+```
+-->
