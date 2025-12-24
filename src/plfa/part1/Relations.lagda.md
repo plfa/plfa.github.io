@@ -10,7 +10,7 @@ module plfa.part1.Relations where
 After having defined operations such as addition and multiplication,
 the next step is to define relations, such as _less than or equal_.
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -20,7 +20,7 @@ open import Data.Nat.Properties using (+-comm; +-identityʳ; *-comm)
 ```
 
 
-## Defining relations
+# Defining relations
 
 The relation _less than or equal_ has an infinite number of
 instances.  Here are a few of them:
@@ -99,7 +99,7 @@ _ = s≤s (s≤s z≤n)
 
 
 
-## Implicit arguments
+# Implicit arguments
 
 This is our first use of implicit arguments.  In the definition of
 inequality, the two lines defining the constructors use `∀`, very
@@ -157,7 +157,7 @@ happily fills it in.
 If Agda fails to infer the value, it reports an error.
 
 
-## Precedence
+# Precedence
 
 We declare the precedence for comparison as follows:
 
@@ -172,7 +172,7 @@ either the left or right, as it makes no sense to parse `1 ≤ 2 ≤ 3` as
 either `(1 ≤ 2) ≤ 3` or `1 ≤ (2 ≤ 3)`.
 
 
-## Decidability
+# Decidability
 
 Given two numbers, it is straightforward to compute whether or not the
 first is less than or equal to the second.  We don't give the code for
@@ -180,7 +180,7 @@ doing so here, but will return to this point in
 Chapter [Decidable](/Decidable/).
 
 
-## Inversion
+# Inversion
 
 In our definitions, we go from smaller things to larger things.
 For instance, from `m ≤ n` we can conclude `suc m ≤ suc n`,
@@ -220,7 +220,7 @@ inv-z≤n : ∀ {m : ℕ}
 inv-z≤n z≤n = refl
 ```
 
-## Properties of ordering relations
+# Properties of ordering relations
 
 Relations pop up all the time, and mathematicians have agreed
 on names for some of the most common properties.
@@ -254,7 +254,7 @@ lack---for instance by saying that a newly introduced relation is a
 partial order but not a total order.
 
 
-#### Exercise `orderings` (practice) {#orderings}
+## Exercise `orderings` (practice) {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -268,7 +268,7 @@ Give an example of a partial order that is not a total order.
 -- Your code goes here
 ```
 
-## Reflexivity
+# Reflexivity
 
 The first property to prove about comparison is that it is reflexive:
 for any natural `n`, the relation `n ≤ n` holds.  We follow the
@@ -292,7 +292,7 @@ It is a good exercise to prove reflexivity interactively in Emacs,
 using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 
-## Transitivity
+# Transitivity
 
 The second property to prove about comparison is that it is
 transitive: for any naturals `m`, `n`, and `p`, if `m ≤ n` and `n ≤ p`
@@ -350,7 +350,7 @@ Again, it is a good exercise to prove transitivity interactively in Emacs,
 using holes and the `C-c C-c`, `C-c C-,`, and `C-c C-r` commands.
 
 
-## Anti-symmetry
+# Anti-symmetry
 
 The third property to prove about comparison is that it is
 antisymmetric: for all naturals `m` and `n`, if both `m ≤ n` and
@@ -380,7 +380,7 @@ and `suc n ≤ suc m` and must show `suc m ≡ suc n`.  The inductive
 hypothesis `≤-antisym m≤n n≤m` establishes that `m ≡ n`, and our goal
 follows by congruence.
 
-#### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
+## Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -390,7 +390,7 @@ argument is `s≤s`.  Why is it ok to omit them?
 ```
 
 
-## Total
+# Total
 
 The fourth property to prove about comparison is that it is total:
 for any naturals `m` and `n` either `m ≤ n` or `n ≤ m`, or both if
@@ -524,7 +524,7 @@ It differs from the original code in that it pattern
 matches on the second argument before the first argument.
 
 
-## Monotonicity
+# Monotonicity
 
 If one bumps into both an operator and an ordering at a party, one may ask if
 the operator is _monotonic_ with regard to the ordering.  For example, addition
@@ -587,7 +587,7 @@ Invoking `+-monoˡ-≤ m n p m≤n` proves `m + p ≤ n + p` and invoking
 transitivity proves `m + p ≤ n + q`, as was to be shown.
 
 
-#### Exercise `*-mono-≤` (stretch)
+## Exercise `*-mono-≤` (stretch)
 
 Show that multiplication is monotonic with regard to inequality.
 
@@ -596,7 +596,7 @@ Show that multiplication is monotonic with regard to inequality.
 ```
 
 
-## Strict inequality {#strict-inequality}
+# Strict inequality {#strict-inequality}
 
 We can define strict inequality similarly to inequality:
 
@@ -636,7 +636,7 @@ and conversely.  One can then give an alternative derivation of the
 properties of strict inequality, such as transitivity, by
 exploiting the corresponding properties of inequality.
 
-#### Exercise `<-trans` (recommended) {#less-trans}
+## Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive. Use a direct proof. (A later
 exercise exploits the relation between < and ≤.)
@@ -645,7 +645,7 @@ exercise exploits the relation between < and ≤.)
 -- Your code goes here
 ```
 
-#### Exercise `trichotomy` (practice) {#trichotomy}
+## Exercise `trichotomy` (practice) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -663,7 +663,7 @@ similar to that used for totality.
 -- Your code goes here
 ```
 
-#### Exercise `+-mono-<` (practice) {#plus-mono-less}
+## Exercise `+-mono-<` (practice) {#plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
@@ -672,7 +672,7 @@ As with inequality, some additional definitions may be required.
 -- Your code goes here
 ```
 
-#### Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
+## Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -680,7 +680,7 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
 -- Your code goes here
 ```
 
-#### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
+## Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
@@ -691,7 +691,7 @@ the fact that inequality is transitive.
 ```
 
 
-## Even and odd
+# Even and odd
 
 As a further example, let's specify even and odd numbers.  Inequality
 and strict inequality are _binary relations_, while even and odd are
@@ -793,7 +793,7 @@ evidence that the first number is odd. If it is because it is the
 successor of an even number, then the result is odd because it is the
 successor of the sum of two even numbers, which is even.
 
-#### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
+## Exercise `o+o≡e` (stretch) {#odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
@@ -801,7 +801,7 @@ Show that the sum of two odd numbers is even.
 -- Your code goes here
 ```
 
-#### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
+## Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)
@@ -861,7 +861,7 @@ properties of `One`. It may also help to prove the following:
 -- Your code goes here
 ```
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -878,7 +878,7 @@ and `+-monoʳ-≤`, `+-monoˡ-≤`, `+-mono-≤` are proved differently than her
 and more arguments are implicit.
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

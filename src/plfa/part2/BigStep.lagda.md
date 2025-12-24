@@ -7,7 +7,7 @@ permalink : /BigStep/
 module plfa.part2.BigStep where
 ```
 
-## Introduction
+# Introduction
 
 The call-by-name evaluation strategy is a deterministic method for
 computing the value of a program in the lambda calculus.  That is,
@@ -28,7 +28,7 @@ to the final result `V`, in contrast to the small-step reduction
 relation, `M —→ M′`, that maps `M` to another term `M′` in which a
 single sub-computation has been completed.
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality
@@ -43,7 +43,7 @@ open import plfa.part2.Untyped
 open import plfa.part2.Substitution using (Subst; ids)
 ```
 
-## Environments
+# Environments
 
 To handle variables and function applications, there is the choice
 between using substitution, as in `—→`, or to use an _environment_.
@@ -78,7 +78,7 @@ _,'_ : ∀ {Γ} → ClosEnv Γ → Clos → ClosEnv (Γ , ★)
 (γ ,' c) (S x) = γ x
 ```
 
-## Big-step evaluation
+# Big-step evaluation
 
 The big-step semantics is represented as a ternary relation,
 written `γ ⊢ M ⇓ V`, where `γ` is the environment, `M` is the input
@@ -117,7 +117,7 @@ data _⊢_⇓_ : ∀{Γ} → ClosEnv Γ → (Γ ⊢ ★) → Clos → Set where
   call-by-value.
 
 
-#### Exercise `big-step-eg` (practice)
+## Exercise `big-step-eg` (practice)
 
 Show that `(ƛ ƛ # 1) · ((ƛ # 0 · # 0) · (ƛ # 0 · # 0))`
 terminates under big-step call-by-name evaluation.
@@ -127,7 +127,7 @@ terminates under big-step call-by-name evaluation.
 ```
 
 
-## The big-step semantics is deterministic
+# The big-step semantics is deterministic
 
 If the big-step relation evaluates a term `M` to both `V` and
 `V′`, then `V` and `V′` must be identical. In other words, the
@@ -148,7 +148,7 @@ straightforward induction on the two big-step derivations.
 ```
 
 
-## Big-step evaluation implies beta reduction to a lambda
+# Big-step evaluation implies beta reduction to a lambda
 
 If big-step evaluation produces a value, then the input term can
 reduce to a lambda abstraction by beta reduction:
@@ -368,7 +368,7 @@ cbn→reduce {M}{Δ}{δ}{N′} M⇓c
       ⟨ subst (exts σ) N′ , rs ⟩
 ```
 
-#### Exercise `big-alt-implies-multi` (practice)
+## Exercise `big-alt-implies-multi` (practice)
 
 Formulate an alternative big-step semantics, of the form `M ↓ N`, for
 call-by-name that uses substitution instead of environments.  That is,
@@ -380,7 +380,7 @@ with `M`. Prove that `M ↓ N` implies `M —↠ N`.
 -- Your code goes here
 ```
 
-## Beta reduction to a lambda implies big-step evaluation
+# Beta reduction to a lambda implies big-step evaluation
 
 The proof of the backward direction, that beta reduction to a lambda
 implies that the call-by-name semantics produces a result, is more
@@ -435,7 +435,7 @@ proof of the backwards direction will fall out as a corollary to the
 soundness and adequacy of the denotational semantics.
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

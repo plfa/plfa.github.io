@@ -13,14 +13,14 @@ are interchangeable.  So far we have treated equality as a primitive,
 here we show how to define it as an inductive datatype.
 
 
-## Imports
+# Imports
 
 This chapter has no imports.  Every chapter in this book, and nearly
 every module in the Agda standard library, imports equality.
 Since we define equality here, any import would create a conflict.
 
 
-## Equality
+# Equality
 
 We declare equality as follows:
 
@@ -51,7 +51,7 @@ It associates neither to left nor right; writing `x ≡ y ≡ z`
 is illegal.
 
 
-## Equality is an equivalence relation
+# Equality is an equivalence relation
 
 An equivalence relation is one which is reflexive, symmetric, and transitive.
 Reflexivity is built-in to the definition of equality, via the
@@ -137,7 +137,7 @@ Again, a useful exercise is to carry out an interactive development,
 checking how Agda's knowledge changes as each of the two arguments is
 instantiated.
 
-## Congruence and substitution {#cong}
+# Congruence and substitution {#cong}
 
 Equality satisfies _congruence_.  If two terms are equal,
 they remain so after the same function is applied to both:
@@ -191,7 +191,7 @@ Chapter [Relations](/Relations/#even-and-odd) are predicates on natural numbers 
 (We will compare representing predicates as data types `A → Set`
 versus functions to booleans `A → Bool` in Chapter [Decidable](/Decidable/).)
 
-## Chains of equations
+# Chains of equations
 
 Here we show how to support reasoning with chains of equations, as
 used throughout the book.  We package the declarations into a module,
@@ -302,7 +302,7 @@ prove the same equality. But that inefficiency is key to our nice
 notation for chains of equalities.  One shouldn't fear inefficiency
 if it improves readability!)
 
-#### Exercise `trans` and `≡-Reasoning` (practice)
+## Exercise `trans` and `≡-Reasoning` (practice)
 
 Sadly, we cannot use the definition of `trans′` using `≡-Reasoning` as the
 definition for `trans`. Can you see why? (Hint: look at the definition
@@ -312,7 +312,7 @@ of `_≡⟨_⟩_`)
 -- Your code goes here
 ```
 
-## Chains of equations, another example
+# Chains of equations, another example
 
 As a second example of chains of equations, we repeat the proof that addition
 is commutative.  We first repeat the definitions of naturals and addition.
@@ -392,7 +392,7 @@ by `≡⟨⟩` have the same simplified form; it's up to us to write them in
 an order that will make sense to the reader.
 
 
-#### Exercise `≤-Reasoning` (stretch)
+## Exercise `≤-Reasoning` (stretch)
 
 The proof of monotonicity from
 Chapter [Relations](/Relations/)
@@ -407,7 +407,7 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 
 
 
-## Rewriting
+# Rewriting
 
 Consider a property of natural numbers, such as being even.
 We repeat the earlier definition:
@@ -502,7 +502,7 @@ automated search, including checking whether a variable in scope has
 the same type as the goal.
 
 
-## Multiple rewrites
+# Multiple rewrites
 
 One may perform multiple rewrites, each separated by a vertical bar.  For instance,
 here is a second proof that addition is commutative, relying on rewrites rather
@@ -523,7 +523,7 @@ of equalities are easier to follow, and we will stick with the latter
 when feasible.
 
 
-## Rewriting expanded
+# Rewriting expanded
 
 The `rewrite` notation is in fact shorthand for an appropriate use of `with`
 abstraction:
@@ -569,7 +569,7 @@ Nonetheless, rewrite is a vital part of the Agda toolkit.  We will use
 it sparingly, but it is occasionally essential.
 
 
-## Leibniz equality
+# Leibniz equality
 
 The form of asserting equality that we have used is due to Martin-Löf,
 and was published in 1975.  An older form is due to Leibniz, and
@@ -694,7 +694,7 @@ Jesper Cockx, Dominique Devries, Andreas Nuyts, and Philip Wadler,
 draft, 2017.)
 
 
-## Universe polymorphism {#unipoly}
+# Universe polymorphism {#unipoly}
 
 As we have seen, not every type belongs to `Set`, but instead every
 type belongs somewhere in the hierarchy `Set₀`, `Set₁`, `Set₂`, and so on,
@@ -777,7 +777,7 @@ Further information on levels can be found in the [Agda docs][docs].
 [docs]: https://agda.readthedocs.io/en/v2.6.1/language/universe-levels.html
 
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard
 library. The Agda standard library defines `_≡⟨_⟩_` as `step-≡`, [which reverses
@@ -796,7 +796,7 @@ collisions, as mentioned in the introduction.
 
 [step-≡]: https://github.com/agda/agda-stdlib/blob/master/CHANGELOG/v1.3.md#changes-to-how-equational-reasoning-is-implemented
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

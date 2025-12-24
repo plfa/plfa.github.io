@@ -17,7 +17,7 @@ by their name, properties of _inductive datatypes_ are proved by
 _induction_.
 
 
-## Imports
+# Imports
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
@@ -33,7 +33,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _^_)
 (Importing `step-≡-∣` defines `_≡⟨⟩_` and importing `step-≡-⟩` defines `_≡⟨_⟩_`.)
 
 
-## Properties of operators
+# Properties of operators
 
 Operators pop up all the time, and mathematicians have agreed
 on names for some of the most common properties.
@@ -71,7 +71,7 @@ distributes over another operator.  A careful author will often call
 out these properties---or their lack---for instance by pointing out
 that a newly introduced operator is associative but not commutative.
 
-#### Exercise `operators` (practice) {#operators}
+## Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -82,7 +82,7 @@ associative but is not commutative.
 (You do not have to prove these properties.)
 
 
-## Associativity
+# Associativity
 
 One property of addition is that it is _associative_, that is, that the
 location of the parentheses does not matter:
@@ -126,7 +126,7 @@ The answer is yes! We can prove a property holds for all naturals using
 _proof by induction_.
 
 
-## Proof by induction
+# Proof by induction
 
 Recall the definition of natural numbers consists of a _base case_
 which tells us that `zero` is a natural, and an _inductive case_
@@ -204,7 +204,7 @@ on some given day.  In particular, the property `P n` first appears on
 day _n+1_.
 
 
-## Our first proof: associativity
+# Our first proof: associativity
 
 To prove associativity, we take `P m` to be the property:
 
@@ -317,7 +317,7 @@ In this case, `assoc (suc m) n p` is proved using `assoc m n p`.
 The correspondence between proof by induction and definition by
 recursion is one of the most appealing aspects of Agda.
 
-## Induction as recursion
+# Induction as recursion
 
 As a concrete example of how induction corresponds to recursion, here
 is the computation that occurs when instantiating `m` to `2` in the
@@ -364,7 +364,7 @@ proof of associativity.
 ```
 
 
-## Terminology and notation
+# Terminology and notation
 
 The symbol `∀` appears in the statement of associativity to indicate that
 it holds for all numbers `m`, `n`, and `p`.  We refer to `∀` as the _universal
@@ -400,7 +400,7 @@ are all equivalent.
 
 
 
-## Our second proof: commutativity
+# Our second proof: commutativity
 
 Another important property of addition is that it is _commutative_, that is,
 that the order of the operands does not matter:
@@ -409,7 +409,7 @@ that the order of the operands does not matter:
 
 The proof requires that we first demonstrate two lemmas.
 
-### The first lemma
+## The first lemma
 
 The base case of the definition of addition states that zero
 is a left-identity:
@@ -478,7 +478,7 @@ Here, the recursive invocation `+-identityʳ m` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.  This completes the first lemma.
 
-### The second lemma
+## The second lemma
 
 The inductive case of the definition of addition pushes `suc` on the
 first argument to the outside:
@@ -551,7 +551,7 @@ Here, the recursive invocation `+-suc m n` has as its type the
 induction hypothesis, and `cong suc` prefaces `suc` to each side to
 yield the needed equation.  This completes the second lemma.
 
-### The proposition
+## The proposition
 
 Finally, here is our proposition's statement and proof:
 
@@ -625,7 +625,7 @@ the main proposition first, and the equations required to do so
 will suggest what lemmas to prove.
 
 
-## Our first corollary: rearranging {#sections}
+# Our first corollary: rearranging {#sections}
 
 We can apply associativity to rearrange parentheses however we like.
 Here is an example:
@@ -676,7 +676,7 @@ returns `x + y`; the same works for any infix operator.
 
 
 
-## Creation, one last time
+# Creation, one last time
 
 Returning to the proof of associativity, it may be helpful to view the inductive
 proof (or, equivalently, the recursive definition) as a creation story.  This
@@ -725,7 +725,7 @@ judgments where the first number is less than _m_.
 There is also a completely finite approach to generating the same equations,
 which is left as an exercise for the reader.
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+## Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
@@ -735,7 +735,7 @@ first four days using a finite story of creation, as
 -- Your code goes here
 ```
 
-## Associativity with rewrite
+# Associativity with rewrite
 
 There is more than one way to skin a cat.  Here is a second proof of
 associativity of addition in Agda, using `rewrite` rather than chains of
@@ -777,7 +777,7 @@ and the proof is again given by `refl`.  Rewriting avoids
 not only chains of equations but also the need to invoke `cong`.
 
 
-## Commutativity with rewrite
+# Commutativity with rewrite
 
 Here is a second proof of commutativity of addition, using `rewrite` rather than
 chains of equations:
@@ -802,7 +802,7 @@ vertical bar; the rewrite on the left is performed before that on the
 right.
 
 
-## Building proofs interactively
+# Building proofs interactively
 
 It is instructive to see how to build the alternative proof of
 associativity using the interactive features of Agda in Emacs.
@@ -896,7 +896,7 @@ typing `C-c C-r` will fill it in, completing the proof:
     +-assoc′ (suc m) n p rewrite +-assoc′ m n p = refl
 
 
-#### Exercise `+-swap` (recommended) {#plus-swap}
+## Exercise `+-swap` (recommended) {#plus-swap}
 
 Show
 
@@ -911,7 +911,7 @@ is associative and commutative.
 ```
 
 
-#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
+## Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -924,7 +924,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-assoc` (recommended) {#times-assoc}
+## Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -937,7 +937,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-comm` (practice) {#times-comm}
+## Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -951,7 +951,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-#### Exercise `0∸n≡0` (practice) {#zero-monus}
+## Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -964,7 +964,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
+## Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -977,7 +977,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `+*^` (stretch)
+## Exercise `+*^` (stretch)
 
 Show the following three laws
 
@@ -992,7 +992,7 @@ for all `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `Bin-laws` (stretch) {#Bin-laws}
+## Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)
@@ -1017,7 +1017,7 @@ For each law: if it holds, prove; if not, give a counterexample.
 ```
 
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -1025,7 +1025,7 @@ Definitions similar to those in this chapter can be found in the standard librar
 import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
 ```
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

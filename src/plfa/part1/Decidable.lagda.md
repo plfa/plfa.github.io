@@ -16,7 +16,7 @@ but later discover that these are best avoided in favour
 of a new notion of _decidable_.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -33,7 +33,7 @@ open import plfa.part1.Relations using (_<_; z<s; s<s)
 open import plfa.part1.Isomorphism using (_⇔_)
 ```
 
-## Evidence vs Computation
+# Evidence vs Computation
 
 Recall that Chapter [Relations](/Relations/)
 defined comparison as an inductive datatype,
@@ -132,7 +132,7 @@ In the second case, it takes two steps to reduce the second argument to zero,
 and one more step to compute false, corresponding to the two uses of `s≤s`
 and the one use of `()` when showing there can be no evidence that `4 ≤ 2`.
 
-## Relating evidence and computation
+# Relating evidence and computation
 
 We would hope to be able to show these two approaches are related, and
 indeed we can.  First, we define a function that lets us map from the
@@ -225,7 +225,7 @@ handy to have the computer work out the answer for us.  Fortunately,
 rather than choosing between _evidence_ and _computation_,
 there is a way to get the benefits of both.
 
-## The best of both worlds
+# The best of both worlds
 
 A function that returns a boolean returns exactly a single bit of information:
 does the relation hold or does it not? Conversely, the evidence approach tells
@@ -315,7 +315,7 @@ but instead use inline anonymous functions then Agda may have
 trouble normalising evidence of negation.)
 
 
-#### Exercise `_<?_` (recommended)
+## Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
 
@@ -328,7 +328,7 @@ postulate
 -- Your code goes here
 ```
 
-#### Exercise `_≡ℕ?_` (practice)
+## Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
 
@@ -342,7 +342,7 @@ postulate
 ```
 
 
-## Decidables from booleans, and booleans from decidables
+# Decidables from booleans, and booleans from decidables
 
 Curious readers might wonder if we could reuse the definition of
 `m ≤ᵇ n`, together with the proofs that it is equivalent to `m ≤ n`, to show
@@ -426,7 +426,7 @@ If you need booleans, they and their properties are easily derived from the
 corresponding decidables.
 
 
-## Logical connectives
+# Logical connectives
 
 Most readers will be familiar with the logical connectives for booleans.
 Each of these extends to decidables.
@@ -585,7 +585,7 @@ indicating that the order of the equations determines which of the
 first or the second can match.  This time the answer is different depending
 on which matches; but either is equally valid.
 
-#### Exercise `erasure` (practice)
+## Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
 
@@ -596,7 +596,7 @@ postulate
   not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
 ```
 
-#### Exercise `iff-erasure` (recommended)
+## Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
@@ -613,7 +613,7 @@ postulate
 -- Your code goes here
 ```
 
-## Proof by reflection {#proof-by-reflection}
+# Proof by reflection {#proof-by-reflection}
 
 Let's revisit our definition of monus from
 Chapter [Naturals](/Naturals/).
@@ -681,14 +681,14 @@ True : ∀ {Q} → Dec Q → Set
 True Q = T ⌊ Q ⌋
 ```
 
-#### Exercise `False` (practice)
+## Exercise `False` (practice)
 
 Give analogues of `True`, `toWitness`, and `fromWitness` which work
 with *negated* properties. Call these `False`, `toWitnessFalse`, and
 `fromWitnessFalse`.
 
 
-#### Exercise `Bin-decidable` (stretch)
+## Exercise `Bin-decidable` (stretch)
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),
@@ -707,7 +707,7 @@ Show that both of the above are decidable.
 
 
 
-## Standard Library
+# Standard Library
 
 ```agda
 import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
@@ -719,7 +719,7 @@ import Relation.Binary.Definitions using (Decidable)
 ```
 
 
-## Unicode
+# Unicode
 
     ∧  U+2227  LOGICAL AND (\and, \wedge)
     ∨  U+2228  LOGICAL OR (\or, \vee)

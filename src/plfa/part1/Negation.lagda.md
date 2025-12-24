@@ -10,7 +10,7 @@ module plfa.part1.Negation where
 This chapter introduces negation, and discusses intuitionistic
 and classical logic.
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -23,7 +23,7 @@ open import plfa.part1.Isomorphism using (_≃_; extensionality)
 ```
 
 
-## Negation
+# Negation
 
 Given a proposition `A`, the negation `¬ A` holds if `A` cannot hold.
 We formalise this idea by declaring negation to be the same
@@ -210,7 +210,7 @@ such `x` immediately leads to a contradiction,
 again causing the equality to hold trivially.
 
 
-#### Exercise `<-irreflexive` (recommended)
+## Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
 [strict inequality](/Relations/#strict-inequality)
@@ -221,7 +221,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 ```
 
 
-#### Exercise `trichotomy` (practice)
+## Exercise `trichotomy` (practice)
 
 Show that strict inequality satisfies
 [trichotomy](/Relations/#trichotomy),
@@ -238,7 +238,7 @@ but that when one holds the negation of the other two must also hold.
 -- Your code goes here
 ```
 
-#### Exercise `⊎-dual-×` (recommended)
+## Exercise `⊎-dual-×` (recommended)
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
@@ -260,7 +260,7 @@ If so, prove; if not, can you give a relation weaker than
 isomorphism that relates the two sides?
 
 
-## Intuitive and Classical logic
+# Intuitive and Classical logic
 
 In Gilbert and Sullivan's _The Gondoliers_, Casilda is told that
 as an infant she was married to the heir of the King of Batavia, but
@@ -303,7 +303,7 @@ a disjoint sum.
 (Parts of the above are adopted from "Propositions as Types", Philip Wadler,
 _Communications of the ACM_, December 2015.)
 
-## Excluded middle is irrefutable
+# Excluded middle is irrefutable
 
 The law of the excluded middle can be formulated as follows:
 
@@ -396,7 +396,7 @@ just handed to him.
 Philip Wadler, _International Conference on Functional Programming_, 2003.)
 
 
-#### Exercise `Classical` (stretch)
+## Exercise `Classical` (stretch)
 
 Consider the following principles:
 
@@ -413,7 +413,7 @@ Show that each of these implies all the others.
 ```
 
 
-#### Exercise `Stable` (stretch)
+## Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
 
@@ -429,7 +429,7 @@ of two stable formulas is stable.
 -- Your code goes here
 ```
 
-## Standard library
+# Standard library
 
 Definitions similar to those in this chapter can be found in the standard library:
 
@@ -441,7 +441,7 @@ import Relation.Nullary.Negation using (contradiction; contraposition)
 The standard library uses `contradiction`, which combines our
 `¬-elim` and `⊥-elim`.
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

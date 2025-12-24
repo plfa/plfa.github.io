@@ -37,7 +37,7 @@ Related work has been carried out by
 James Chapman, James McKinna, and many others.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -47,7 +47,7 @@ open import Relation.Nullary.Negation using (¬_)
 open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-## Introduction
+# Introduction
 
 There is a close correspondence between the structure of a
 term and the structure of the derivation showing that it is
@@ -127,7 +127,7 @@ we will introduce terms with de Bruijn indices that
 are intrinsically scoped but not typed.
 
 
-## A second example
+# A second example
 
 De Bruijn indices can be tricky to get the hang of, so before
 proceeding further let's consider a second example.  Here is
@@ -197,7 +197,7 @@ shadowing: with variable names, there is no way to refer to
 the former binding in the scope of the latter, but with de
 Bruijn indices it could be referred to as `# 2`.
 
-## Order of presentation
+# Order of presentation
 
 In the current chapter, the use of intrinsically-typed terms
 necessitates that we cannot introduce operations such as
@@ -210,7 +210,7 @@ the trickiest part of the previous proof, the lemma establishing that
 substitution preserves types.  The definition of reduction
 incorporates preservation, which no longer requires a separate proof.
 
-## Syntax
+# Syntax
 
 We now begin our formal development.
 
@@ -236,7 +236,7 @@ infix  9 #_
 Since terms are intrinsically typed, we must define types and
 contexts before terms.
 
-### Types
+## Types
 
 As before, we have just two types, functions and naturals.
 The formal definition is unchanged:
@@ -247,7 +247,7 @@ data Type : Set where
   `ℕ  : Type
 ```
 
-### Contexts
+## Contexts
 
 Contexts are as before, but we drop the names.
 Contexts are formalised as follows:
@@ -273,7 +273,7 @@ is a context with two variables in scope, where the outer
 bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 Intrinsically-typed variables correspond to the lookup judgment.
 They are represented by de Bruijn indices, and hence also
@@ -328,7 +328,7 @@ In the given context, `"z"` is represented by `Z`
 and `"s"` by `S Z`
 (as the next most recently bound variable).
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 Intrinsically-typed terms correspond to the typing judgment.
 We write
@@ -420,7 +420,7 @@ _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 
 The final term represents the Church numeral two.
 
-### Abbreviating de Bruijn indices
+## Abbreviating de Bruijn indices
 
 We define a helper function that computes the size of a context,
 which will be useful in making sure an index is within context bounds:
@@ -479,7 +479,7 @@ _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples
+## Test examples
 We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
 [here](/Lambda/#derivation) for comparison.
 
@@ -524,7 +524,7 @@ contexts.  While we are at it, we also generalise `twoᶜ` and
 
 
 
-#### Exercise `mul` (recommended)
+## Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the intrinsically-typed
@@ -535,7 +535,7 @@ de Bruijn representation.
 ```
 
 
-## Renaming
+# Renaming
 
 Renaming is a necessary prelude to substitution, enabling us
 to "rebase" a term from one context to another.  It
@@ -645,7 +645,7 @@ typing, and hence the Agda code for intrinsically-typed de Bruijn
 terms is intrinsically reliable.
 
 
-## Simultaneous Substitution
+# Simultaneous Substitution
 
 Because de Bruijn indices free us of concerns with renaming,
 it becomes easy to provide a definition of substitution that
@@ -725,7 +725,7 @@ The remaining cases are similar, recursing on each subterm,
 and extending the map whenever the construct introduces a
 bound variable.
 
-## Single substitution
+# Single substitution
 
 From the general case of substitution for multiple free
 variables it is easy to define the special case of
@@ -807,7 +807,7 @@ And combining definition with proof makes it harder for errors
 to sneak in.
 
 
-## Values
+# Values
 
 The definition of value is much as before:
 
@@ -833,7 +833,7 @@ much in the same way that `[]` did in
 [Lists](/Lists/).
 
 
-## Reduction
+# Reduction
 
 The reduction rules are the same as those given earlier, save
 that for each term we must specify its types.  As before, we
@@ -897,7 +897,7 @@ preserves types, which is built-in to our
 definition of substitution.
 
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition:
@@ -930,7 +930,7 @@ begin M—↠N = M—↠N
 ```
 
 
-## Examples
+# Examples
 
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields
@@ -1023,7 +1023,7 @@ _ =
   ∎
 ```
 
-## Values do not reduce
+# Values do not reduce
 
 We have now completed all the definitions, which of
 necessity subsumed some of the propositions from the
@@ -1032,7 +1032,7 @@ substitution and reduction preserves types.
 We now turn to proving the remaining results from the
 previous development.
 
-#### Exercise `V¬—→` (practice)
+## Exercise `V¬—→` (practice)
 
 Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
@@ -1042,7 +1042,7 @@ values.
 -- Your code goes here
 ```
 
-## Progress
+# Progress
 
 As before, every term that is well typed and closed is either
 a value or takes a reduction step.  The formulation of progress
@@ -1086,7 +1086,7 @@ progress (μ N)                          =  step (β-μ)
 ```
 
 
-## Evaluation
+# Evaluation
 
 Before, we combined progress and preservation to evaluate a term.
 We can do much the same here, but we no longer need to explicitly
@@ -1146,7 +1146,7 @@ We don't repeat the previous examples, as they add little save length.
 Similarly for the proof that reduction Uis deterministic.
 
 
-#### Exercise `mul-example` (recommended)
+## Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
@@ -1155,7 +1155,7 @@ Using the evaluator, confirm that two times two is four.
 ```
 
 
-## Intrinsic typing is golden
+# Intrinsic typing is golden
 
 Counting the lines of code is instructive.  While this chapter
 covers the same formal development as the previous two
@@ -1172,7 +1172,7 @@ The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms
 require about 1.6 times as much code as intrinsically-typed.
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

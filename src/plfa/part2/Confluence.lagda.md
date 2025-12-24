@@ -7,7 +7,7 @@ permalink : /Confluence/
 module plfa.part2.Confluence where
 ```
 
-## Introduction
+# Introduction
 
 In this chapter we prove that beta reduction is _confluent_, a
 property also known as _Church-Rosser_. That is, if there are
@@ -55,7 +55,7 @@ Thus, we can reduce the proof of confluence for beta reduction to
 confluence for parallel reduction.
 
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -70,7 +70,7 @@ open import plfa.part2.Untyped
   rename; ext; exts; Z; S_; subst; subst-zero; Context)
 ```
 
-## Parallel Reduction
+# Parallel Reduction
 
 The parallel reduction relation is defined as follows.
 
@@ -139,7 +139,7 @@ data _⇛*_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
 ```
 
 
-#### Exercise `par-diamond-eg` (practice)
+## Exercise `par-diamond-eg` (practice)
 
 Revisit the counter example to the diamond property for reduction by
 showing that the diamond property holds for parallel reduction in that
@@ -150,7 +150,7 @@ case.
 ```
 
 
-## Equivalence between parallel reduction and reduction
+# Equivalence between parallel reduction and reduction
 
 Here we prove that for any `M` and `N`, `M ⇛* N` if and only if `M —↠ N`.
 The only-if direction is particularly easy. We start by showing
@@ -241,7 +241,7 @@ pars-betas (L ⇛⟨ p ⟩ ps) = —↠-trans (par-betas p) (pars-betas ps)
 ```
 
 
-## Substitution lemma for parallel reduction
+# Substitution lemma for parallel reduction
 
 Our next goal is to prove the diamond property for parallel
 reduction. But to do that, we need to prove that substitution
@@ -413,7 +413,7 @@ sub-par : ∀{Γ A B} {N N′ : Γ , A ⊢ B} {M M′ : Γ ⊢ A}
 sub-par pn pm = subst-par (par-subst-zero pm) pn
 ```
 
-## Parallel reduction satisfies the diamond property
+# Parallel reduction satisfies the diamond property
 
 The heart of the confluence proof is made of stone, or rather, of
 diamond!  We show that parallel reduction satisfies the diamond
@@ -510,7 +510,7 @@ par-diamond {M = M} p1 p2 = ⟨ M ⁺ , ⟨ par-triangle p1 , par-triangle p2 �
 
 This step is optional, though, in the presence of triangle property.
 
-#### Exercise (practice)
+## Exercise (practice)
 
 * Prove the diamond property `par-diamond` directly by induction on `M ⇛ N` and `M ⇛ N′`.
 
@@ -519,7 +519,7 @@ This step is optional, though, in the presence of triangle property.
   and directed edges, where each node is labeled with a term and each
   edge represents parallel reduction.
 
-## Proof of confluence for parallel reduction
+# Proof of confluence for parallel reduction
 
 As promised at the beginning, the proof that parallel reduction is
 confluent is easy now that we know it satisfies the triangle property.
@@ -596,7 +596,7 @@ they are marked. Here `(a)` holds by `strip` and `(b)` holds by
 induction.
 
 
-## Proof of confluence for reduction
+# Proof of confluence for reduction
 
 Confluence of reduction is a corollary of confluence for parallel
 reduction. From
@@ -619,14 +619,14 @@ confluence L↠M₁ L↠M₂
 ```
 
 
-## Notes
+# Notes
 
 This mechanized proof of confluence is loosely based on several
 sources including @Schafer:2015, @Takahashi:1995, @Pfenning:1992, and
 Nipkow and Berghofer's mechanization in Isabelle, which is based on a
 paper by @Nipkow:1996.
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

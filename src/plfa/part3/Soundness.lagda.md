@@ -8,7 +8,7 @@ module plfa.part3.Soundness where
 ```
 
 
-## Introduction
+# Introduction
 
 In this chapter we prove that the reduction semantics is sound with
 respect to the denotational semantics, i.e., for any term L
@@ -27,7 +27,7 @@ called _subject expansion_. It is also well-known that subject
 expansion is false for most typed lambda calculi!
 
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality
@@ -50,7 +50,7 @@ open import plfa.part3.Denotational
 open import plfa.part3.Compositional using (lambda-inversion; var-inv)
 ```
 
-## Forward reduction preserves denotations
+# Forward reduction preserves denotations
 
 The proof of preservation in this section mixes techniques from
 previous chapters. Like the proof of preservation for the STLC, we are
@@ -63,7 +63,7 @@ concerning all of the auxiliary functions used in the reduction
 relation: substitution, renaming, and extension.
 
 
-### Simultaneous substitution preserves denotations
+## Simultaneous substitution preserves denotations
 
 Our next goal is to prove that simultaneous substitution preserves
 meaning.  That is, if `M` results in `v` in environment `γ`, then applying a
@@ -136,7 +136,7 @@ cases are for variables and lambda abstractions.
   terms that result in the appropriate values.
 
 
-### Single substitution preserves denotations
+## Single substitution preserves denotations
 
 For β reduction, `(ƛ N) · M —→ N [ M ]`, we need to show that the
 semantics is preserved when substituting `M` for de Bruijn index 0 in
@@ -172,7 +172,7 @@ Let `y` be an arbitrary variable (de Bruijn index).
   `γ ⊢ x ↓ γ x` by rule `var`.
 
 
-### Reduction preserves denotations
+## Reduction preserves denotations
 
 With the substitution lemma in hand, it is straightforward to prove
 that reduction preserves denotations.
@@ -205,7 +205,7 @@ the reduction.
 
 * The rest of the cases are straightforward.
 
-## Reduction reflects denotations
+# Reduction reflects denotations
 
 This section proves that reduction reflects the denotation of a
 term. That is, if `N` results in `v`, and if `M` reduces to `N`, then
@@ -227,7 +227,7 @@ using `⊔`. If `M` occurred 0 times, then we do not need any information
 about `M` and can therefore use `⊥` for the value of `M`.
 
 
-### Renaming reflects meaning
+## Renaming reflects meaning
 
 Previously we showed that renaming variables preserves meaning.  Now
 we prove the opposite, that it reflects meaning. That is,
@@ -310,7 +310,7 @@ rename-inc-reflect d = rename-reflect `⊑-refl d
 ```
 
 
-### Substitution reflects denotations, the variable case
+## Substitution reflects denotations, the variable case
 
 We are almost ready to begin proving that simultaneous substitution
 reflects denotations. That is, if `γ ⊢ (subst σ M) ↓ v`, then
@@ -400,7 +400,7 @@ subst-reflect-var {Γ}{Δ}{γ}{x}{v}{σ} xv
 ```
 
 
-### Substitutions and environment construction
+## Substitutions and environment construction
 
 Every substitution produces terms that can evaluate to `⊥`.
 
@@ -424,7 +424,7 @@ subst-⊔ : ∀{Γ Δ}{γ : Env Δ}{γ₁ γ₂ : Env Γ}{σ : Subst Γ Δ}
 subst-⊔ γ₁-ok γ₂-ok x = ⊔-intro (γ₁-ok x) (γ₂-ok x)
 ```
 
-### The Lambda constructor is injective
+## The Lambda constructor is injective
 
 ```agda
 lambda-inj : ∀ {Γ} {M N : Γ , ★ ⊢ ★ }
@@ -434,7 +434,7 @@ lambda-inj : ∀ {Γ} {M N : Γ , ★ ⊢ ★ }
 lambda-inj refl = refl
 ```
 
-### Simultaneous substitution reflects denotations
+## Simultaneous substitution reflects denotations
 
 In this section we prove a central lemma, that
 substitution reflects denotations. That is, if `γ ⊢ subst σ M ↓ v`, then
@@ -539,7 +539,7 @@ subst-reflect (sub d lt) eq
   By `subst-⊔` we conclude that `` δ `⊢ σ ↓ δ₁ ⊔ δ₂ ``.
 
 
-### Single substitution reflects denotations
+## Single substitution reflects denotations
 
 Most of the work is now behind us. We have proved that simultaneous
 substitution reflects denotations. Of course, β reduction uses single
@@ -593,7 +593,7 @@ us `` γ `⊑ (δ , w) `` and `δ ⊢ M ↓ w`. We conclude that
 `γ ⊢ N ↓ v` and `` γ `⊑ (δ , w) ``.
 
 
-### Reduction reflects denotations
+## Reduction reflects denotations
 
 Now that we have proved that substitution reflects denotations, we can
 easily prove that reduction does too.
@@ -635,7 +635,7 @@ reflect (⊔-intro d₁ d₂) r mn rewrite sym mn =
 reflect (sub d lt) r mn = sub (reflect d r mn) lt
 ```
 
-## Reduction implies denotational equality
+# Reduction implies denotational equality
 
 We have proved that reduction both preserves and reflects
 denotations. Thus, reduction implies denotational equality.
@@ -666,7 +666,7 @@ soundness {Γ} (L —→⟨ r ⟩ M—↠N) γ v =
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

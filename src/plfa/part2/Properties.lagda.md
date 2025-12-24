@@ -14,7 +14,7 @@ and show how to combine them to get Agda to compute reduction
 sequences for us.
 
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality
@@ -33,7 +33,7 @@ open import plfa.part2.Lambda
 ```
 
 
-## Introduction
+# Introduction
 
 The last chapter introduced simply-typed lambda calculus,
 including the notions of closed terms, terms that are values,
@@ -84,7 +84,7 @@ types without needing to develop a separate inductive definition of the
 `appears_free_in` relation.)
 
 
-## Values do not reduce
+# Values do not reduce
 
 We start with an easy observation. Values do not reduce:
 
@@ -126,7 +126,7 @@ If we expand out the negations, we have
 which are the same function with the arguments swapped.
 
 
-#### Exercise `Canonical-≃` (practice)
+## Exercise `Canonical-≃` (practice)
 
 Well-typed values must take one of a small number of _canonical forms_,
 which provide an analogue of the `Value` relation that relates values
@@ -163,7 +163,7 @@ that is, the canonical forms are exactly the well-typed values.
 -- Your code goes here
 ```
 
-## Progress
+# Progress
 
 We would like to show that every term is either a value or takes a
 reduction step.  However, this is not true in general.  The term
@@ -287,7 +287,7 @@ this requires that we match against the lambda expression `L` to
 determine its bound variable and body, `ƛ x ⇒ N`, so we can show that
 `L · M` reduces to `N [ x := M ]`.
 
-#### Exercise `Progress-≃` (practice)
+## Exercise `Progress-≃` (practice)
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
@@ -295,7 +295,7 @@ Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 -- Your code goes here
 ```
 
-#### Exercise `progress′` (practice)
+## Exercise `progress′` (practice)
 
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
@@ -304,7 +304,7 @@ proof of `progress` above.
 -- Your code goes here
 ```
 
-#### Exercise `value?` (practice)
+## Exercise `value?` (practice)
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
@@ -314,7 +314,7 @@ postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
 ```
 
-## Prelude to preservation
+# Prelude to preservation
 
 The other property we wish to prove, preservation of typing under
 reduction, turns out to require considerably more work.  The proof has
@@ -384,7 +384,7 @@ the substitution lemma is crucial in showing that each of the
 We now proceed with our three-step programme.
 
 
-## Renaming
+# Renaming
 
 We often need to "rebase" a type derivation, replacing a derivation
 `Γ ⊢ M ⦂ A` by a related derivation `Δ ⊢ M ⦂ A`.  We may do so as long
@@ -544,7 +544,7 @@ moving `x` from a position at the end to a position one from the end
 with `y` at the end, and requires the provided evidence that `x ≢ y`.
 
 
-## Substitution
+# Substitution
 
 The key to preservation – and the trickiest bit of the proof – is
 the lemma establishing that substitution preserves types.
@@ -754,7 +754,7 @@ that Agda knows nothing about symmetry or commutativity, which require
 invoking appropriate lemmas, so it is important to think about order of
 arguments and to be consistent.
 
-#### Exercise `subst′` (stretch)
+## Exercise `subst′` (stretch)
 
 Rewrite `subst` to work with the modified definition `_[_:=_]′`
 from the exercise in the previous chapter.  As before, this
@@ -767,7 +767,7 @@ preserves types.
 ```
 
 
-## Preservation
+# Preservation
 
 Once we have shown that substitution preserves types, showing
 that reduction preserves types is straightforward:
@@ -845,7 +845,7 @@ The remaining cases are similar.  Each `ξ` rule follows by induction,
 and each `β` rule follows by the substitution lemma.
 
 
-## Evaluation
+# Evaluation
 
 By repeated application of progress and preservation, we can evaluate
 any well-typed term.  In this section, we will present an Agda
@@ -972,7 +972,7 @@ remaining.  There are two possibilities:
 the reduction sequence.)
 
 
-### Examples
+## Examples
 
 We can now use Agda to compute the non-terminating reduction
 sequence given earlier.  First, we show that the term `sucμ`
@@ -1286,7 +1286,7 @@ And again, the example in the previous section was derived by editing the
 above.
 
 
-#### Exercise `mul-eval` (recommended)
+## Exercise `mul-eval` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
@@ -1295,7 +1295,7 @@ Using the evaluator, confirm that two times two is four.
 ```
 
 
-#### Exercise: `progress-preservation` (practice)
+## Exercise: `progress-preservation` (practice)
 
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
@@ -1305,7 +1305,7 @@ and preservation theorems for the simply typed lambda-calculus.
 ```
 
 
-#### Exercise `subject_expansion` (practice)
+## Exercise `subject_expansion` (practice)
 
 We say that `M` _reduces_ to `N` if `M —→ N`,
 but we can also describe the same situation by saying
@@ -1321,7 +1321,7 @@ with case expressions and one not involving case expressions.
 ```
 
 
-## Well-typed terms don't get stuck
+# Well-typed terms don't get stuck
 
 A term is _normal_ if it cannot reduce:
 
@@ -1378,7 +1378,7 @@ Milner, who used denotational rather than operational semantics. He
 introduced `wrong` as the denotation of a term with a type error, and
 showed _well-typed terms don't go wrong_.)
 
-#### Exercise `stuck` (practice)
+## Exercise `stuck` (practice)
 
 Give an example of an ill-typed term that does get stuck.
 
@@ -1386,7 +1386,7 @@ Give an example of an ill-typed term that does get stuck.
 -- Your code goes here
 ```
 
-#### Exercise `unstuck` (recommended)
+## Exercise `unstuck` (recommended)
 
 Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
@@ -1394,7 +1394,7 @@ Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` abo
 -- Your code goes here
 ```
 
-## Reduction is deterministic
+# Reduction is deterministic
 
 When we introduced reduction, we claimed it was deterministic.
 For completeness, we present a formal proof here.
@@ -1486,7 +1486,7 @@ checker complains, because the arguments have merely switched order
 and neither is smaller.
 
 
-#### Quiz
+## Quiz
 
 Suppose we add a new term `zap` with the following reduction rule
 
@@ -1510,7 +1510,7 @@ false, give a counterexample:
   - Preservation
 
 
-#### Quiz
+## Quiz
 
 Suppose instead that we add a new term `foo` with the following
 reduction rules:
@@ -1533,7 +1533,7 @@ false, give a counterexample:
   - Preservation
 
 
-#### Quiz
+## Quiz
 
 Suppose instead that we remove the rule `ξ·₁` from the step
 relation. Which of the following properties remain
@@ -1548,7 +1548,7 @@ false, give a counterexample:
   - Preservation
 
 
-#### Quiz
+## Quiz
 
 We can enumerate all the computable function from naturals to
 naturals, by writing out all programs of type `` `ℕ ⇒ `ℕ`` in
@@ -1582,7 +1582,7 @@ false, give a counterexample:
 Are all properties preserved in this case? Are there any
 other alterations we would wish to make to the system?
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

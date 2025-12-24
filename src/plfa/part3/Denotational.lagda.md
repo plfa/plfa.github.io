@@ -49,7 +49,7 @@ copy of itself, which is fine.
 With these two observations in hand, it is straightforward to write
 down a denotational semantics of the lambda calculus.
 
-## Imports
+# Imports
 
 ```agda
 open import Data.Nat.Base using (ℕ; zero; suc)
@@ -68,7 +68,7 @@ open import plfa.part2.Substitution using (Rename; extensionality; rename-id)
 ```
 
 
-## Values
+# Values
 
 The `Value` data type represents a finite portion of a function.  We
 think of a value as a finite set of pairs that represent input-output
@@ -211,7 +211,7 @@ then both `u` and `v` are less than `w`.
 ```
 
 
-## Environments
+# Environments
 
 An environment gives meaning to the free variables in a term by
 mapping variables to values.
@@ -285,7 +285,7 @@ environment `γ` or the second environment `δ`.
 ⊑-env-conj-R2 γ δ x = ⊑-conj-R2 ⊑-refl
 ```
 
-## Denotational Semantics
+# Denotational Semantics
 
 We define the semantics with a judgment of the form `ρ ⊢ M ↓ v`,
 where `ρ` is the environment, `M` the program, and `v` is a result value.
@@ -492,7 +492,7 @@ arguments.
 ↦-elim2 d₁ d₂ lt = ↦-elim d₁ (sub d₂ lt)
 ```
 
-#### Exercise `denot-plusᶜ` (practice)
+## Exercise `denot-plusᶜ` (practice)
 
 What is a denotation for `plusᶜ`? That is, find a value `v` (other than `⊥`)
 such that `∅ ⊢ plusᶜ ↓ v`. Also, give the proof of `∅ ⊢ plusᶜ ↓ v`
@@ -503,7 +503,7 @@ for your choice of `v`.
 ```
 
 
-## Denotations and denotational equality
+# Denotations and denotational equality
 
 Next we define a notion of denotational equality based on the above
 semantics. Its statement makes use of an if-and-only-if, which we
@@ -602,7 +602,7 @@ module ≃-Reasoning {Γ : Context} where
   (x ☐)  =  ≃-refl
 ```
 
-## Road map for the following chapters
+# Road map for the following chapters
 
 The subsequent chapters prove that the denotational semantics has
 several desirable properties. First, we prove that the semantics is
@@ -679,7 +679,7 @@ We conclude with a proof of an important inversion lemma for the
 less-than relation regarding function values.
 
 
-## Renaming preserves denotations
+# Renaming preserves denotations
 
 We shall prove that renaming variables, and changing the environment
 accordingly, preserves the meaning of a term. We generalize the
@@ -747,7 +747,7 @@ of the cases are trivial except the cases for variables and lambda.
   values.
 
 
-## Environment strengthening and identity renaming
+# Environment strengthening and identity renaming
 
 We shall need a corollary of the renaming lemma that says that
 replacing the environment with a larger one (a stronger one) does not
@@ -787,7 +787,7 @@ up-env d lt = ⊑-env d (ext-le lt)
   ext-le lt (S n) = ⊑-refl
 ```
 
-#### Exercise `denot-church` (recommended)
+## Exercise `denot-church` (recommended)
 
 Church numerals are more general than natural numbers in that they
 represent paths. A path consists of `n` edges and `n + 1` vertices.
@@ -859,7 +859,7 @@ Prove the following theorem.
 ```
 
 
-## Inversion of the less-than relation for functions
+# Inversion of the less-than relation for functions
 
 What can we deduce from knowing that a function `v ↦ w` is less than
 some value `u`?  What can we deduce about `u`? The answer to this
@@ -879,7 +879,7 @@ We also need to define how to compute the join of their domains and
 codomains.
 
 
-### Value membership and inclusion
+## Value membership and inclusion
 
 Recall that we think of a value as a set of entries with the join
 operator `v ⊔ w` acting like set union. The function value `v ↦ w` and
@@ -957,7 +957,7 @@ then `v ↦ w` must be a member of `u`.
 ```
 
 
-### Function values
+## Function values
 
 To identify collections of functions, we define the following two
 predicates. We write `Fun u` if `u` is a function value, that is, if
@@ -996,7 +996,7 @@ all-funs∈ {u ⊔ u′} f
 ```
 
 
-### Domains and codomains
+## Domains and codomains
 
 Returning to our goal, the inversion principle for less-than a
 function, we want to show that `v ↦ w ⊑ u` implies that `u` includes
@@ -1084,7 +1084,7 @@ strengthen the conclusion to say that for _every_ function value
     → ∀{v w} → v ↦ w ∈ u₁ → Σ[ u₃ ∈ Value ] factor u₂ u₃ v w
 
 
-### Inversion of less-than for functions, the case for ⊑-trans
+## Inversion of less-than for functions, the case for ⊑-trans
 
 The crux of the proof is the case for `⊑-trans`.
 
@@ -1151,7 +1151,7 @@ sub-inv-trans {u₁′ ⊔ u₂′} {u₂} {u} fg u′⊆u IH
   `u` into `u₃₁` and `u₃₂`, using the monotonicity of `⊔` with respect to `⊑`.
 
 
-### Inversion of less-than for functions
+## Inversion of less-than for functions
 
 We come to the proof of the main lemma concerning the inversion of
 less-than for functions. We show that if `u₁ ⊑ u₂`, then for any
@@ -1312,7 +1312,7 @@ less-than with functions on the left and right-hand sides.
 ```
 
 
-## Notes
+# Notes
 
 The denotational semantics presented in this chapter is an example of
 a _filter model_ (@Barendregt:1983). Filter
@@ -1371,7 +1371,7 @@ of pairs `{ (V, v′) | v′ ∈ V′ }`.  In Scott's ℘(ω), the above values 
 mapped to and from the natural numbers using a kind of Godel encoding.
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 
@@ -1388,4 +1388,4 @@ This chapter uses the following unicode:
     ∈  U+2208  ELEMENT OF (\in)
     ⊆  U+2286  SUBSET OF OR EQUAL TO (\sub= or \subseteq)
 
-## References
+# References
