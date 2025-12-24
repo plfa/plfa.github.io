@@ -20,7 +20,7 @@ sequences for us.
 open import Relation.Binary.PropositionalEquality
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open import Data.String using (String; _≟_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_; s<s; z<s; _≤_; s≤s; z≤n)
 open import Data.Product.Base
   using (_×_; proj₁; proj₂; ∃; ∃-syntax)
   renaming (_,_ to ⟨_,_⟩)
@@ -154,7 +154,7 @@ data Canonical_⦂_ : Term → Type → Set where
 Show that `Canonical V ⦂ A` is isomorphic to `(∅ ⊢ V ⦂ A) × (Value V)`,
 that is, the canonical forms are exactly the well-typed values.
 
-```
+```agda
 -- Your code goes here
 ```
 
@@ -849,89 +849,95 @@ Instead, we will provide a natural number to Agda, and permit it
 to stop short of a value if the term requires more than the given
 number of reduction steps.
 
-A similar issue arises with cryptocurrencies.  Systems which use
-smart contracts require the miners that maintain the blockchain to
-evaluate the program which embodies the contract.  For instance,
-validating a transaction on Ethereum may require executing a program
-for the Ethereum Virtual Machine (EVM).  A long-running or
-non-terminating program might cause the miner to invest arbitrary
-effort in validating a contract for little or no return.  To avoid
-this situation, each transaction is accompanied by an amount of _gas_
-available for computation.  Each step executed on the EVM is charged
-an advertised amount of gas, and the transaction pays for the gas at a
-published rate: a given number of Ethers (the currency of Ethereum)
-per unit of gas.
+A similar issue arises with cryptocurrencies.  Systems which use smart
+contracts require the miners that maintain the blockchain to evaluate
+the program which embodies the contract.  For instance, validating a
+transaction on Ethereum may require executing a program for the
+Ethereum Virtual Machine (EVM).  A long-running or non-terminating
+program might cause the miner to invest arbitrary effort in validating
+a contract for little or no return.  To avoid this situation, each
+transaction is accompanied by an amount of _gas_ available for
+computation.  Each step executed on the EVM is charged an advertised
+amount of gas, and the transaction pays for the gas at a published
+rate: a given number of Ethers (the currency of Ethereum) per unit of
+gas. By analogy, we will use the name _gas_ for the parameter which
+puts a bound on the number of reduction steps.
 
-By analogy, we will use the name _gas_ for the parameter which puts a
-bound on the number of reduction steps.  `Gas` is specified by a natural number:
+We will relate gas to the number of steps in a reduction sequence.
 ```agda
-record Gas : Set where
-  constructor gas
-  field
-    amount : ℕ
+length : ∀ {M N} → M —↠ N → ℕ
+length (M ∎)                =  zero
+length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
-When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas:
+
+For given an amount of gas `g` and evidence that term `M` is
+well-typed, our evaluator either runs out of gas, returning a sequence
+`M —↠ N` of length exactly `g`, or it terminates, returning a sequence
+`M —↠ N` of length less than `g` and evidence that `N` is a value.
 ```agda
-data Finished (N : Term) : Set where
+data Eval (M : Term) (g : ℕ) : Set where
 
-  done :
-      Value N
-      ----------
-    → Finished N
+  out-of-gas : {N : Term}
+    → (M—↠N : M —↠ N)
+    → length M—↠N ≡ g
+      ---------------
+    → Eval M g
 
-  out-of-gas :
-      ----------
-      Finished N
-```
-Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` and an indication of whether
-reduction finished:
-```agda
-data Steps (L : Term) : Set where
-
-  steps : ∀ {N}
-    → L —↠ N
-    → Finished N
-      ----------
-    → Steps L
+  terminates : {N : Term}
+    → (M—↠N : M —↠ N)
+    → length M—↠N < g
+    → Value N
+      ---------------
+    → Eval M g
 ```
 The evaluator takes gas and evidence that a term is well typed,
-and returns the corresponding steps:
+and returns a reduction sequence, indicating either that it ran
+out of gas or that it terminated.
 ```agda
 eval : ∀ {L A}
-  → Gas
+  → (g : ℕ)
   → ∅ ⊢ L ⦂ A
     ---------
-  → Steps L
-eval {L} (gas zero)    ⊢L                     =  steps (L ∎) out-of-gas
-eval {L} (gas (suc m)) ⊢L with progress ⊢L
-... | done VL                                 =  steps (L ∎) (done VL)
-... | step {M} L—→M with eval (gas m) (preserve ⊢L L—→M)
-...    | steps M—↠N fin                       =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+  → Eval L g
+eval {L} zero    ⊢L            =  out-of-gas (L ∎) refl
+eval {L} (suc g) ⊢L with progress ⊢L
+... | done VL                  =  terminates (L ∎) z<s VL
+... | step {M} L—→M with eval {M} g (preserve ⊢L L—→M)
+...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
+...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
 Let `L` be the name of the term we are reducing, and `⊢L` be the
 evidence that `L` is well typed.  We consider the amount of gas
 remaining.  There are two possibilities:
 
-* It is zero, so we stop early.  We return the trivial reduction
-  sequence `L —↠ L` and an indication that we are out of gas.
+* It is zero, so we are out of gas.  We return the trivial reduction
+  sequence `L —↠ L` and evidence that its length is zero.
 
 * It is non-zero and after the next step we have `m` gas remaining.
   Apply progress to the evidence that term `L` is well typed.  There
   are two possibilities:
 
   + Term `L` is a value, so we are done. We return the
-    trivial reduction sequence `L —↠ L`
+    trivial reduction sequence `L —↠ L`,
+    evidence that it's length is less than one,
     and the evidence that `L` is a value.
 
   + Term `L` steps to another term `M`.  Preservation provides
     evidence that `M` is also well typed, and we recursively invoke
-    `eval` on the remaining gas.  The result is evidence that
-    `M —↠ N` and
-    indication of whether reduction finished.  We combine the evidence
-    that `L —→ M` and `M —↠ N` to return evidence that `L —↠ N`
-    and the indication of whether reduction finished.
+    `eval` on the remaining gas. There are two possibilities:
+
+    - The recursive eval runs out of gas, returning a reduction sequence
+      `M —↠ N` and evidence that its length equals `g`. We return the
+      a sequence `L —↠ N` and evidence that its length equals `suc g`.
+
+    - The recursive eval terminates, returning a reduction sequence
+      `M —↠ N`, evidence that its length is less than `g`, and evidence
+      that `N` is a value. We return the sequence `L —↠ N`, evidence
+      that its length is less than `suc g`, and the same evidence that
+      `N` is a value.
+
+(Thanks to Conrad Watt for suggesting to relate gas and the length of
+the reduction sequence.)
 
 
 ### Examples
@@ -948,8 +954,8 @@ is well typed:
 To show the first three steps of the infinite reduction
 sequence, we evaluate with three steps worth of gas:
 ```agda
-_ : eval (gas 3) ⊢sucμ ≡
-  steps
+_ : eval 3 ⊢sucμ ≡
+  out-of-gas
    (μ "x" ⇒ `suc ` "x"
    —→⟨ β-μ ⟩
     `suc (μ "x" ⇒ `suc ` "x")
@@ -958,16 +964,19 @@ _ : eval (gas 3) ⊢sucμ ≡
    —→⟨ ξ-suc (ξ-suc β-μ) ⟩
     `suc (`suc (`suc (μ "x" ⇒ `suc ` "x")))
    ∎)
-   out-of-gas
+   refl
 _ = refl
 ```
+The returned reduction sequence has length `3`, the same
+as the number of steps of gas provided, and the `refl` that
+is the second argument to `out-of-gas` is a proof that `3 ≡ 3`.
 
 Similarly, we can use Agda to compute the reduction sequences given
 in the previous chapter.  We start with the Church numeral two
 applied to successor and zero.  Supplying 100 steps of gas is more than enough:
 ```agda
-_ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
-  steps
+_ : eval 100 (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
+  terminates
    ((ƛ "s" ⇒ (ƛ "z" ⇒ ` "s" · (` "s" · ` "z"))) · (ƛ "n" ⇒ `suc ` "n")
    · `zero
    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
@@ -980,7 +989,8 @@ _ : eval (gas 100) (⊢twoᶜ · ⊢sucᶜ · ⊢zero) ≡
    —→⟨ β-ƛ (V-suc V-zero) ⟩
     `suc (`suc `zero)
    ∎)
-   (done (V-suc (V-suc V-zero)))
+   (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
+   (V-suc (V-suc V-zero))
 _ = refl
 ```
 The example above was generated by using `C-c C-n` to normalise the
@@ -988,11 +998,13 @@ left-hand side of the equation and pasting in the result as the
 right-hand side of the equation.  The example reduction of the
 previous chapter was derived from this result, reformatting and
 writing `twoᶜ` and `sucᶜ` in place of their expansions.
+Recall that `_<_` is defined in terms of `_≤_`, which is why
+the evidence that `4 < 100` is constructed from `s≤s` and `z≤n`.
 
 Next, we show two plus two is four:
 ```agda
-_ : eval (gas 100) ⊢2+2 ≡
-  steps
+_ : eval 100 ⊢2+2 ≡
+  terminates
    ((μ "+" ⇒
      (ƛ "m" ⇒
       (ƛ "n" ⇒
@@ -1148,7 +1160,11 @@ _ : eval (gas 100) ⊢2+2 ≡
    —→⟨ ξ-suc (ξ-suc β-zero) ⟩
     `suc (`suc (`suc (`suc `zero)))
    ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
+   (s≤s
+    (s≤s
+     (s≤s
+      (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
+   (V-suc (V-suc (V-suc (V-suc V-zero))))
 _ = refl
 ```
 Again, the derivation in the previous chapter was derived by
@@ -1156,8 +1172,8 @@ editing the above.
 
 Similarly, we can evaluate the corresponding term for Church numerals:
 ```agda
-_ : eval (gas 100) ⊢2+2ᶜ ≡
-  steps
+_ : eval 100 ⊢2+2ᶜ ≡
+  terminates
    ((ƛ "m" ⇒
      (ƛ "n" ⇒
       (ƛ "s" ⇒ (ƛ "z" ⇒ ` "m" · ` "s" · (` "n" · ` "s" · ` "z")))))
@@ -1217,11 +1233,16 @@ _ : eval (gas 100) ⊢2+2ᶜ ≡
    —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
     `suc (`suc (`suc (`suc `zero)))
    ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
+   (s≤s
+    (s≤s
+     (s≤s
+      (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
+   (V-suc (V-suc (V-suc (V-suc V-zero))))
 _ = refl
 ```
 And again, the example in the previous section was derived by editing the
 above.
+
 
 #### Exercise `mul-eval` (recommended)
 
