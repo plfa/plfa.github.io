@@ -7,10 +7,10 @@ permalink : /TSPL/2023/Assignment4/
 module Assignment4 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -32,7 +32,7 @@ before and after code you add, to indicate your changes.
 Full credit may not be awarded if you fail to mark changes clearly.
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -46,14 +46,14 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## More
+# More
 
 ```agda
 module More where
 ```
 
 
-### Imports
+## Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -64,7 +64,7 @@ module More where
   open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-### Syntax
+## Syntax
 
 ```agda
   infix  4 _⊢_
@@ -84,7 +84,7 @@ module More where
   infix  9 #_
 ```
 
-### Types
+## Types
 
 ```agda
   data Type : Set where
@@ -94,7 +94,7 @@ module More where
     _`×_  : Type → Type → Type
 ```
 
-### Contexts
+## Contexts
 
 ```agda
   data Context : Set where
@@ -102,7 +102,7 @@ module More where
     _,_ : Context → Type → Context
 ```
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 ```agda
   data _∋_ : Context → Type → Set where
@@ -117,7 +117,7 @@ module More where
       → Γ , A ∋ B
 ```
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 ```agda
   data _⊢_ : Context → Type → Set where
@@ -215,7 +215,7 @@ module More where
       → Γ ⊢ C
 ```
 
-### Abbreviating de Bruijn indices
+## Abbreviating de Bruijn indices
 
 ```agda
   length : Context → ℕ
@@ -238,7 +238,7 @@ module More where
   #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
 
-## Renaming
+# Renaming
 
 ```agda
   ext : ∀ {Γ Δ}
@@ -268,7 +268,7 @@ module More where
   rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
 ```
 
-## Simultaneous Substitution
+# Simultaneous Substitution
 
 ```agda
   exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
@@ -292,7 +292,7 @@ module More where
   subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 ```
 
-## Single and double substitution
+# Single and double substitution
 
 ```agda
   _[_] : ∀ {Γ A B}
@@ -320,7 +320,7 @@ module More where
     σ (S (S x))  =  ` x
 ```
 
-## Values
+# Values
 
 ```agda
   data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -360,7 +360,7 @@ module More where
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-## Reduction
+# Reduction
 
 ```agda
   infix 2 _—→_
@@ -490,7 +490,7 @@ not fixed by the given arguments.
       → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
 ```
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 ```agda
   infix  2 _—↠_
@@ -520,7 +520,7 @@ not fixed by the given arguments.
 ```
 
 
-## Progress
+# Progress
 
 ```agda
   data Progress {A} (M : ∅ ⊢ A) : Set where
@@ -581,7 +581,7 @@ not fixed by the given arguments.
 ```
 
 
-## Evaluation
+# Evaluation
 
 ```agda
   record Gas : Set where
@@ -621,7 +621,7 @@ not fixed by the given arguments.
 ```
 
 
-## Examples
+# Examples
 
 ```agda
   cube : ∅ ⊢ Nat ⇒ Nat
@@ -696,7 +696,7 @@ not fixed by the given arguments.
      ∎
 ```
 
-#### Exercise `More` (recommended and practice)
+### Exercise `More` (recommended and practice)
 
 Formalise the remaining constructs defined in this chapter.
 Make your changes in this file.
@@ -715,11 +715,11 @@ Please delimit any code you add as follows:
     -- end
 
 
-## Bisimulation
+# Bisimulation
 
 (No recommended exercises for this chapter.)
 
-#### Exercise `~val⁻¹` (practice)
+### Exercise `~val⁻¹` (practice)
 
 Show that this also holds in the reverse direction: if `M ~ M†`
 and `Value M†` then `Value M`.
@@ -728,12 +728,12 @@ and `Value M†` then `Value M`.
 -- Your code goes here
 ```
 
-#### Exercise `sim⁻¹` (practice)
+### Exercise `sim⁻¹` (practice)
 
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
 
-#### Exercise `products` (practice)
+### Exercise `products` (practice)
 
 Show that the two formulations of products in
 Chapter [More][plfa.More]
@@ -743,13 +743,13 @@ In this case, the simulation is _not_ lock-step.
 
 
 
-## Inference
+# Inference
 
 ```agda
 module Inference where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -763,7 +763,7 @@ module Inference where
   import plfa.part2.More as DB
 ```
 
-## Syntax
+# Syntax
 
 ```agda
   infix   4  _∋_⦂_
@@ -817,7 +817,7 @@ The syntax of terms is defined by mutual recursion.
     _↑                       : Term⁺ → Term⁻
 ```
 
-## Example terms
+# Example terms
 
 ```agda
   two : Term⁻
@@ -850,7 +850,7 @@ The syntax of terms is defined by mutual recursion.
   2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
 
-## Bidirectional type checking
+# Bidirectional type checking
 
 The typing rules for variables:
 
@@ -929,7 +929,7 @@ and inheriting types are mutually recursive:
 ```
 
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -939,7 +939,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).  Please delimit any code you add as follows:
@@ -947,7 +947,7 @@ Chapter [More](/More/).  Please delimit any code you add as follows:
     -- begin
     -- end
 
-#### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
+### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/). Please delimit any code you add as follows:
@@ -956,7 +956,7 @@ Chapter [More](/More/). Please delimit any code you add as follows:
     -- end
 
 
-## Prerequisites
+# Prerequisites
 
 Type equality.
 
@@ -990,7 +990,7 @@ The types `` `ℕ `` and `A ⇒ B` are not equal:
 ```
 
 
-## Unique types
+# Unique types
 
 Looking up a type in the context is unique.
 
@@ -1012,7 +1012,7 @@ Synthesizing a type is also unique.
 ```
 
 
-## Lookup type of a variable in the context
+# Lookup type of a variable in the context
 
 ```agda
   ext∋ : ∀ {Γ B x y}
@@ -1037,7 +1037,7 @@ Synthesizing a type is also unique.
 ```
 
 
-## Promoting negations
+# Promoting negations
 
 ```agda
   ¬arg : ∀ {Γ A B L M}
@@ -1058,7 +1058,7 @@ Synthesizing a type is also unique.
 ```
 
 
-## Synthesize and inherit types
+# Synthesize and inherit types
 
 ```agda
   synthesize : ∀ (Γ : Context) (M : Term⁺)
@@ -1118,7 +1118,7 @@ Inheritance:
   ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 ```
 
-## Testing the example terms
+# Testing the example terms
 
 ```agda
   S′ : ∀ {Γ x y A B}
@@ -1204,7 +1204,7 @@ Typing two plus two with Church numerals:
   _ = refl
 ```
 
-## Testing the error cases
+# Testing the error cases
 
 Unbound variable:
   ```agda
@@ -1285,7 +1285,7 @@ Inherited and synthesised types disagree in a switch:
 ```
 
 
-## Erasure
+# Erasure
 
 Erase a type:
 
@@ -1342,7 +1342,7 @@ from the earlier chapter:
 ```
 
 
-#### Exercise `inference-multiplication` (recommended)
+### Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
 exercise [`bidirectional-mul`](/Inference/#bidirectional-mul), and show that
@@ -1353,7 +1353,7 @@ multiplication from Chapter [DeBruijn](/DeBruijn/).
 -- Your code goes here
 ```
 
-#### Exercise `inference-products` (recommended)
+### Exercise `inference-products` (recommended)
 
 Using your rules from exercise
 [`bidirectional-products`](/Inference/#bidirectional-products), extend
@@ -1364,7 +1364,7 @@ Please delimit any code you add as follows:
     -- end
 
 
-#### Exercise `inference-rest` (stretch)
+### Exercise `inference-rest` (stretch)
 
 Using your rules from exercise
 [`bidirectional-rest`](/Inference/#bidirectional-rest), extend
@@ -1376,13 +1376,13 @@ Please delimit any code you add as follows:
     -- end
 
 
-## Untyped
+# Untyped
 
 ```agda
 module Untyped where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -1405,7 +1405,7 @@ module Untyped where
     hiding ()
 ```
 
-#### Exercise (`Type≃⊤`) (practice)
+### Exercise (`Type≃⊤`) (practice)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
@@ -1413,7 +1413,7 @@ Show that `Type` is isomorphic to `⊤`, the unit type.
   -- Your code goes here
 ```
 
-#### Exercise (`Context≃ℕ`) (practice)
+### Exercise (`Context≃ℕ`) (practice)
 
 Show that `Context` is isomorphic to `ℕ`.
 
@@ -1421,7 +1421,7 @@ Show that `Context` is isomorphic to `ℕ`.
   -- Your code goes here
 ```
 
-#### Exercise (`variant-1`) (practice)
+### Exercise (`variant-1`) (practice)
 
 How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
@@ -1431,7 +1431,7 @@ unless both terms are in normal form.
   -- Your code goes here
 ```
 
-#### Exercise (`variant-2`) (practice)
+### Exercise (`variant-2`) (practice)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
@@ -1443,7 +1443,7 @@ abstractions).  What would `2+2ᶜ` reduce to in this case?
 ```
 
 
-#### Exercise `plus-eval` (practice)
+### Exercise `plus-eval` (practice)
 
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.
@@ -1452,7 +1452,7 @@ normalise to the same term.
   -- Your code goes here
 ```
 
-#### Exercise `multiplication-untyped` (recommended)
+### Exercise `multiplication-untyped` (recommended)
 
 Use the encodings above to translate your definition of
 multiplication from previous chapters with the Scott
@@ -1463,7 +1463,7 @@ Confirm that two times two is four.
   -- Your code goes here
 ```
 
-#### Exercise `encode-more` (stretch)
+### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
 Chapter [More](/More/),

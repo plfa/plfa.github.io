@@ -3,16 +3,16 @@ title          : How to Cite this Book
 permalink      : /Citing/
 ---
 
-## PLFA version 22.08
+# PLFA version 22.08
 
-### Chicago
+## Chicago
 
 > Wadler, Philip, Wen Kokke, and Jeremy G. Siek.
 > _Programming Language Foundations in Agda_.
 > Available at `https://plfa.inf.ed.ac.uk/22.08/`.
 > 2022.
 
-### BibTeX
+## BibTeX
 
 ```bibtex
 @Book{plfa22.08,
@@ -24,16 +24,16 @@ permalink      : /Citing/
 }
 ```
 
-## PLFA version 20.07
+# PLFA version 20.07
 
-### Chicago
+## Chicago
 
 > Wadler, Philip, Wen Kokke, and Jeremy G. Siek.
 > _Programming Language Foundations in Agda_.
 > Available at `https://plfa.inf.ed.ac.uk/20.07/`.
 > 2020.
 
-### BibTeX
+## BibTeX
 
 ```bibtex
 @Book{plfa20.07,
@@ -45,16 +45,16 @@ permalink      : /Citing/
 }
 ```
 
-## PLFA version 19.08
+# PLFA version 19.08
 
-### Chicago
+## Chicago
 
 > Wadler, Philip and Wen Kokke.
 > _Programming Language Foundations in Agda_.
 > Available at `https://plfa.inf.ed.ac.uk/19.08/`.
 > 2019.
 
-### BibTeX
+## BibTeX
 
 ```bibtex
 @Book{plfa19.08,

@@ -5,9 +5,9 @@ permalink : /StyleGuide/
 
 This is based on [the style guide for the Agda standard library](https://github.com/agda/agda-stdlib/blob/master/notes/style-guide.md). Like it, this is very much a work-in-progress and is not exhaustive.
 
-## File structure
+# File structure
 
-#### Module imports
+## Module imports
 
 * All module imports should be placed at the top of the file immediately
   after the module declaration.
@@ -32,7 +32,7 @@ This is based on [the style guide for the Agda standard library](https://github.
   enumerated in the import with `using` in order to make dependencies
   clearer.
 
-#### Indentation
+## Indentation
 
 * The contents of a top-level module should have zero indentation.
 
@@ -54,7 +54,7 @@ This is based on [the style guide for the Agda standard library](https://github.
   should always go at the beginning of the next line rather than the
   end of the line.
 
-#### Module parameters
+## Module parameters
 
 * Module parameters should be put on a single line if they fit.
 
@@ -73,7 +73,7 @@ This is based on [the style guide for the Agda standard library](https://github.
     where
   ```
 
-#### Reasoning layout
+## Reasoning layout
 
 * The `begin` clause should go on a new line.
 
@@ -108,7 +108,7 @@ This is based on [the style guide for the Agda standard library](https://github.
     where open ≤-Reasoning
   ```
 
-#### Record layout
+## Record layout
 
 * The `record` declaration should go on the same line as the rest of the proof.
 
@@ -129,7 +129,7 @@ This is based on [the style guide for the Agda standard library](https://github.
     }
   ```
 
-#### `where` blocks
+## `where` blocks
 
 * `where` blocks are preferred rather than the `let` construction.
 
@@ -156,7 +156,7 @@ This is based on [the style guide for the Agda standard library](https://github.
     where proof = x
   ```
 
-#### Other
+## Other
 
 * Non-trivial proofs in `private` blocks are generally discouraged. If its
   non-trivial then the chances are someone will want to reuse it as some
@@ -165,9 +165,9 @@ This is based on [the style guide for the Agda standard library](https://github.
 * The `with` syntax is preferred over the use of `case` from the `Function`
   module.
 
-## Types
+# Types
 
-#### Implicit and explicit arguments
+## Implicit and explicit arguments
 
 * Functions arguments should be implicit if they can "almost always"
   be inferred. If there are common cases where they cannot be inferred
@@ -181,7 +181,7 @@ This is based on [the style guide for the Agda standard library](https://github.
   order to minimise the amount of information that users have to keep in
   their head concurrently.
 
-## Naming conventions
+# Naming conventions
 
 * Names should be descriptive - i.e. given the name of a proof and the
   module it lives in then users should be able to make a reasonable
@@ -193,7 +193,7 @@ This is based on [the style guide for the Agda standard library](https://github.
 * Datatype names should be capitalised and function names should be
   lowercase.
 
-#### Variables
+## Variables
 
 * Natural variables are named `m`, `n`, `o`, ... (default `n`)
 
@@ -209,7 +209,7 @@ This is based on [the style guide for the Agda standard library](https://github.
   should be named `xs` and `ys`).
 
 
-#### Preconditions and postconditions
+## Preconditions and postconditions
 
 * Preconditions should only be included in names of results if
   "important" (mostly judgement call).
@@ -223,7 +223,7 @@ This is based on [the style guide for the Agda standard library](https://github.
 * Try to avoid the need for bracketing but if necessary use square
   brackets (e.g. `[m∸n]⊓[n∸m]≡0`)
 
-#### Operators and relations
+## Operators and relations
 
 * Operators and relations should be defined using mixfix notation where
   applicable (e.g. `_+_`, `_<_`)
@@ -239,7 +239,7 @@ This is based on [the style guide for the Agda standard library](https://github.
   relations should be used over the `¬` symbol (e.g. `m+n≮n` should be
   used instead of `¬m+n<n`).
 
-#### Functions and relations over specific datatypes
+## Functions and relations over specific datatypes
 
 * When defining a new relation over a datatype
   (e.g. `Data.List.Relation.Binary.Pointwise`)

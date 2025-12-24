@@ -7,10 +7,10 @@ permalink : /TSPL/2023/Assignment1/
 module Assignment1 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -24,7 +24,7 @@ Select `Assessment`, then select `Assignment Submission`.
 Please ensure your files execute correctly under Agda!
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -38,7 +38,7 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## Naturals
+# Naturals
 
 ```agda
 module Naturals where
@@ -48,7 +48,7 @@ module Naturals where
   open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
 ```
 
-#### Exercise `seven` (practice) {#seven}
+### Exercise `seven` (practice) {#seven}
 
 Write out `7` in longhand.
 
@@ -60,7 +60,7 @@ You will need to give both a type signature and definition for the
 variable `seven`. Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
-#### Exercise `+-example` (practice) {#plus-example}
+### Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
@@ -69,7 +69,7 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-#### Exercise `*-example` (practice) {#times-example}
+### Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
@@ -79,7 +79,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-#### Exercise `_^_` (recommended) {#power}
+### Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations:
 
@@ -94,7 +94,7 @@ Check that `3 ^ 4` is `81`.
 
 
 
-#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
+### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -103,7 +103,7 @@ Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equati
 ```
 
 
-#### Exercise `Bin` (stretch) {#Bin}
+### Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
@@ -156,13 +156,13 @@ Confirm that these both give the correct answer for zero through four.
 
 
 
-## Induction
+# Induction
 
 ```agda
 module Induction where
 ```
 
-## Imports
+# Imports
 
 We require equality as in the previous chapter, plus the naturals
 and some operations upon them.  We also require a couple of new operations,
@@ -184,7 +184,7 @@ and some operations upon them.  We also require a couple of new operations,
     hiding ()
 ```
 
-#### Exercise `operators` (practice) {#operators}
+### Exercise `operators` (practice) {#operators}
 
 Give another example of a pair of operators that have an identity
 and are associative, commutative, and distribute over one another.
@@ -195,7 +195,7 @@ associative but is not commutative.
 (You do not have to prove these properties.)
 
 
-#### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
+### Exercise `finite-+-assoc` (stretch) {#finite-plus-assoc}
 
 Write out what is known about associativity of addition on each of the
 first four days using a finite story of creation, as
@@ -205,7 +205,7 @@ first four days using a finite story of creation, as
   -- Your code goes here
 ```
 
-#### Exercise `+-swap` (recommended) {#plus-swap}
+### Exercise `+-swap` (recommended) {#plus-swap}
 
 Show
 
@@ -220,7 +220,7 @@ is associative and commutative.
 ```
 
 
-#### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
+### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
 
@@ -233,7 +233,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-assoc` (recommended) {#times-assoc}
+### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
 
@@ -246,7 +246,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `*-comm` (practice) {#times-comm}
+### Exercise `*-comm` (practice) {#times-comm}
 
 Show multiplication is commutative, that is,
 
@@ -260,7 +260,7 @@ you will need to formulate and prove suitable lemmas.
 ```
 
 
-#### Exercise `0∸n≡0` (practice) {#zero-monus}
+### Exercise `0∸n≡0` (practice) {#zero-monus}
 
 Show
 
@@ -273,7 +273,7 @@ for all naturals `n`. Did your proof require induction?
 ```
 
 
-#### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
+### Exercise `∸-+-assoc` (practice) {#monus-plus-assoc}
 
 Show that monus associates with addition, that is,
 
@@ -286,7 +286,7 @@ for all naturals `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `+*^` (stretch)
+### Exercise `+*^` (stretch)
 
 Show the following three laws
 
@@ -301,7 +301,7 @@ for all `m`, `n`, and `p`.
 ```
 
 
-#### Exercise `Bin-laws` (stretch) {#Bin-laws}
+### Exercise `Bin-laws` (stretch) {#Bin-laws}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)
@@ -327,13 +327,13 @@ For each law: if it holds, prove; if not, give a counterexample.
 
 
 
-## Relations
+# Relations
 
 ```agda
 module Relations where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -347,7 +347,7 @@ module Relations where
 ```
 
 
-#### Exercise `orderings` (practice) {#orderings}
+### Exercise `orderings` (practice) {#orderings}
 
 Give an example of a preorder that is not a partial order.
 
@@ -361,7 +361,7 @@ Give an example of a partial order that is not a total order.
   -- Your code goes here
 ```
 
-#### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
+### Exercise `≤-antisym-cases` (practice) {#leq-antisym-cases}
 
 The above proof omits cases where one argument is `z≤n` and one
 argument is `s≤s`.  Why is it ok to omit them?
@@ -371,7 +371,7 @@ argument is `s≤s`.  Why is it ok to omit them?
 ```
 
 
-#### Exercise `*-mono-≤` (stretch)
+### Exercise `*-mono-≤` (stretch)
 
 Show that multiplication is monotonic with regard to inequality.
 
@@ -380,7 +380,7 @@ Show that multiplication is monotonic with regard to inequality.
 ```
 
 
-#### Exercise `<-trans` (recommended) {#less-trans}
+### Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive. Use a direct proof. (A later
 exercise exploits the relation between < and ≤.)
@@ -389,7 +389,7 @@ exercise exploits the relation between < and ≤.)
   -- Your code goes here
 ```
 
-#### Exercise `trichotomy` (practice) {#trichotomy}
+### Exercise `trichotomy` (practice) {#trichotomy}
 
 Show that strict inequality satisfies a weak version of trichotomy, in
 the sense that for any `m` and `n` that one of the following holds:
@@ -407,7 +407,7 @@ similar to that used for totality.
   -- Your code goes here
 ```
 
-#### Exercise `+-mono-<` (practice) {#plus-mono-less}
+### Exercise `+-mono-<` (practice) {#plus-mono-less}
 
 Show that addition is monotonic with respect to strict inequality.
 As with inequality, some additional definitions may be required.
@@ -416,7 +416,7 @@ As with inequality, some additional definitions may be required.
   -- Your code goes here
 ```
 
-#### Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
+### Exercise `≤→<, <→≤` (recommended) {#leq-iff-less}
 
 Show that `suc m ≤ n` implies `m < n`, and conversely.
 
@@ -424,7 +424,7 @@ Show that `suc m ≤ n` implies `m < n`, and conversely.
   -- Your code goes here
 ```
 
-#### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
+### Exercise `<-trans-revisited` (practice) {#less-trans-revisited}
 
 Give an alternative proof that strict inequality is transitive,
 using the relation between strict inequality and inequality and
@@ -435,7 +435,7 @@ the fact that inequality is transitive.
 ```
 
 
-#### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
+### Exercise `o+o≡e` (stretch) {#odd-plus-odd}
 
 Show that the sum of two odd numbers is even.
 
@@ -443,7 +443,7 @@ Show that the sum of two odd numbers is even.
   -- Your code goes here
 ```
 
-#### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
+### Exercise `Bin-predicates` (stretch) {#Bin-predicates}
 
 Recall that
 Exercise [Bin](/Naturals/#Bin)

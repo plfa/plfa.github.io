@@ -7,10 +7,10 @@ permalink : /TSPL/2019/Assignment4/
 module Assignment4 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
 
-## Introduction
+# Introduction
 
 <!-- This assignment is due **4pm Thursday 15 November** (Week 9). -->
 
@@ -33,7 +33,7 @@ Please ensure your files execute correctly under Agda!
 before and after code you add, to indicate your changes.
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -47,7 +47,7 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -60,7 +60,7 @@ open import Relation.Nullary using (¬_; Dec; yes; no)
 ```
 
 
-## DeBruijn
+# DeBruijn
 
 
 ```agda
@@ -74,26 +74,26 @@ Remember to indent all code by two spaces.
 ```
 
 
-#### Exercise (`mul`) (recommended)
+### Exercise (`mul`) (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
 DeBruijn representation.
 
 
-#### Exercise `V¬—→`
+### Exercise `V¬—→`
 
 Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
 values.
 
 
-#### Exercise `mul-eval` (recommended)
+### Exercise `mul-eval` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
 
-## More
+# More
 
 ```agda
 module More where
@@ -102,7 +102,7 @@ module More where
 Remember to indent all code by two spaces.
 
 
-### Syntax
+## Syntax
 
 ```agda
 
@@ -123,7 +123,7 @@ Remember to indent all code by two spaces.
   infix  9 #_
 ```
 
-### Types
+## Types
 
 ```agda
   data Type : Set where
@@ -137,7 +137,7 @@ Remember to indent all code by two spaces.
     `List : Type → Type
 ```
 
-### Contexts
+## Contexts
 
 ```agda
   data Context : Set where
@@ -145,7 +145,7 @@ Remember to indent all code by two spaces.
     _,_ : Context → Type → Context
 ```
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 ```agda
   data _∋_ : Context → Type → Set where
@@ -160,7 +160,7 @@ Remember to indent all code by two spaces.
       → Γ , A ∋ B
 ```
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 ```agda
   data _⊢_ : Context → Type → Set where
@@ -259,7 +259,7 @@ Remember to indent all code by two spaces.
 
 ```
 
-### Abbreviating de Bruijn indices
+## Abbreviating de Bruijn indices
 
 ```agda
   lookup : Context → ℕ → Type
@@ -278,7 +278,7 @@ Remember to indent all code by two spaces.
   # n  =  ` count n
 ```
 
-## Renaming
+# Renaming
 
 ```agda
   ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
@@ -302,7 +302,7 @@ Remember to indent all code by two spaces.
   rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
 ```
 
-## Simultaneous Substitution
+# Simultaneous Substitution
 
 ```agda
   exts : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ⊢ A) → (∀ {A B} → Γ , A ∋ B → Δ , A ⊢ B)
@@ -326,7 +326,7 @@ Remember to indent all code by two spaces.
   subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 ```
 
-## Single and double substitution
+# Single and double substitution
 
 ```agda
   _[_] : ∀ {Γ A B}
@@ -354,7 +354,7 @@ Remember to indent all code by two spaces.
     σ (S (S x))  =  ` x
 ```
 
-## Values
+# Values
 
 ```agda
   data Value : ∀ {Γ A} → Γ ⊢ A → Set where
@@ -394,7 +394,7 @@ Remember to indent all code by two spaces.
 Implicit arguments need to be supplied when they are
 not fixed by the given arguments.
 
-## Reduction
+# Reduction
 
 ```agda
   infix 2 _—→_
@@ -524,7 +524,7 @@ not fixed by the given arguments.
       → case× ⟨ V , W ⟩ M —→ M [ V ][ W ]
 ```
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 ```agda
   infix  2 _—↠_
@@ -552,7 +552,7 @@ not fixed by the given arguments.
 ```
 
 
-## Values do not reduce
+# Values do not reduce
 
 ```agda
   V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A}
@@ -568,7 +568,7 @@ not fixed by the given arguments.
 ```
 
 
-## Progress
+# Progress
 
 ```agda
   data Progress {A} (M : ∅ ⊢ A) : Set where
@@ -629,7 +629,7 @@ not fixed by the given arguments.
 ```
 
 
-## Evaluation
+# Evaluation
 
 ```agda
   record Gas : Set where
@@ -668,7 +668,7 @@ not fixed by the given arguments.
   ...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
 ```
 
-## Examples
+# Examples
 
 ```agda
   cube : ∅ ⊢ Nat ⇒ Nat
@@ -744,7 +744,7 @@ not fixed by the given arguments.
 ```
 
 
-#### Exercise `More` (recommended in part)
+### Exercise `More` (recommended in part)
 
 Formalise the remaining constructs defined in this chapter.
 Evaluate each example, applied to data as needed,
@@ -757,16 +757,16 @@ to confirm it returns the expected answer.
   * lists
 
 
-## Bisimulation
+# Bisimulation
 
 (No recommended exercises for this chapter.)
 
-#### Exercise `sim⁻¹`
+### Exercise `sim⁻¹`
 
 Show that we also have a simulation in the other direction, and hence that we have
 a bisimulation.
 
-#### Exercise `products`
+### Exercise `products`
 
 Show that the two formulations of products in
 Chapter [More][plfa.More]
@@ -774,7 +774,7 @@ are in bisimulation.  The only constructs you need to include are
 variables, and those connected to functions and products.
 In this case, the simulation is _not_ lock-step.
 
-## Inference
+# Inference
 
 ```agda
 module Inference where
@@ -782,13 +782,13 @@ module Inference where
 
 Remember to indent all code by two spaces.
 
-### Imports
+## Imports
 
 ```agda
   import plfa.part2.More as DB
 ```
 
-### Syntax
+## Syntax
 
 ```agda
   infix   4  _∋_⦂_
@@ -806,7 +806,7 @@ Remember to indent all code by two spaces.
   infix   9  `_
 ```
 
-### Identifiers, types, and contexts
+## Identifiers, types, and contexts
 
 ```agda
   Id : Set
@@ -821,7 +821,7 @@ Remember to indent all code by two spaces.
     _,_⦂_ : Context → Id → Type → Context
 ```
 
-### Terms
+## Terms
 
 ```agda
   data Term⁺ : Set
@@ -841,7 +841,7 @@ Remember to indent all code by two spaces.
     _↑                       : Term⁺ → Term⁻
 ```
 
-### Sample terms
+## Sample terms
 
 ```agda
   two : Term⁻
@@ -854,7 +854,7 @@ Remember to indent all code by two spaces.
               ↓ `ℕ ⇒ `ℕ ⇒ `ℕ
 ```
 
-### Lookup
+## Lookup
 
 ```agda
   data _∋_⦂_ : Context → Id → Type → Set where
@@ -870,7 +870,7 @@ Remember to indent all code by two spaces.
       → Γ , y ⦂ B ∋ x ⦂ A
 ```
 
-### Bidirectional type checking
+## Bidirectional type checking
 
 ```agda
   data _⊢_↑_ : Context → Term⁺ → Type → Set
@@ -930,7 +930,7 @@ Remember to indent all code by two spaces.
 ```
 
 
-### Type equality
+## Type equality
 
 ```agda
   _≟Tp_ : (A B : Type) → Dec (A ≡ B)
@@ -944,7 +944,7 @@ Remember to indent all code by two spaces.
   ...  | yes refl | yes refl  =  yes refl
 ```
 
-### Prerequisites
+## Prerequisites
 
 ```agda
   dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
@@ -958,7 +958,7 @@ Remember to indent all code by two spaces.
 ```
 
 
-### Unique lookup
+## Unique lookup
 
 ```agda
   uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
@@ -968,7 +968,7 @@ Remember to indent all code by two spaces.
   uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 ```
 
-### Unique synthesis
+## Unique synthesis
 
 ```agda
   uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
@@ -977,7 +977,7 @@ Remember to indent all code by two spaces.
   uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
 ```
 
-## Lookup type of a variable in the context
+# Lookup type of a variable in the context
 
 ```agda
   ext∋ : ∀ {Γ B x y}
@@ -999,7 +999,7 @@ Remember to indent all code by two spaces.
   ...             | yes ⟨ A , ⊢x ⟩  =  yes ⟨ A , S x≢y ⊢x ⟩
 ```
 
-### Promoting negations
+## Promoting negations
 
 ```agda
   ¬arg : ∀ {Γ A B L M}
@@ -1018,7 +1018,7 @@ Remember to indent all code by two spaces.
 ```
 
 
-## Synthesize and inherit types
+# Synthesize and inherit types
 
 ```agda
   synthesize : ∀ (Γ : Context) (M : Term⁺)
@@ -1070,7 +1070,7 @@ Remember to indent all code by two spaces.
   ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 ```
 
-### Erasure
+## Erasure
 
 ```agda
   ∥_∥Tp : Type → DB.Type
@@ -1100,25 +1100,25 @@ Remember to indent all code by two spaces.
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
 ```
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda][plfa.Lambda], decorated to support inference.
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
 
 
-#### Exercise `bidirectional-rest` (stretch)
+### Exercise `bidirectional-rest` (stretch)
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More][plfa.More].
 
 
-#### Exercise `inference-mul` (recommended)
+### Exercise `inference-mul` (recommended)
 
 Rewrite your definition of multiplication from
 Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
@@ -1126,53 +1126,53 @@ that erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
 
 
-#### Exercise `inference-products` (recommended)
+### Exercise `inference-products` (recommended)
 
 Extend bidirectional inference to include products from
 Chapter [More][plfa.More].
 
 
-#### Exercise `inference-rest` (stretch)
+### Exercise `inference-rest` (stretch)
 
 Extend bidirectional inference to include the rest of the constructs from
 Chapter [More][plfa.More].
 
-## Untyped
+# Untyped
 
-#### Exercise (`Type≃⊤`)
+### Exercise (`Type≃⊤`)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
 
-#### Exercise (`Context≃ℕ`)
+### Exercise (`Context≃ℕ`)
 
 Show that `Context` is isomorphic to `ℕ`.
 
-#### Exercise (`variant-1`)
+### Exercise (`variant-1`)
 
 How would the rules change if we want call-by-value where terms
 normalise completely?  Assume that `β` should not permit reduction
 unless both terms are in normal form.
 
-#### Exercise (`variant-2`)
+### Exercise (`variant-2`)
 
 How would the rules change if we want call-by-value where terms
 do not reduce underneath lambda?  Assume that `β`
 permits reduction when both terms are values (that is, lambda
 abstractions).  What would `plusᶜ · twoᶜ · twoᶜ` reduce to in this case?
 
-#### Exercise `plus-eval`
+### Exercise `plus-eval`
 
 Use the evaluator to confirm that `plus · two · two` and `four`
 normalise to the same term.
 
-#### Exercise `multiplication-untyped` (recommended)
+### Exercise `multiplication-untyped` (recommended)
 
 Use the encodings above to translate your definition of
 multiplication from previous chapters with the Scott
 representation and the encoding of the fixpoint operator.
 Confirm that two times two is four.
 
-#### Exercise `encode-more` (stretch)
+### Exercise `encode-more` (stretch)
 
 Along the lines above, encode all of the constructs of
 Chapter [More][plfa.More],

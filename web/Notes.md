@@ -4,7 +4,7 @@ permalink: /Notes/
 ---
 
 
-## To do
+# To do
 
 Changes I would like to make to the book:
 
@@ -14,15 +14,15 @@ Changes I would like to make to the book:
   Change canonical form of zero to be empty string, `<>`.
   Similar change to subsequent exercise.
 
-## Citations
+# Citations
 
 You can cite works by writing `@` followed by a citation key, e.g., `@plfa20.07`. For instance, the first release of PLFA was by @plfa19.08. See the [bibliography](#bibliography) section below for the bibliography. Citations and the bibliography are currently styled according to the ISO-690 standard.
 
-## Downloading older versions
+# Downloading older versions
 
 <https://github.com/plfa/plfa.github.io/releases>
 
-## Git commands
+# Git commands
 
 Git commands to create a branch and pull request
 
@@ -36,7 +36,7 @@ Git commands to create a branch and pull request
 On website, use pulldown menu to swith branch and then
 click "new pull request" button.
 
-## Suggestion from Conor for Inference
+# Suggestion from Conor for Inference
 
 Conor McBride <conor.mcbride@strath.ac.uk>
 
@@ -102,7 +102,7 @@ Get evidence!
 
 > [Google analytics](https://analytics.google.com/analytics/web/)
 
-## Where to put Lists?
+# Where to put Lists?
 
 Three possible orders:
 
@@ -126,7 +126,7 @@ Tradeoffs:
   + (1,3) Earlier emphasis on induction over evidence
   + (3) More consistent structuring principle
 
-## Set up lists of exercises to do
+# Set up lists of exercises to do
 
 * Use md rather than HTML
 * Tell students to do _all_ exercises, and just mark some as stretch?
@@ -134,12 +134,12 @@ Tradeoffs:
 * Compare with previous set of exercises to discover some holes?
 * Add ==N as an exercise to Relations?
 
-## Other questions
+# Other questions
 
 * Resolve any issues with modules to define properties of orderings?
 * Resolve any issues with equivalence and Setoids?
 
-## Possible structures for the book
+# Possible structures for the book
 
 * One possible development
   + raw terms
@@ -205,14 +205,14 @@ Tradeoffs:
     (as opposed to failing to compute it in one day).
 
 
-## STLC
+# STLC
 
 * Russel O'Connor
   + STLC with recursive types, intrinsic representation
     - https://hub.darcs.net/roconnor/STLC/browse/src/STLC
 
 
-## PHOAS
+# PHOAS
 
 The following comments were collected on the Agda mailing list.
 
@@ -243,7 +243,7 @@ The following comments were collected on the Agda mailing list.
   + suggests Scoped PHOAS
     - https://plum-umd.github.io/darailude-agda/SF.PHOAS.html
 
-## Untyped lambda calculus
+# Untyped lambda calculus
 
 * Nils Anders Danielsson <nad@cse.gu.se>
   +
@@ -254,7 +254,7 @@ The following comments were collected on the Agda mailing list.
 * lambda calculus
   + https://github.com/pi8027/lambda-calculus/tree/master/agda/Lambda
 
-## Relevant papers
+# Relevant papers
 
 * Kenichi Asai, Extracting a Call-by-Name Partial Evaluator from a Proof of
   Termination, PEPM 2019
@@ -266,7 +266,7 @@ The following comments were collected on the Agda mailing list.
   + https://pllab.is.ocha.ac.jp/~asai/papers/aplas18.agda
 
 
-## Agda resources
+# Agda resources
 * Chalmers class
   + https://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/
 * Dybjer lecture notes
@@ -277,7 +277,7 @@ The following comments were collected on the Agda mailing list.
   + https://www.cse.chalmers.se/edu/year/2017/course/DAT140_Types/TakeHomeExamTypes2017.pdf
 
 
-## Adrian's comments from MeetUp
+# Adrian's comments from MeetUp
 
 **Adrian King**:
 
@@ -351,4 +351,4 @@ The following comments were collected on the Agda mailing list.
 >    ```
 >
 
-## Bibliography
+# Bibliography

@@ -7,9 +7,9 @@ permalink : /TSPL/2024/Assignment2/
 module Assignment2 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -23,7 +23,7 @@ Select `Assessment`, then select `Assignment Submission`.
 Please ensure your files execute correctly under Agda!
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -36,7 +36,7 @@ any such work on a public repository then you must set access
 permissions appropriately (generally permitting access only to
 yourself). Do not publish solutions to the coursework.
 
-## Deadline and late policy
+# Deadline and late policy
 
 The deadline and late policy for this assignment are specified on
 Learn in the "Coursework Planner". There are no extensions and
@@ -46,13 +46,13 @@ on late submissions is at
 > [https://web.inf.ed.ac.uk/node/4533](https://web.inf.ed.ac.uk/node/4533)
 
 
-## Connectives
+# Connectives
 
 ```agda
 module Connectives where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -66,7 +66,7 @@ module Connectives where
     hiding (⊎-weak-×; ⊎×-implies-×⊎)
 ```
 
-#### Exercise `⇔≃×` (practice)
+### Exercise `⇔≃×` (practice)
 
 Show that `A ⇔ B` as defined [earlier](/Isomorphism/#iff)
 is isomorphic to `(A → B) × (B → A)`.
@@ -76,7 +76,7 @@ is isomorphic to `(A → B) × (B → A)`.
 ```
 
 
-#### Exercise `⊎-comm` (recommended)
+### Exercise `⊎-comm` (recommended)
 
 Show sum is commutative up to isomorphism.
 
@@ -84,7 +84,7 @@ Show sum is commutative up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-assoc` (practice)
+### Exercise `⊎-assoc` (practice)
 
 Show sum is associative up to isomorphism.
 
@@ -92,7 +92,7 @@ Show sum is associative up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊥-identityˡ` (recommended)
+### Exercise `⊥-identityˡ` (recommended)
 
 Show empty is the left identity of sums up to isomorphism.
 
@@ -100,7 +100,7 @@ Show empty is the left identity of sums up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊥-identityʳ` (practice)
+### Exercise `⊥-identityʳ` (practice)
 
 Show empty is the right identity of sums up to isomorphism.
 
@@ -108,7 +108,7 @@ Show empty is the right identity of sums up to isomorphism.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-weak-×` (recommended)
+### Exercise `⊎-weak-×` (recommended)
 
 Show that the following property holds:
 
@@ -125,7 +125,7 @@ distributive law, and explain how it relates to the weak version.
 ```
 
 
-#### Exercise `⊎×-implies-×⊎` (practice)
+### Exercise `⊎×-implies-×⊎` (practice)
 
 Show that a disjunct of conjuncts implies a conjunct of disjuncts:
 
@@ -142,13 +142,13 @@ Does the converse hold? If so, prove; if not, give a counterexample.
 
 
 
-## Negation
+# Negation
 
 ```agda
 module Negation where
 ```
 
-## Imports
+# Imports
 
 ```agda
   open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -159,7 +159,7 @@ module Negation where
     hiding (Stable)
 ```
 
-#### Exercise `<-irreflexive` (recommended)
+### Exercise `<-irreflexive` (recommended)
 
 Using negation, show that
 [strict inequality](/Relations/#strict-inequality)
@@ -170,7 +170,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 ```
 
 
-#### Exercise `trichotomy` (practice)
+### Exercise `trichotomy` (practice)
 
 Show that strict inequality satisfies
 [trichotomy](/Relations/#trichotomy),
@@ -187,7 +187,7 @@ but that when one holds the negation of the other two must also hold.
   -- Your code goes here
 ```
 
-#### Exercise `⊎-dual-×` (recommended)
+### Exercise `⊎-dual-×` (recommended)
 
 Show that conjunction, disjunction, and negation are related by a
 version of De Morgan's Law.
@@ -209,7 +209,7 @@ If so, prove; if not, can you give a relation weaker than
 isomorphism that relates the two sides?
 
 
-#### Exercise `Classical` (stretch)
+### Exercise `Classical` (stretch)
 
 Consider the following principles:
 
@@ -226,7 +226,7 @@ Show that each of these implies all the others.
 ```
 
 
-#### Exercise `Stable` (stretch)
+### Exercise `Stable` (stretch)
 
 Say that a formula is _stable_ if double negation elimination holds for it:
 
@@ -243,13 +243,13 @@ of two stable formulas is stable.
 ```
 
 
-## Quantifiers
+# Quantifiers
 
 ```agda
 module Quantifiers where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -266,7 +266,7 @@ module Quantifiers where
   open import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
 ```
 
-#### Exercise `∀-distrib-×` (recommended)
+### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
 
@@ -281,7 +281,7 @@ Chapter [Connectives](/Connectives/).
 
 Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
 
-#### Exercise `⊎∀-implies-∀⊎` (practice)
+### Exercise `⊎∀-implies-∀⊎` (practice)
 
 Show that a disjunction of universals implies a universal of disjunctions:
 
@@ -294,7 +294,7 @@ Show that a disjunction of universals implies a universal of disjunctions:
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `∀-×` (practice)
+### Exercise `∀-×` (practice)
 
 Consider the following type.
 
@@ -311,7 +311,7 @@ Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 Hint: you will need to use [`∀-extensionality`](/Isomorphism/#extensionality).
 
 
-#### Exercise `∃-distrib-⊎` (recommended)
+### Exercise `∃-distrib-⊎` (recommended)
 
 Show that existentials distribute over disjunction:
 
@@ -321,7 +321,7 @@ Show that existentials distribute over disjunction:
       ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
 ```
 
-#### Exercise `∃×-implies-×∃` (practice)
+### Exercise `∃×-implies-×∃` (practice)
 
 Show that an existential of conjunctions implies a conjunction of existentials:
 
@@ -333,13 +333,13 @@ Show that an existential of conjunctions implies a conjunction of existentials:
 
 Does the converse hold? If so, prove; if not, explain why.
 
-#### Exercise `∃-⊎` (practice)
+### Exercise `∃-⊎` (practice)
 
 Let `Tri` and `B` be as in Exercise `∀-×`.
 Show that `∃[ x ] B x` is isomorphic to `B aa ⊎ B bb ⊎ B cc`.
 
 
-#### Exercise `∃-even-odd` (practice)
+### Exercise `∃-even-odd` (practice)
 
 How do the proofs become more difficult if we replace `m * 2` and `1 + m * 2`
 by `2 * m` and `2 * m + 1`?  Rewrite the proofs of `∃-even` and `∃-odd` when
@@ -349,7 +349,7 @@ restated in this way.
   -- Your code goes here
 ```
 
-#### Exercise `∃-+-≤` (practice)
+### Exercise `∃-+-≤` (practice)
 
 Show that `y ≤ z` holds if and only if there exists a `x` such that
 `x + y ≡ z`.
@@ -359,7 +359,7 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 ```
 
 
-#### Exercise `∃¬-implies-¬∀` (recommended)
+### Exercise `∃¬-implies-¬∀` (recommended)
 
 Show that existential of a negation implies negation of a universal:
 
@@ -374,7 +374,7 @@ Show that existential of a negation implies negation of a universal:
 Does the converse hold? If so, prove; if not, explain why.
 
 
-#### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
+### Exercise `Bin-isomorphism` (stretch) {#Bin-isomorphism}
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),
@@ -421,13 +421,13 @@ which is a corollary of `≡Can`.
 
 
 
-## Decidable
+# Decidable
 
 ```agda
 module Decidable where
 ```
 
-## Imports
+# Imports
 
 ```agda
   import Relation.Binary.PropositionalEquality as Eq
@@ -447,7 +447,7 @@ module Decidable where
     hiding (_<?_; _≡ℕ?_; ∧-×; ∨-⊎; not-¬; _iff_; _⇔-dec_; iff-⇔)
 ```
 
-#### Exercise `_<?_` (recommended)
+### Exercise `_<?_` (recommended)
 
 Analogous to the function above, define a function to decide strict inequality:
 
@@ -460,7 +460,7 @@ Analogous to the function above, define a function to decide strict inequality:
   -- Your code goes here
 ```
 
-#### Exercise `_≡ℕ?_` (practice)
+### Exercise `_≡ℕ?_` (practice)
 
 Define a function to decide whether two naturals are equal:
 
@@ -474,7 +474,7 @@ Define a function to decide whether two naturals are equal:
 ```
 
 
-#### Exercise `erasure` (practice)
+### Exercise `erasure` (practice)
 
 Show that erasure relates corresponding boolean and decidable operations:
 
@@ -485,7 +485,7 @@ Show that erasure relates corresponding boolean and decidable operations:
     not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
 ```
 
-#### Exercise `iff-erasure` (recommended)
+### Exercise `iff-erasure` (recommended)
 
 Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism](/Isomorphism/#iff),
@@ -502,14 +502,14 @@ operation on booleans and decidables, and also show the corresponding erasure:
   -- Your code goes here
 ```
 
-#### Exercise `False` (practice)
+### Exercise `False` (practice)
 
 Give analogues of `True`, `toWitness`, and `fromWitness` which work
 with *negated* properties. Call these `False`, `toWitnessFalse`, and
 `fromWitnessFalse`.
 
 
-#### Exercise `Bin-decidable` (stretch)
+### Exercise `Bin-decidable` (stretch)
 
 Recall that Exercises
 [Bin](/Naturals/#Bin),
