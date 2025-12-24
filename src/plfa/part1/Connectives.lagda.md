@@ -84,10 +84,15 @@ holds---how to _use_ the connective.[^from-wadler-2015]
 
 Applying each destructor and reassembling the results with the
 constructor is the identity over products:
+
 ```agda
 η-× : ∀ {A B : Set} (w : A × B) → ⟨ proj₁ w , proj₂ w ⟩ ≡ w
 η-× w = refl
 ```
+
+In the general sense, for a record, apply projections to all fields, and
+then apply the record constructor; the result is the original record.
+This concept is known as the *η-equality* (hence we name it `η-×`).
 For record types, η-equality holds *by definition*.
 While proving `η-×`, we do not have to
 pattern match on `w` to know that η-equality holds.
