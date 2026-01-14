@@ -42,6 +42,11 @@ $endfor$
 
 ## Courses taught from the textbook
 
+### 2026
+  * [Jeremy Siek, Indiana University][IU-2026]
+
+[IU-2026]: https://jsiek.github.io/PLFA-Spring-2026/
+
 ### 2025
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2025]
   * [Joseph Eremondi, University of Regina][EremondiPage]
