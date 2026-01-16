@@ -586,7 +586,7 @@ traversal.
 
 The strategy implemented by `progress` is known as _normal order reduction_
 or _leftmost outermost reduction_. It has the pleasing property that
-if any reduction sequence terminates in a normal form, then 
+if any reduction sequence terminates in a normal form, then
 normal order reduction terminates in the same normal form.
 
 As previously, progress immediately yields an evaluator.
