@@ -576,6 +576,19 @@ application.
 
 # Evaluation
 
+We already observed that reduction in the untyped lambda calculus is
+non-deterministic. However, the `progress` function is deterministic and
+thus it picks one particular reduction sequence out of many possible ones.
+In other words, `progress` implements a _reduction strategy_ that searches
+for the next redex in a top-down traversal of the term, visiting any subterms
+from left to right. It reduces the first redex that it encounters on this
+traversal.
+
+The strategy implemented by `progress` is known as _normal order reduction_
+or _leftmost outermost reduction_. It has the pleasing property that
+if any reduction sequence terminates in a normal form, then
+normal order reduction terminates in the same normal form.
+
 As previously, progress immediately yields an evaluator.
 
 We relate gas to the number of steps in a reduction sequence.
