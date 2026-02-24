@@ -1143,7 +1143,7 @@ The definition is a little simpler than previously, as we no longer need
 to invoke preservation.
 
 We don't repeat the previous examples, as they add little save length.
-Similarly for the proof that reduction Uis deterministic.
+Similarly for the proof that reduction is deterministic.
 
 
 ## Exercise `mul-example` (recommended)
