@@ -29,7 +29,7 @@ open import Relation.Nullary.Negation using (¬_)
   renaming (contradiction to ¬¬-intro)
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
-open import plfa.part1.Relations using (_<_; z<s; s<s)
+open import plfa.part1.Relations using (_≤_; z≤n; s≤s)
 open import plfa.part1.Isomorphism using (_⇔_)
 ```
 
