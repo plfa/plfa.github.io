@@ -44,8 +44,10 @@ $endfor$
 
 ### 2026
   * [Jeremy Siek, Indiana University][IU-2026]
+  * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2026]
 
 [IU-2026]: https://jsiek.github.io/PLFA-Spring-2026/
+[Freiburg-2026]: https://proglang.github.io/teaching/26ss/eopl.html
 
 ### 2025
   * [Peter Thiemann, Albert-Ludwigs University][Freiburg-2025]
