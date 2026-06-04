@@ -425,6 +425,58 @@ last combines the left inverse of `B ≲ A` with the equivalences of
 the `to` and `from` components from the two embeddings to obtain
 the right inverse of the isomorphism.
 
+The previous proof can also be shortened by doing more work in the
+patterns on the left-hand side.  If the two proofs that the embedding
+functions correspond are both matched against `refl`, then Agda records
+that the corresponding functions are the same:
+
+```agda
+≲-antisym′ : ∀ {A B : Set}
+  → (A≲B : A ≲ B)
+  → (B≲A : B ≲ A)
+  → (to A≲B ≡ from B≲A)
+  → (from A≲B ≡ to B≲A)
+    -------------------
+  → A ≃ B
+≲-antisym′ A≲B B≲A refl refl =
+  record
+    { to      = to A≲B
+    ; from    = from A≲B
+    ; from∘to = from∘to A≲B
+    ; to∘from = from∘to B≲A
+    }
+```
+
+After matching the third parameter, called `to≡from` above, against
+`refl`, Agda knows that `to A≲B` and `from B≲A` are the same function.
+After matching the fourth parameter, called `from≡to` above, against
+`refl`, Agda knows that `from A≲B` and `to B≲A` are the same function.
+Hence the type of `from∘to B≲A`,
+
+    ∀ (y : B) → from B≲A (to B≲A y) ≡ y
+
+is the same as the type required for `to∘from`,
+
+    ∀ (y : B) → to A≲B (from A≲B y) ≡ y.
+
+One subtlety is why Agda accepts these `refl` patterns at all.  The
+equalities compare projections from two records, rather than variables
+written directly on the left-hand side.  Agda silently η-expands record
+values.  This property is called η-equality for records: a record is
+determined by its fields.  A value `A≲B` is definitionally the same as
+the record obtained by projecting out all its fields and putting them
+back together.  For an embedding, this means `A≲B` is the same as
+
+    record
+      { to      = to A≲B
+      ; from    = from A≲B
+      ; from∘to = from∘to A≲B
+      }
+
+and similarly for `B≲A`.  This η-expansion lets pattern matching on
+`refl` refine the corresponding record fields, which is why the shorter
+proof can replace the whole equational derivation by `from∘to B≲A`.
+
 # Equational reasoning for embedding
 
 We can also support tabular reasoning for embedding,
