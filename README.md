@@ -26,6 +26,15 @@ PLFA is tested against specific versions of Agda and the standard library, which
 
 There are several versions of Agda and its standard library online. If you are using a package manager, like Homebrew or Debian apt, the version of Agda available there may be out of date. Furthermore, Agda is under active development, so if you install the development version from the GitHub, you might find the developers have introduced changes which break the code here. Therefore, it’s important to have the specific versions of Agda and the standard library shown above.
 
+### In Dev Containers
+With the help of [Dev Containers and Codespaces](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers), you can build an environment pre-installed with the Agda toolchain required for the tutorial without the need to execute installation commands.
+
+Visit https://github.com/plfa/plfa.github.io in your browser, press the dot (`.`) key on the webpage, it will take you to the online VSCode editor. From there, you can create a codespace. The build process takes approximately 10 minutes, and the built codespace will include: [Agda](#install-agda), [Emacs with agda-mode](#using-agda-mode-in-emacs), [VSCode extension for agda](#visual-studio-code). Then you can interact with the code!
+
+Apart from using the web version of VSCode, you can also connect to the codespace from your local VSCode. Here is the [instruction](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-in-visual-studio-code).
+
+Optionally, you can run the devcontainer on your local machine. Git clone the [repo](https://github.com/plfa/plfa.github.io) to your computer, open it with VSCode, and then the editor will prompt you to reopen in container. For more details, please refer to the [documentation](https://code.visualstudio.com/docs/devcontainers/tutorial).
+
 ### On macOS: Install the XCode Command Line Tools
 
 On macOS, you’ll need to install [The XCode Command Line Tools][xcode]. For most versions of macOS, you can install these by running the following command:

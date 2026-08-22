@@ -1,0 +1,16 @@
+{
+    "name": "Agda",
+    "build" : {
+        "dockerfile": "DockerFile"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/root/plfa,type=bind",
+    "workspaceFolder": "/root/plfa",
+    "postCreateCommand": "bash ./.devcontainer/post-create.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "banacorn.agda-mode"
+            ]
+        }
+    }
+}
