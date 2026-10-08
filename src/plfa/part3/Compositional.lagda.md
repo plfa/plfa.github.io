@@ -230,7 +230,7 @@ We proceed by induction on the semantics.
     * Suppose `γ ⊢ L ↓ v₁′ ↦ v₁`, `γ ⊢ M ↓ v₁′`, and `v₂ ⊑ ⊥`.
       We have `γ ⊢ L ↓ v₁′ ↦ (v₁ ⊔ v₂)` by rule `sub`
       because `v₁′ ↦ (v₁ ⊔ v₂) ⊑ v₁′ ↦ v₁`.
-    * Suppose `γ ⊢ L ↓ v₁′′ ↦ v₁, γ ⊢ M ↓ v₁′′`,
+    * Suppose `γ ⊢ L ↓ v₁′′ ↦ v₁`, `γ ⊢ M ↓ v₁′′`,
       `γ ⊢ L ↓ v₁′ ↦ v₂`, and `γ ⊢ M ↓ v₁′`.
       This case is the most interesting.
       By two uses of the rule `⊔-intro` we have

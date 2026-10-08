@@ -402,9 +402,9 @@ we'll name `v`. Then for the second application,
 `f` must map `v` to some value. Let's name it `w`. So the function's
 table must include two entries, both `u ↦ v` and `v ↦ w`. For each
 application of the table, we extract the appropriate entry from it
-using the `sub` rule.  In particular, we use the ⊑-conj-R1 and
-⊑-conj-R2 to select `u ↦ v` and `v ↦ w`, respectively, from the table
-`u ↦ v ⊔ v ↦ w`. So the meaning of twoᶜ is that it takes this table
+using the `sub` rule.  In particular, we use the `⊑-conj-R1` and
+`⊑-conj-R2` to select `u ↦ v` and `v ↦ w`, respectively, from the table
+`u ↦ v ⊔ v ↦ w`. So the meaning of `twoᶜ` is that it takes this table
 and parameter `u`, and it returns `w`.  Indeed we derive this as
 follows.
 
@@ -563,7 +563,7 @@ Denotational equality is an equivalence relation.
                         (λ z → proj₂ (eq1 γ v) (proj₂ (eq2 γ v) z)) ⟩
 ```
 
-Two terms `M` and `N` are denotational equal when their denotations are
+Two terms `M` and `N` are denotationally equal when their denotations are
 equal, that is, `ℰ M ≃ ℰ N`.
 
 The following submodule introduces equational reasoning for the `≃`
@@ -1093,7 +1093,7 @@ The crux of the proof is the case for `⊑-trans`.
         u₁ ⊑ u₂
 
 By the induction hypothesis for `u₁ ⊑ u`, we know
-that `v ↦ w factors u into u′`, for some value `u′`,
+that `v ↦ w` factors `u` into `u′`, for some value `u′`,
 so we have `all-funs u′` and `u′ ⊆ u`.
 By the induction hypothesis for `u ⊑ u₂`, we know
 that for any `v′ ↦ w′ ∈ u`, `v′ ↦ w′` factors `u₂` into `u₃`.
