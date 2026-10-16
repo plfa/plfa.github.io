@@ -454,23 +454,12 @@ function, then it terminates via call-by-name. More formally, if
 `γ ⊢ M ↓ v` and `𝔾 γ γ'`, then `𝔼 v (clos M γ')`. The proof is by
 induction on the derivation of `γ ⊢ M ↓ v` we discuss each case below.
 
-The following lemma, kth-x, is used in the case for the `var` rule.
-
-```agda
-kth-x : ∀{Γ}{γ' : ClosEnv Γ}{x : Γ ∋ ★}
-     → Σ[ Δ ∈ Context ] Σ[ δ ∈ ClosEnv Δ ] Σ[ M ∈ Δ ⊢ ★ ]
-                 γ' x ≡ clos M δ
-kth-x{γ' = γ'}{x = x} with γ' x
-... | clos{Γ = Δ} M δ = ⟨ Δ , ⟨ δ , ⟨ M , refl ⟩ ⟩ ⟩
-```
-
 ```agda
 ↓→𝔼 : ∀{Γ}{γ : Env Γ}{γ' : ClosEnv Γ}{M : Γ ⊢ ★ }{v}
             → 𝔾 γ γ' → γ ⊢ M ↓ v → 𝔼 v (clos M γ')
-↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (var{x = x}) fγx
-    with kth-x{Γ}{γ'}{x} | 𝔾γγ'{x = x}
-... | ⟨ Δ , ⟨ δ , ⟨ M' , eq ⟩ ⟩ ⟩ | 𝔾γγ'x rewrite eq
-    with 𝔾γγ'x fγx
+↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (var{x = x}) fγx with γ' x in eq | 𝔾γγ'{x = x}
+... | clos M' δ | 𝔾γγ'x
+     with 𝔾γγ'x fγx
 ... | ⟨ c , ⟨ M'⇓c , 𝕍γx ⟩ ⟩ =
       ⟨ c , ⟨ (⇓-var eq M'⇓c) , 𝕍γx ⟩ ⟩
 ↓→𝔼 {Γ} {γ} {γ'} 𝔾γγ' (↦-elim{L = L}{M = M}{v = v₁}{w = v} d₁ d₂) fv
@@ -522,8 +511,8 @@ kth-x{γ' = γ'}{x = x} with γ' x
   and from `𝔾 γ γ'` we have `𝔼 (γ x) (clos M' δ)`. With the premise
   `above-fun (γ x)`, we obtain a closure `c` such that `δ ⊢ M' ⇓ c`
   and `𝕍 (γ x) c`. To conclude `γ' ⊢ x ⇓ c` via `⇓-var`, we
-  need `γ' x ≡ clos M' δ`, which is obvious, but it requires some
-  Agda shananigans via the `kth-x` lemma to get our hands on it.
+  need `γ' x ≡ clos M' δ`, which is given to us via
+  [With-abstraction equality](with-abstraction-equality).
 
 * Case `↦-elim`. We have `γ ⊢ L · M ↓ v`.
   The induction hypothesis for `γ ⊢ L ↓ v₁ ↦ v`
@@ -654,3 +643,5 @@ This chapter uses the following unicode:
     𝔼  U+1D53C  MATHEMATICAL DOUBLE-STRUCK CAPITAL E (\bE)
     𝔾  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL G (\bG)
     𝕍  U+1D53E  MATHEMATICAL DOUBLE-STRUCK CAPITAL V (\bV)
+
+[with-abstraction-equality]: https://agda.readthedocs.io/en/v2.7.0/language/with-abstraction.html#with-abstraction-equality
