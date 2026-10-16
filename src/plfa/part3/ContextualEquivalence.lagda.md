@@ -78,7 +78,7 @@ denot-equal-terminates {Γ}{M}{N}{C} ℰM≃ℰN ⟨ N′ , CM—↠ƛN′ ⟩ =
     cbn→reduce (proj₂ (proj₂ (proj₂ (↓→⇓ ℰCN≃ℰƛN′))))
 ```
 
-The proof is direct. Because `plug C —↠ plug C (ƛ N′)`,
+The proof is direct. Because `plug C M —↠ ƛ N′`,
 we can apply soundness to obtain
 
     ℰ (plug C M) ≃ ℰ (ƛ N′)
@@ -93,7 +93,7 @@ Putting these two facts together gives us
 
 We then apply `↓→⇓` from Chapter [Adequacy](/Adequacy/) to deduce
 
-    ∅' ⊢ plug C N ⇓ clos (ƛ N′′) δ).
+    ∅' ⊢ plug C N ⇓ clos (ƛ N′′) δ.
 
 Call-by-name evaluation implies reduction to a lambda abstraction,
 so we conclude that

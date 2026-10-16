@@ -280,7 +280,7 @@ We cannot prove this lemma by induction on the derivation of
   `δ (ρ x) ⊑ γ x`, so we conclude by the `var` rule.
 
 * If it is a lambda abstraction `ƛ N`, we have
-  rename `ρ (ƛ N) = ƛ (rename (ext ρ) N)`.
+  `rename ρ (ƛ N) = ƛ (rename (ext ρ) N)`.
   We proceed by cases on `δ ⊢ ƛ (rename (ext ρ) N) ↓ v`.
 
   * Rule `↦-intro`: To satisfy the premise of the induction
@@ -515,11 +515,11 @@ subst-reflect (sub d lt) eq
     by the `subst-⊔` lemma.
 
 * Case `↦-intro`: We have `subst σ M ≡ ƛ L′`. We proceed by cases on `M`.
-  * Case `M ≡ x`: We apply the `subst-reflect-var` lemma.
+  * Case `` M ≡ ` x ``: We apply the `subst-reflect-var` lemma.
 
   * Case `M ≡ ƛ M′`: By the induction hypothesis, we have
     `(δ′ , v′) ⊢ M′ ↓ v₂` and `(δ , v₁) ⊢ exts σ ↓ (δ′ , v′)`.
-    From the later we have `(δ , v₁) ⊢ # 0 ↓ v′`.
+    From the latter we have `(δ , v₁) ⊢ # 0 ↓ v′`.
     By the lemma `var-inv` we have `v′ ⊑ v₁`, so by the `up-env` lemma we
     have `(δ′ , v₁) ⊢ M′ ↓ v₂` and therefore `δ′ ⊢ ƛ M′ ↓ v₁ → v₂`.  We
     also need to show that `δ ⊢ σ ↓ δ′`.  Fix `k`. We have
