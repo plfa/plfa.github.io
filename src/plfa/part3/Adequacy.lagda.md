@@ -38,7 +38,7 @@ evaluation. Further, we already proved that big-step evaluation
 implies multi-step reduction to a lambda (`cbn→reduce`). So we shall
 prove that `γ ⊢ M ↓ (v ↦ w)` implies that `γ' ⊢ M ⇓ c`, where `c` is a
 closure (a term paired with an environment), `γ'` is an environment
-that maps variables to closures, and `γ` and `γ'` are appropriate
+that maps variables to closures, and `γ` and `γ'` are appropriately
 related.  The proof will be an induction on the derivation of
 `γ ⊢ M ↓ v`, and to strengthen the induction hypothesis, we will relate
 semantic values to closures using a _logical relation_ `𝕍`.
@@ -49,7 +49,7 @@ The rest of this chapter is organized as follows.
   we must loosen the requirement that `M` result in a function value and
   instead require that `M` result in a value that is greater than or
   equal to a function value. We establish several properties about
-  being ``greater than a function''.
+  being "greater than a function".
 
 * We define the logical relation `𝕍` that relates values and closures,
   and extend it to a relation on terms `𝔼` and environments `𝔾`.
@@ -191,7 +191,7 @@ above-fun? (u ⊔ u')
 
 Next we relate semantic values to closures.  The relation `𝕍` is for
 closures whose term is a lambda abstraction, i.e., in weak-head normal
-form (WHNF). The relation 𝔼 is for any closure. Roughly speaking,
+form (WHNF). The relation `𝔼` is for any closure. Roughly speaking,
 `𝔼 v c` will hold if, when `v` is greater than a function value, `c` evaluates
 to a closure `c'` in WHNF and `𝕍 v c'`. Regarding `𝕍 v c`, it will hold when
 `c` is in WHNF, and if `v` is a function, the body of `c` evaluates
@@ -222,8 +222,8 @@ describe below.
 
 * If the value is `⊥`, then the result is true (`⊤`).
 
-* If the value is a join (u ⊔ v), then the result is the pair
-  (conjunction) of 𝕍 is true for both u and v.
+* If the value is a join (`u ⊔ v`), then the result is the pair
+  (conjunction) of `𝕍` being true for both `u` and `v`.
 
 * The important case is for a function value `v ↦ w` and closure
   `clos (ƛ N) γ`. Given any closure `c` such that `𝔼 v c`, if `w` is
@@ -521,26 +521,26 @@ kth-x{γ' = γ'}{x = x} with γ' x
 * Case `var`. Looking up `x` in `γ'` yields some closure, `clos M' δ`,
   and from `𝔾 γ γ'` we have `𝔼 (γ x) (clos M' δ)`. With the premise
   `above-fun (γ x)`, we obtain a closure `c` such that `δ ⊢ M' ⇓ c`
-  and `𝕍 (γ x) c`. To conclude `γ' ⊢ x ⇓ c` via `⇓-var`, we
+  and `𝕍 (γ x) c`. To conclude ``γ' ⊢ ` x ⇓ c`` via `⇓-var`, we
   need `γ' x ≡ clos M' δ`, which is obvious, but it requires some
   Agda shananigans via the `kth-x` lemma to get our hands on it.
 
 * Case `↦-elim`. We have `γ ⊢ L · M ↓ v`.
   The induction hypothesis for `γ ⊢ L ↓ v₁ ↦ v`
-  gives us `γ' ⊢ L ⇓ clos L' δ` and `𝕍 v (clos L' δ)`.
+  gives us `γ' ⊢ L ⇓ clos L' δ` and `𝕍 (v₁ ↦ v) (clos L' δ)`.
   Of course, `L' ≡ ƛ N` for some `N`.
   By the induction hypothesis for `γ ⊢ M ↓ v₁`,
   we have `𝔼 v₁ (clos M γ')`.
-  Together with the premise `above-fun v` and `𝕍 v (clos L' δ)`,
-  we obtain a closure `c'` such that `δ ⊢ N ⇓ c'` and `𝕍 v c'`.
+  Together with the premise `above-fun v` and `𝕍 (v₁ ↦ v) (clos L' δ)`,
+  we obtain a closure `c'` such that `(δ ,' clos M γ') ⊢ N ⇓ c'` and `𝕍 v c'`.
   We conclude that `γ' ⊢ L · M ⇓ c'` by rule `⇓-app`.
 
 * Case `↦-intro`. We have `γ ⊢ ƛ N ↓ v ↦ w`.
-  We immediately have `γ' ⊢ ƛ M ⇓ clos (ƛ M) γ'` by rule `⇓-lam`.
+  We immediately have `γ' ⊢ ƛ N ⇓ clos (ƛ N) γ'` by rule `⇓-lam`.
   But we also need to prove `𝕍 (v ↦ w) (clos (ƛ N) γ')`.
   Let `c` by an arbitrary closure such that `𝔼 v c`.
-  Suppose `v'` is greater than a function value.
-  We need to show that `γ' , c ⊢ N ⇓ c'` and `𝕍 v' c'` for some `c'`.
+  Suppose `w` is greater than a function value.
+  We need to show that `γ' , c ⊢ N ⇓ c'` and `𝕍 w c'` for some `c'`.
   We prove this by the induction hypothesis for `γ , v ⊢ N ↓ v'`
   but we must first show that `𝔾 (γ , v) (γ' , c)`. We prove
   that by the lemma `𝔾-ext`, using facts `𝔾 γ γ'` and `𝔼 v c`.
