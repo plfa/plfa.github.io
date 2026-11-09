@@ -392,7 +392,8 @@ are cut down versions of the similar proofs for isomorphism:
 
 It is also easy to see that if two types embed in each other, and the
 embedding functions correspond, then they are isomorphic.  This is a
-weak form of anti-symmetry:
+weak form of anti-symmetry.  The proof does some of the work by
+matching the evidence that the functions correspond against `refl`:
 
 ```agda
 ≲-antisym : ∀ {A B : Set}
@@ -402,28 +403,55 @@ weak form of anti-symmetry:
   → (from A≲B ≡ to B≲A)
     -------------------
   → A ≃ B
-≲-antisym A≲B B≲A to≡from from≡to =
+≲-antisym A≲B B≲A to≡from@refl from≡to@refl =
   record
     { to      = to A≲B
     ; from    = from A≲B
     ; from∘to = from∘to A≲B
-    ; to∘from = λ{y →
-        begin
-          to A≲B (from A≲B y)
-        ≡⟨ cong (to A≲B) (cong-app from≡to y) ⟩
-          to A≲B (to B≲A y)
-        ≡⟨ cong-app to≡from (to B≲A y) ⟩
-          from B≲A (to B≲A y)
-        ≡⟨ from∘to B≲A y ⟩
-          y
-        ∎}
+    ; to∘from = from∘to B≲A
     }
 ```
 
-The first three components are copied from the embedding, while the
-last combines the left inverse of `B ≲ A` with the equivalences of
-the `to` and `from` components from the two embeddings to obtain
-the right inverse of the isomorphism.
+The first three components are copied from the embedding `A≲B`.  For
+the last component, matching `to≡from` against `refl` tells Agda that
+`to A≲B` and `from B≲A` are the same function, while matching
+`from≡to` against `refl` tells Agda that `from A≲B` and `to B≲A` are
+the same function.  Hence `from∘to B≲A` has the required type.
+
+One subtlety is why Agda accepts these `refl` patterns at all.  The
+equalities compare projections from two records, rather than variables
+written directly on the left-hand side.  Agda silently η-expands record
+values.  This property is called η-equality for records: a record is
+determined by its fields.  A record value is definitionally equal to the
+record obtained by projecting out all its fields and putting them back
+together.  Thus, when checking the left-hand side, Agda may view the two
+embeddings as
+
+    record
+      { to      = f
+      ; from    = g
+      ; from∘to = p
+      }
+
+and
+
+    record
+      { to      = h
+      ; from    = k
+      ; from∘to = q
+      }
+
+where `f` is `to A≲B`, `g` is `from A≲B`, `h` is `to B≲A`, and `k` is
+`from B≲A`.  After this expansion, the equality arguments have types
+`f ≡ k` and `g ≡ h`, so matching them against `refl` identifies
+`f` with `k`, and `g` with `h`.  It is not that η-expanding `A≲B`
+computes `to A≲B` to something new; rather, η-expansion lets Agda
+expose the fields of record variables while solving the pattern match.
+Under these identifications, `from∘to B≲A` has type
+
+    ∀ (y : B) → to A≲B (from A≲B y) ≡ y
+
+which is exactly the type required for `to∘from`.
 
 # Equational reasoning for embedding
 
