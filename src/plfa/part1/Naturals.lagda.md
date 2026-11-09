@@ -15,7 +15,7 @@ But the number of stars is finite, while natural numbers are infinite.
 Count all the stars, and you will still have as many natural numbers
 left over as you started with.
 
-## The naturals are an inductive datatype
+# The naturals are an inductive datatype
 
 Everyone is familiar with the natural numbers
 
@@ -41,6 +41,7 @@ as a pair of inference rules:
     suc m : ℕ
 
 And here is the definition in Agda:
+
 ```agda
 data ℕ : Set where
   zero : ℕ
@@ -72,7 +73,7 @@ after zero; and `2` is shorthand for `suc (suc zero)`, which is the
 same as `suc 1`, the successor of one; and `3` is shorthand for the
 successor of two; and so on.
 
-#### Exercise `seven` (practice) {#seven}
+## Exercise `seven` (practice) {#seven}
 
 Write out `7` in longhand. The suggestion below loads but is, of course, incorrect.
 
@@ -84,7 +85,7 @@ seven = zero
 Type `C-c C-l` in Emacs to instruct Agda to re-load.
 
 
-## Unpacking the inference rules
+# Unpacking the inference rules
 
 Let's unpack the inference rules.  Each inference rule consists of
 zero or more _judgments_ written above a horizontal line, called the
@@ -96,7 +97,7 @@ is a natural, and the conclusion asserts that `suc m`
 is also a natural.
 
 
-## Unpacking the Agda definition
+# Unpacking the Agda definition
 
 Let's unpack the Agda definition. The keyword `data` tells us this is an
 inductive definition, that is, that we are defining a new datatype
@@ -125,7 +126,7 @@ instructions on how to type them in the Emacs text editor.  Here
 _type_ refers to typing with fingers as opposed to data types!
 
 
-## The story of creation
+# The story of creation
 
 Let's look again at the rules that define the natural numbers:
 
@@ -206,7 +207,7 @@ second day, and on the third, and so on.  An inductive definition lacking
 a base case is useless, as in the phrase "Brexit means Brexit".
 
 
-## Philosophy and history
+# Philosophy and history
 
 A philosopher might observe that our reference to the first day,
 second day, and so on, implicitly involves an understanding of natural
@@ -225,7 +226,7 @@ principia, nova methodo exposita_" (The principles of arithmetic
 presented by a new method), published the following year.
 
 
-## A pragma
+# A pragma
 
 In Agda, any text following `--` or enclosed between `{-`
 and `-}` is considered a _comment_.  Comments have no effect on the
@@ -233,9 +234,11 @@ code, with the exception of one special kind of comment, called a
 _pragma_, which is enclosed between `{-#` and `#-}`.
 
 Including the line
+
 ```agda
 {-# BUILTIN NATURAL ℕ #-}
 ```
+
 tells Agda that `ℕ` corresponds to the natural numbers, and hence one
 is permitted to type `0` as shorthand for `zero`, `1` as shorthand for
 `suc zero`, `2` as shorthand for `suc (suc zero)`, and so on. The pragma
@@ -251,7 +254,7 @@ representing it as an arbitrary-precision integer in Haskell only
 requires space proportional to the logarithm of _n_.
 
 
-## Imports
+# Imports
 
 Shortly we will want to write some equations that hold between
 terms involving natural numbers.  To support doing so, we import
@@ -288,7 +291,7 @@ Parentheses and semicolons are among the few characters that cannot
 appear in names, so we do not need extra spaces in the `using` list.
 
 
-## Operations on naturals are recursive functions {#plus}
+# Operations on naturals are recursive functions {#plus}
 
 Now that we have the natural numbers, what can we do with them?
 For instance, can we define arithmetic operations such as
@@ -302,6 +305,7 @@ instances of addition and multiplication can be specified in
 just a couple of lines.
 
 Here is the definition of addition in Agda:
+
 ```agda
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
@@ -347,6 +351,7 @@ addition of larger numbers is defined in terms of addition of smaller
 numbers.  Such a definition is called _well founded_.
 
 For example, let's add two and three:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -364,8 +369,10 @@ _ =
     5
   ∎
 ```
+
 We can write the same derivation more compactly by only
 expanding shorthand as needed:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ =
@@ -381,6 +388,7 @@ _ =
     5
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -406,10 +414,12 @@ definition of that symbol.
 
 In fact, both proofs above are longer than need be, and Agda is satisfied
 with the following:
+
 ```agda
 _ : 2 + 3 ≡ 5
 _ = refl
 ```
+
 Agda knows how to
 compute the value of `2 + 3`, and so can immediately
 check it is the same as `5`.  A binary relation is said to be _reflexive_
@@ -433,7 +443,7 @@ is not like testimony in a court which must be weighed to determine
 whether the witness is trustworthy.  Rather, it is ironclad.  The
 other word for evidence, which we will use interchangeably, is _proof_.
 
-#### Exercise `+-example` (practice) {#plus-example}
+## Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
@@ -442,15 +452,17 @@ Compute `3 + 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-## Multiplication
+# Multiplication
 
 Once we have defined addition, we can define multiplication
 as repeated addition:
+
 ```agda
 _*_ : ℕ → ℕ → ℕ
 zero    * n  =  zero
 (suc m) * n  =  n + (m * n)
 ```
+
 Computing `m * n` returns the sum of `m` copies of `n`.
 
 Again, rewriting turns the definition into two familiar equations:
@@ -473,6 +485,7 @@ Again, the definition is well founded in that multiplication of
 larger numbers is defined in terms of multiplication of smaller numbers.
 
 For example, let's multiply two and three:
+
 ```agda
 _ =
   begin
@@ -487,6 +500,7 @@ _ =
     6
   ∎
 ```
+
 The first line matches the inductive case by taking `m = 1` and `n = 3`,
 the second line matches the inductive case by taking `m = 0` and `n = 3`,
 and the third line matches the base case by taking `n = 3`.
@@ -494,7 +508,7 @@ Here we have omitted the signature declaring `_ : 2 * 3 ≡ 6`, since
 it can easily be inferred from the corresponding term.
 
 
-#### Exercise `*-example` (practice) {#times-example}
+## Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations, using the equations for `*`.
 (You do not need to step through the evaluation of `+`.)
@@ -504,7 +518,7 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 ```
 
 
-#### Exercise `_^_` (recommended) {#power}
+## Exercise `_^_` (recommended) {#power}
 
 Define exponentiation, which is given by the following equations:
 
@@ -519,7 +533,7 @@ Check that `3 ^ 4` is `81`.
 
 
 
-## Monus
+# Monus
 
 We can also define subtraction.  Since there are no negative
 natural numbers, if we subtract a larger number from a smaller
@@ -528,12 +542,14 @@ subtraction to naturals is called _monus_ (a twist on _minus_).
 
 Monus is our first use of a definition that uses pattern
 matching against both arguments:
+
 ```agda
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero   =  m
 zero  ∸ suc n  =  zero
 suc m ∸ suc n  =  m ∸ n
 ```
+
 We can do a simple analysis to show that all the cases are covered.
 
   * Consider the second argument.
@@ -548,6 +564,7 @@ founded because monus on bigger numbers is defined in terms of monus
 on smaller numbers.
 
 For example, let's subtract two from three:
+
 ```agda
 _ =
   begin
@@ -560,8 +577,10 @@ _ =
     1
   ∎
 ```
+
 We did not use the second equation at all, but it will be required
 if we try to subtract a larger number from a smaller one:
+
 ```agda
 _ =
   begin
@@ -592,7 +611,7 @@ overlap, which is sometimes helpful. We will give an example where
 overlap may be desirable in
 Section [Logical Connectives](/Decidable/#logical-connectives).
 
-#### Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
+## Exercise `∸-example₁` and `∸-example₂` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
@@ -601,7 +620,7 @@ Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equati
 ```
 
 
-## Precedence
+# Precedence
 
 We often use _precedence_ to avoid writing too many parentheses.
 Application _binds more tightly than_ (or _has precedence over_) any
@@ -613,10 +632,12 @@ so write `m + n + p` to mean `(m + n) + p`.
 
 In Agda the precedence and associativity of infix operators
 needs to be declared:
+
 ```agda
 infixl 6  _+_  _∸_
 infixl 7  _*_
 ```
+
 This states operators `_+_` and `_∸_` have precedence level 6,
 and operator `_*_` has precedence level 7.
 Addition and monus bind less tightly than multiplication
@@ -627,7 +648,7 @@ indicate that an operator associates to the right, or just `infix` to
 indicate that parentheses are always required to disambiguate.
 
 
-## Currying
+# Currying
 
 We have chosen to represent a function of two arguments in terms
 of a function of the first argument that returns a function of the
@@ -655,7 +676,7 @@ but currying is tastier". Only later did I learn that the explanation
 of the misattribution was itself a misattribution.  The idea actually
 appears in the _Begriffsschrift_ of Gottlob Frege, published in 1879.
 
-## The story of creation, revisited
+# The story of creation, revisited
 
 Just as our inductive definition defines the naturals in terms of the
 naturals, so does our recursive definition define addition in terms
@@ -727,7 +748,7 @@ definitions is quite similar.  They might be considered two sides of
 the same coin.
 
 
-## The story of creation, finitely {#finite-creation}
+# The story of creation, finitely {#finite-creation}
 
 The above story was told in a stratified way.  First, we create
 the infinite set of naturals.  We take that set as given when
@@ -777,7 +798,7 @@ This gives an entirely finitist view of infinite sets of data and
 equations relating the data.
 
 
-## Writing definitions interactively
+# Writing definitions interactively
 
 Agda is designed to be used with the Emacs text editor, and the two
 in combination provide features that help to create definitions
@@ -881,14 +902,16 @@ simple, but the same techniques can help with more complex programs.  Even for
 a program this simple, using `C-c C-c` to split cases can be helpful.
 
 
-## More pragmas
+# More pragmas
 
 Including the lines
+
 ```agda
 {-# BUILTIN NATPLUS _+_ #-}
 {-# BUILTIN NATTIMES _*_ #-}
 {-# BUILTIN NATMINUS _∸_ #-}
 ```
+
 tells Agda that these three operators correspond to the usual ones,
 and enables it to perform these computations using the corresponding
 Haskell operators on the arbitrary-precision integer type.
@@ -902,16 +925,18 @@ Haskell requires time proportional to the sum of the logarithms of
 _m_ and _n_.
 
 
-#### Exercise `Bin` (stretch) {#Bin}
+## Exercise `Bin` (stretch) {#Bin}
 
 A more efficient representation of natural numbers uses a binary
 rather than a unary system.  We represent a number as a bitstring:
+
 ```agda
 data Bin : Set where
   ⟨⟩ : Bin
   _O : Bin → Bin
   _I : Bin → Bin
 ```
+
 For instance, the bitstring
 
     1011
@@ -952,7 +977,7 @@ Confirm that these both give the correct answer for zero through four.
 ```
 
 
-## Standard library
+# Standard library
 
 At the end of each chapter, we will show where to find relevant
 definitions in the standard library.  The naturals, constructors for
@@ -975,7 +1000,7 @@ twice. For this reason, we will usually avoid pragmas in future chapters.
 Information on pragmas can be found in the [Agda documentation](https://agda.readthedocs.io/en/v2.6.1/language/pragmas.html).
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

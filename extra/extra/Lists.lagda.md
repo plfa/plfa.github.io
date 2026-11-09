@@ -2,7 +2,7 @@
 
 Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 
-```
+```agda
 Any-∃ : ∀ {A : Set} {P : A → Set} {xs : List A} → Any P xs ≃ ∃[ x ] (x ∈ xs × P x)
 Any-∃ {A} {P} {xs} = record
   { to = to

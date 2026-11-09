@@ -37,17 +37,17 @@ Related work has been carried out by
 James Chapman, James McKinna, and many others.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open import Data.Nat using (ℕ; zero; suc; _<_; _≤?_; z≤n; s≤s)
+open Eq using (_≡_; refl; cong)
+open import Data.Nat using (ℕ; zero; suc; _<_; z<s; s<s; _≤_; z≤n; s≤s; _≤?_)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Nullary.Decidable using (True; toWitness)
 ```
 
-## Introduction
+# Introduction
 
 There is a close correspondence between the structure of a
 term and the structure of the derivation showing that it is
@@ -127,7 +127,7 @@ we will introduce terms with de Bruijn indices that
 are intrinsically scoped but not typed.
 
 
-## A second example
+# A second example
 
 De Bruijn indices can be tricky to get the hang of, so before
 proceeding further let's consider a second example.  Here is
@@ -197,7 +197,7 @@ shadowing: with variable names, there is no way to refer to
 the former binding in the scope of the latter, but with de
 Bruijn indices it could be referred to as `# 2`.
 
-## Order of presentation
+# Order of presentation
 
 In the current chapter, the use of intrinsically-typed terms
 necessitates that we cannot introduce operations such as
@@ -210,12 +210,13 @@ the trickiest part of the previous proof, the lemma establishing that
 substitution preserves types.  The definition of reduction
 incorporates preservation, which no longer requires a separate proof.
 
-## Syntax
+# Syntax
 
 We now begin our formal development.
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments, types, and terms:
+
 ```agda
 infix  4 _⊢_
 infix  4 _∋_
@@ -235,39 +236,44 @@ infix  9 #_
 Since terms are intrinsically typed, we must define types and
 contexts before terms.
 
-### Types
+## Types
 
 As before, we have just two types, functions and naturals.
 The formal definition is unchanged:
+
 ```agda
 data Type : Set where
   _⇒_ : Type → Type → Type
   `ℕ  : Type
 ```
 
-### Contexts
+## Contexts
 
 Contexts are as before, but we drop the names.
 Contexts are formalised as follows:
+
 ```agda
 data Context : Set where
   ∅   : Context
   _,_ : Context → Type → Context
 ```
+
 A context is just a list of types, with the type of the most
 recently bound variable on the right.  As before, we let `Γ`
 and `Δ` range over contexts.  We write `∅` for the empty
 context, and `Γ , A` for the context `Γ` extended by type `A`.
 For example
+
 ```agda
 _ : Context
 _ = ∅ , `ℕ ⇒ `ℕ , `ℕ
 ```
+
 is a context with two variables in scope, where the outer
 bound one has type `` `ℕ ⇒ `ℕ ``, and the inner bound one has
 type `` `ℕ ``.
 
-### Variables and the lookup judgment
+## Variables and the lookup judgment
 
 Intrinsically-typed variables correspond to the lookup judgment.
 They are represented by de Bruijn indices, and hence also
@@ -280,6 +286,7 @@ The lookup judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old lookup judgment, but
 with all variable names dropped:
+
 ```agda
 data _∋_ : Context → Type → Set where
 
@@ -292,6 +299,7 @@ data _∋_ : Context → Type → Set where
       ---------
     → Γ , B ∋ A
 ```
+
 Constructor `S` no longer requires an additional parameter,
 since without names shadowing is no longer an issue.  Now
 constructors `Z` and `S` correspond even more closely to the
@@ -306,6 +314,7 @@ judgments:
 * `` ∅ , "s" ⦂ `ℕ ⇒ `ℕ , "z" ⦂ `ℕ ∋ "s" ⦂ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed variables:
+
 ```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ
 _ = Z
@@ -313,12 +322,13 @@ _ = Z
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ∋ `ℕ ⇒ `ℕ
 _ = S Z
 ```
+
 In the given context, `"z"` is represented by `Z`
 (as the most recently bound variable),
 and `"s"` by `S Z`
 (as the next most recently bound variable).
 
-### Terms and the typing judgment
+## Terms and the typing judgment
 
 Intrinsically-typed terms correspond to the typing judgment.
 We write
@@ -330,6 +340,7 @@ The judgement is formalised by a datatype indexed
 by a context and a type.
 It looks exactly like the old typing judgment, but
 with all terms and variable names dropped:
+
 ```agda
 data _⊢_ : Context → Type → Set where
 
@@ -370,6 +381,7 @@ data _⊢_ : Context → Type → Set where
       ---------
     → Γ ⊢ A
 ```
+
 The definition exploits the close correspondence between the
 structure of terms and the structure of a derivation showing
 that it is well typed: now we use the derivation _as_ the
@@ -385,6 +397,7 @@ For example, consider the following old-style typing judgments:
 * `` ∅ ⊢ ƛ "s" ⇒ ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) ⦂  (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ ``
 
 They correspond to the following intrinsically-typed terms:
+
 ```agda
 _ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ `ℕ
 _ = ` Z
@@ -404,45 +417,51 @@ _ = ƛ (` S Z · (` S Z · ` Z))
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (` S Z · (` S Z · ` Z))
 ```
+
 The final term represents the Church numeral two.
 
-### Abbreviating de Bruijn indices
+## Abbreviating de Bruijn indices
 
-We define a helper function that computes the length of a context,
+We define a helper function that computes the size of a context,
 which will be useful in making sure an index is within context bounds:
+
 ```agda
-length : Context → ℕ
-length ∅        =  zero
-length (Γ , _)  =  suc (length Γ)
+size : Context → ℕ
+size ∅        =  zero
+size (Γ , _)  =  suc (size Γ)
 ```
 
 We can use a natural number to select a type from a context:
+
 ```agda
-lookup : {Γ : Context} → {n : ℕ} → (p : n < length Γ) → Type
+lookup : {Γ : Context} → {n : ℕ} → (p : n < size Γ) → Type
 lookup {(_ , A)} {zero}    (s≤s z≤n)  =  A
 lookup {(Γ , _)} {(suc n)} (s≤s p)    =  lookup p
 ```
 
-We intend to apply the function only when the natural is shorter than
-the length of the context, which is witnessed by `p`.
+We intend to apply the function only when the natural is smaller than
+the size of the context, which is witnessed by `p`.
 
 Given the above, we can convert a natural to a corresponding
 de Bruijn index, looking up its type in the context:
+
 ```agda
-count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
+count : ∀ {Γ} → {n : ℕ} → (p : n < size Γ) → Γ ∋ lookup p
 count {_ , _} {zero}    (s≤s z≤n)  =  Z
 count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 ```
 
 We can then introduce a convenient abbreviation for variables:
+
 ```agda
 #_ : ∀ {Γ}
   → (n : ℕ)
-  → {n∈Γ : True (suc n ≤? length Γ)}
+  → {n∈Γ : True (suc n ≤? size Γ)}
     --------------------------------
   → Γ ⊢ lookup (toWitness n∈Γ)
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 ```
+
 Function `#_` takes an implicit argument `n∈Γ` that provides evidence for `n` to
 be within the context's bounds. Recall that
 [`True`](/Decidable/#proof-by-reflection),
@@ -453,17 +472,19 @@ against invoking `#_` on an `n` that is out of context bounds. Finally, in the
 return type `n∈Γ` is converted to a witness that `n` is within the bounds.
 
 With this abbreviation, we can rewrite the Church numeral two more compactly:
+
 ```agda
 _ : ∅ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
 _ = ƛ ƛ (# 1 · (# 1 · # 0))
 ```
 
 
-### Test examples
+## Test examples
 We repeat the test examples from Chapter [Lambda](/Lambda/). You can find them
 [here](/Lambda/#derivation) for comparison.
 
 First, computing two plus two on naturals:
+
 ```agda
 two : ∀ {Γ} → Γ ⊢ `ℕ
 two = `suc `suc `zero
@@ -474,10 +495,12 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 2+2 : ∀ {Γ} → Γ ⊢ `ℕ
 2+2 = plus · two · two
 ```
+
 We generalise to arbitrary contexts because later we will give examples
 where `two` appears nested inside binders.
 
 Next, computing two plus two on Church numerals:
+
 ```agda
 Ch : Type → Type
 Ch A  =  (A ⇒ A) ⇒ A ⇒ A
@@ -494,13 +517,14 @@ sucᶜ = ƛ `suc (# 0)
 2+2ᶜ : ∀ {Γ} → Γ ⊢ `ℕ
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
+
 As before we generalise everything to arbitrary
 contexts.  While we are at it, we also generalise `twoᶜ` and
 `plusᶜ` to Church numerals over arbitrary types.
 
 
 
-#### Exercise `mul` (recommended)
+## Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the intrinsically-typed
@@ -511,7 +535,7 @@ de Bruijn representation.
 ```
 
 
-## Renaming
+# Renaming
 
 Renaming is a necessary prelude to substitution, enabling us
 to "rebase" a term from one context to another.  It
@@ -525,6 +549,7 @@ from variables in one context to variables in another,
 extension yields a map from the first context extended to the
 second context similarly extended.  It looks exactly like the
 old extension lemma, but with all names and terms dropped:
+
 ```agda
 ext : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ∋ A)
@@ -533,6 +558,7 @@ ext : ∀ {Γ Δ}
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 ```
+
 Let `ρ` be the name of the map that takes variables in `Γ`
 to variables in `Δ`.  Consider the de Bruijn index of the
 variable in `Γ , B`:
@@ -548,6 +574,7 @@ With extension under our belts, it is straightforward
 to define renaming.  If variables in one context map to
 variables in another, then terms in the first context map to
 terms in the second:
+
 ```agda
 rename : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ∋ A)
@@ -561,6 +588,7 @@ rename ρ (`suc M)       =  `suc (rename ρ M)
 rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 ```
+
 Let `ρ` be the name of the map that takes variables in `Γ`
 to variables in `Δ`.  Let's unpack the first three cases:
 
@@ -587,6 +615,7 @@ calculus.
 
 Here is an example of renaming a term with one free
 and one bound variable:
+
 ```agda
 M₀ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₀ = ƛ (# 1 · (# 1 · # 0))
@@ -597,6 +626,7 @@ M₁ = ƛ (# 2 · (# 2 · # 0))
 _ : rename S_ M₀ ≡ M₁
 _ = refl
 ```
+
 In general, `rename S_` will increment the de Bruijn index for
 each free variable by one, while leaving the index for each
 bound variable unchanged.  The code achieves this naturally:
@@ -615,7 +645,7 @@ typing, and hence the Agda code for intrinsically-typed de Bruijn
 terms is intrinsically reliable.
 
 
-## Simultaneous Substitution
+# Simultaneous Substitution
 
 Because de Bruijn indices free us of concerns with renaming,
 it becomes easy to provide a definition of substitution that
@@ -634,6 +664,7 @@ map from variables in one context to _terms_ in another.
 Given a map from variables in one context to terms over
 another, extension yields a map from the first context
 extended to the second context similarly extended:
+
 ```agda
 exts : ∀ {Γ Δ}
   → (∀ {A} →       Γ ∋ A →     Δ ⊢ A)
@@ -642,6 +673,7 @@ exts : ∀ {Γ Δ}
 exts σ Z      =  ` Z
 exts σ (S x)  =  rename S_ (σ x)
 ```
+
 Let `σ` be the name of the map that takes variables in `Γ`
 to terms over `Δ`.  Consider the de Bruijn index of the
 variable in `Γ , B`:
@@ -662,6 +694,7 @@ With extension under our belts, it is straightforward
 to define substitution.  If variables in one context map
 to terms over another, then terms in the first context
 map to terms in the second:
+
 ```agda
 subst : ∀ {Γ Δ}
   → (∀ {A} → Γ ∋ A → Δ ⊢ A)
@@ -675,6 +708,7 @@ subst σ (`suc M)       =  `suc (subst σ M)
 subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
 subst σ (μ N)          =  μ (subst (exts σ) N)
 ```
+
 Let `σ` be the name of the map that takes variables in `Γ`
 to terms over `Δ`.  Let's unpack the first three cases:
 
@@ -691,11 +725,12 @@ The remaining cases are similar, recursing on each subterm,
 and extending the map whenever the construct introduces a
 bound variable.
 
-## Single substitution
+# Single substitution
 
 From the general case of substitution for multiple free
 variables it is easy to define the special case of
 substitution for one free variable:
+
 ```agda
 _[_] : ∀ {Γ A B}
   → Γ , B ⊢ A
@@ -708,6 +743,7 @@ _[_] {Γ} {A} {B} N M =  subst {Γ , B} {Γ} σ {A} N
   σ Z      =  M
   σ (S x)  =  ` x
 ```
+
 In a term of type `A` over context `Γ , B`, we replace the
 variable of type `B` by a term of type `B` over context `Γ`.
 To do so, we use a map from the context `Γ , B` to the context
@@ -720,6 +756,7 @@ Consider the previous example:
   `` ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z") ``
 
 Here is the example formalised:
+
 ```agda
 M₂ : ∅ , `ℕ ⇒ `ℕ ⊢ `ℕ ⇒ `ℕ
 M₂ = ƛ # 1 · (# 1 · # 0)
@@ -744,6 +781,7 @@ variable to avoid capture:
 Say the bound `"x"` has type `` `ℕ ⇒ `ℕ ``, the substituted
 `"y"` has type `` `ℕ ``, and the free `"x"` also has type `` `ℕ ⇒ `ℕ ``.
 Here is the example formalised:
+
 ```agda
 M₅ : ∅ , `ℕ ⇒ `ℕ , `ℕ ⊢ (`ℕ ⇒ `ℕ) ⇒ `ℕ
 M₅ = ƛ # 0 · # 1
@@ -769,9 +807,10 @@ And combining definition with proof makes it harder for errors
 to sneak in.
 
 
-## Values
+# Values
 
 The definition of value is much as before:
+
 ```agda
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -794,7 +833,7 @@ much in the same way that `[]` did in
 [Lists](/Lists/).
 
 
-## Reduction
+# Reduction
 
 The reduction rules are the same as those given earlier, save
 that for each term we must specify its types.  As before, we
@@ -846,6 +885,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
       ----------------
     → μ N —→ N [ μ N ]
 ```
+
 The definition states that `M —→ N` can only hold of terms `M`
 and `N` which _both_ have type `Γ ⊢ A` for some context `Γ`
 and type `A`.  In other words, it is _built-in_ to our
@@ -857,10 +897,11 @@ preserves types, which is built-in to our
 definition of substitution.
 
 
-## Reflexive and transitive closure
+# Reflexive and transitive closure
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition:
+
 ```agda
 infix  2 _—↠_
 infix  1 begin_
@@ -889,11 +930,12 @@ begin M—↠N = M—↠N
 ```
 
 
-## Examples
+# Examples
 
 We reiterate each of our previous examples.  First, the Church
 numeral two applied to the successor function and zero yields
 the natural number two:
+
 ```agda
 _ : twoᶜ · sucᶜ · `zero {∅} —↠ `suc `suc `zero
 _ =
@@ -909,9 +951,11 @@ _ =
    `suc (`suc `zero)
   ∎
 ```
+
 As before, we need to supply an explicit context to `` `zero ``.
 
 Next, a sample reduction demonstrating that two plus two is four:
+
 ```agda
 _ : plus {∅} · two · two —↠ `suc `suc `suc `suc `zero
 _ =
@@ -946,6 +990,7 @@ _ =
 ```
 
 And finally, a similar sample reduction for Church numerals:
+
 ```agda
 _ : plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero —↠ `suc `suc `suc `suc `zero {∅}
 _ =
@@ -978,7 +1023,7 @@ _ =
   ∎
 ```
 
-## Values do not reduce
+# Values do not reduce
 
 We have now completed all the definitions, which of
 necessity subsumed some of the propositions from the
@@ -987,7 +1032,7 @@ substitution and reduction preserves types.
 We now turn to proving the remaining results from the
 previous development.
 
-#### Exercise `V¬—→` (practice)
+## Exercise `V¬—→` (practice)
 
 Following the previous development, show values do
 not reduce, and its corollary, terms that reduce are not
@@ -997,11 +1042,12 @@ values.
 -- Your code goes here
 ```
 
-## Progress
+# Progress
 
 As before, every term that is well typed and closed is either
 a value or takes a reduction step.  The formulation of progress
 is just as before, but annotated with types:
+
 ```agda
 data Progress {A} (M : ∅ ⊢ A) : Set where
 
@@ -1018,6 +1064,7 @@ data Progress {A} (M : ∅ ⊢ A) : Set where
 
 The statement and proof of progress is much as before,
 appropriately annotated:
+
 ```agda
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
@@ -1039,311 +1086,67 @@ progress (μ N)                          =  step (β-μ)
 ```
 
 
-## Evaluation
+# Evaluation
 
 Before, we combined progress and preservation to evaluate a term.
 We can do much the same here, but we no longer need to explicitly
 refer to preservation, since it is built-in to the definition of reduction.
 
+As before, we relate gas to the number of steps in a reduction sequence.
 
 ```agda
-record Gas : Set where
-  constructor gas
-  field
-    amount : ℕ
+length : ∀ {A} {M N : ∅ ⊢ A} → M —↠ N → ℕ
+length (M ∎)                =  zero
+length (L —→⟨ L—→M ⟩ M—↠N)  =  suc (length M—↠N)
 ```
-When our evaluator returns a term `N`, it will either give evidence that
-`N` is a value or indicate that it ran out of gas:
+
+Also as before, if the evaluator runs out of gas it returns a sequence
+of length equal to the amount of gas, while if it terminates in returns
+a sequence of length less than the amount of gas and ending in a value.
+
 ```agda
-data Finished {Γ A} (N : Γ ⊢ A) : Set where
+data Eval {A} (M : ∅ ⊢ A) (g : ℕ) : Set where
 
-   done :
-       Value N
-       ----------
-     → Finished N
+  out-of-gas : {N : ∅ ⊢ A}
+    → (M—↠N : M —↠ N)
+    → length M—↠N ≡ g
+      ---------------
+    → Eval M g
 
-   out-of-gas :
-       ----------
-       Finished N
+  terminates : {N : ∅ ⊢ A}
+    → (M—↠N : M —↠ N)
+    → length M—↠N < g
+    → Value N
+      ---------------
+    → Eval M g
 ```
-Given a term `L` of type `A`, the evaluator will, for some `N`, return
-a reduction sequence from `L` to `N` and an indication of whether
-reduction finished:
-```agda
-data Steps {A} : ∅ ⊢ A → Set where
 
-  steps : {L N : ∅ ⊢ A}
-    → L —↠ N
-    → Finished N
-      ----------
-    → Steps L
-```
-The evaluator takes gas and a term and returns the corresponding steps:
+The evaluator takes gas and an intrinsically-typed term,
+and returns a reduction sequence, indicating either that it
+ran out of gas or that it terminated.
+
 ```agda
 eval : ∀ {A}
-  → Gas
+  → (g : ℕ)
   → (L : ∅ ⊢ A)
-    -----------
-  → Steps L
-eval (gas zero)    L                     =  steps (L ∎) out-of-gas
-eval (gas (suc m)) L with progress L
-... | done VL                            =  steps (L ∎) (done VL)
-... | step {M} L—→M with eval (gas m) M
-...    | steps M—↠N fin                  =  steps (L —→⟨ L—→M ⟩ M—↠N) fin
+    ---------
+  → Eval L g
+eval zero L            =  out-of-gas (L ∎) refl
+eval (suc g) L with progress L
+... | done VL                  =  terminates (L ∎) z<s VL
+... | step {M} L—→M with eval g M
+...   | out-of-gas M—↠N ≡g     =  out-of-gas (L —→⟨ L—→M ⟩ M—↠N) (cong suc ≡g)
+...   | terminates M—↠N <g VN  =  terminates (L —→⟨ L—→M ⟩ M—↠N) (s<s <g) VN
 ```
+
 The definition is a little simpler than previously, as we no longer need
 to invoke preservation.
 
-## Examples
-
-We reiterate each of our previous examples.  We re-define the term
-`sucμ` that loops forever:
-```agda
-sucμ : ∅ ⊢ `ℕ
-sucμ = μ (`suc (# 0))
-```
-To compute the first three steps of the infinite reduction sequence,
-we evaluate with three steps worth of gas:
-```agda
-_ : eval (gas 3) sucμ ≡
-  steps
-   (μ `suc ` Z
-   —→⟨ β-μ ⟩
-    `suc (μ `suc ` Z)
-   —→⟨ ξ-suc β-μ ⟩
-    `suc (`suc (μ `suc ` Z))
-   —→⟨ ξ-suc (ξ-suc β-μ) ⟩
-    `suc (`suc (`suc (μ `suc ` Z)))
-   ∎)
-   out-of-gas
-_ = refl
-```
-
-The Church numeral two applied to successor and zero:
-```agda
-_ : eval (gas 100) (twoᶜ · sucᶜ · `zero) ≡
-  steps
-   ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `zero
-   —→⟨ β-ƛ V-zero ⟩
-    (ƛ `suc ` Z) · ((ƛ `suc ` Z) · `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
-    (ƛ `suc ` Z) · `suc `zero
-   —→⟨ β-ƛ (V-suc V-zero) ⟩
-    `suc (`suc `zero)
-   ∎)
-   (done (V-suc (V-suc V-zero)))
-_ = refl
-```
-
-Two plus two is four:
-```agda
-_ : eval (gas 100) (plus · two · two) ≡
-  steps
-   ((μ
-     (ƛ
-      (ƛ
-       case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-    · `suc (`suc `zero)
-    · `suc (`suc `zero)
-   —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
-    (ƛ
-     (ƛ
-      case (` (S Z)) (` Z)
-      (`suc
-       ((μ
-         (ƛ
-          (ƛ
-           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-        · ` Z
-        · ` (S Z)))))
-    · `suc (`suc `zero)
-    · `suc (`suc `zero)
-   —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ
-     case (`suc (`suc `zero)) (` Z)
-     (`suc
-      ((μ
-        (ƛ
-         (ƛ
-          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-       · ` Z
-       · ` (S Z))))
-    · `suc (`suc `zero)
-   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    case (`suc (`suc `zero)) (`suc (`suc `zero))
-    (`suc
-     ((μ
-       (ƛ
-        (ƛ
-         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-      · ` Z
-      · `suc (`suc `zero)))
-   —→⟨ β-suc (V-suc V-zero) ⟩
-    `suc
-    ((μ
-      (ƛ
-       (ƛ
-        case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-     · `suc `zero
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
-    `suc
-    ((ƛ
-      (ƛ
-       case (` (S Z)) (` Z)
-       (`suc
-        ((μ
-          (ƛ
-           (ƛ
-            case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-         · ` Z
-         · ` (S Z)))))
-     · `suc `zero
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
-    `suc
-    ((ƛ
-      case (`suc `zero) (` Z)
-      (`suc
-       ((μ
-         (ƛ
-          (ƛ
-           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-        · ` Z
-        · ` (S Z))))
-     · `suc (`suc `zero))
-   —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    `suc
-    case (`suc `zero) (`suc (`suc `zero))
-    (`suc
-     ((μ
-       (ƛ
-        (ƛ
-         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-      · ` Z
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (β-suc V-zero) ⟩
-    `suc
-    (`suc
-     ((μ
-       (ƛ
-        (ƛ
-         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-      · `zero
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
-    `suc
-    (`suc
-     ((ƛ
-       (ƛ
-        case (` (S Z)) (` Z)
-        (`suc
-         ((μ
-           (ƛ
-            (ƛ
-             case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-          · ` Z
-          · ` (S Z)))))
-      · `zero
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
-    `suc
-    (`suc
-     ((ƛ
-       case `zero (` Z)
-       (`suc
-        ((μ
-          (ƛ
-           (ƛ
-            case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-         · ` Z
-         · ` (S Z))))
-      · `suc (`suc `zero)))
-   —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
-    `suc
-    (`suc
-     case `zero (`suc (`suc `zero))
-     (`suc
-      ((μ
-        (ƛ
-         (ƛ
-          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
-       · ` Z
-       · `suc (`suc `zero))))
-   —→⟨ ξ-suc (ξ-suc β-zero) ⟩
-    `suc (`suc (`suc (`suc `zero)))
-   ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
-_ = refl
-```
-
-And the corresponding term for Church numerals:
-```agda
-_ : eval (gas 100) (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
-  steps
-   ((ƛ
-     (ƛ
-      (ƛ (ƛ ` (S (S (S Z))) · ` (S Z) · (` (S (S Z)) · ` (S Z) · ` Z)))))
-    · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
-    · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
-    · (ƛ `suc ` Z)
-    · `zero
-   —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
-    (ƛ
-     (ƛ
-      (ƛ
-       (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) ·
-       (` (S (S Z)) · ` (S Z) · ` Z))))
-    · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
-    · (ƛ `suc ` Z)
-    · `zero
-   —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
-    (ƛ
-     (ƛ
-      (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) ·
-      ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) · ` Z)))
-    · (ƛ `suc ` Z)
-    · `zero
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ
-     (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) ·
-     ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · ` Z))
-    · `zero
-   —→⟨ β-ƛ V-zero ⟩
-    (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) ·
-    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero)
-   —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
-    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero)
-   —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
-    ((ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
-    ((ƛ `suc ` Z) · ((ƛ `suc ` Z) · `zero))
-   —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
-    ((ƛ `suc ` Z) · `suc `zero)
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
-    (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `suc (`suc `zero)
-   —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
-    (ƛ `suc ` Z) · ((ƛ `suc ` Z) · `suc (`suc `zero))
-   —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
-    (ƛ `suc ` Z) · `suc (`suc (`suc `zero))
-   —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
-    `suc (`suc (`suc (`suc `zero)))
-   ∎)
-   (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
-_ = refl
-```
-
-We omit the proof that reduction is deterministic, since it is
-tedious and almost identical to the previous proof.
+We don't repeat the previous examples, as they add little save length.
+Similarly for the proof that reduction is deterministic.
 
 
-#### Exercise `mul-example` (recommended)
+## Exercise `mul-example` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
@@ -1352,7 +1155,7 @@ Using the evaluator, confirm that two times two is four.
 ```
 
 
-## Intrinsic typing is golden
+# Intrinsic typing is golden
 
 Counting the lines of code is instructive.  While this chapter
 covers the same formal development as the previous two
@@ -1369,15 +1172,285 @@ The relation between the two approaches approximates the
 golden ratio: extrinsically-typed terms
 require about 1.6 times as much code as intrinsically-typed.
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 
     σ  U+03C3  GREEK SMALL LETTER SIGMA (\Gs or \sigma)
-    ₀  U+2080  SUBSCRIPT ZERO (\_0)
-    ₃  U+20B3  SUBSCRIPT THREE (\_3)
+    ₀  U+20R0  SUBSCRIPT ZERO (\_0)
+    ₁  U+2081  SUBSCRIPT ONE (\_1)
+    ₂  U+2082  SUBSCRIPT TWO (\_2)
+    ₃  U+2083  SUBSCRIPT THREE (\_3)
     ₄  U+2084  SUBSCRIPT FOUR (\_4)
     ₅  U+2085  SUBSCRIPT FIVE (\_5)
     ₆  U+2086  SUBSCRIPT SIX (\_6)
     ₇  U+2087  SUBSCRIPT SEVEN (\_7)
     ≠  U+2260  NOT EQUAL TO (\=n)
+
+
+<!--
+Following omitted as for some reason they vastly increase
+time for Agda to check the file.
+
+## Examples
+
+We reiterate each of our previous examples.  We re-define the term
+`sucμ` that loops forever:
+```agda
+-- sucμ : ∅ ⊢ `ℕ
+-- sucμ = μ (`suc (# 0))
+```
+
+To compute the first three steps of the infinite reduction sequence,
+we evaluate with three steps worth of gas:
+
+```agda
+-- _ : eval 3 sucμ ≡
+--   out-of-gas
+--    (μ `suc ` Z
+--    —→⟨ β-μ ⟩
+--     `suc (μ `suc ` Z)
+--    —→⟨ ξ-suc β-μ ⟩
+--     `suc (`suc (μ `suc ` Z))
+--    —→⟨ ξ-suc (ξ-suc β-μ) ⟩
+--     `suc (`suc (`suc (μ `suc ` Z)))
+--    ∎)
+--    refl
+-- _ = refl
+```
+
+The Church numeral two applied to successor and zero:
+
+```agda
+-- _ : eval 100 (twoᶜ · sucᶜ · `zero) ≡
+--   terminates
+--    ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `zero
+--    —→⟨ β-ƛ V-zero ⟩
+--     (ƛ `suc ` Z) · ((ƛ `suc ` Z) · `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+--     (ƛ `suc ` Z) · `suc `zero
+--    —→⟨ β-ƛ (V-suc V-zero) ⟩
+--     `suc (`suc `zero)
+--    ∎)
+--    (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))
+--    (V-suc (V-suc V-zero))
+-- _ = refl
+```
+
+We omit the proof that reduction is deterministic, since it is
+tedious and almost identical to the previous proof.
+
+Two plus two is four:
+
+```agda
+-- _ : eval 100 (plus · two · two) ≡
+--   terminates
+--    ((μ
+--      (ƛ
+--       (ƛ
+--        case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--     · `suc (`suc `zero)
+--     · `suc (`suc `zero)
+--    —→⟨ ξ-·₁ (ξ-·₁ β-μ) ⟩
+--     (ƛ
+--      (ƛ
+--       case (` (S Z)) (` Z)
+--       (`suc
+--        ((μ
+--          (ƛ
+--           (ƛ
+--            case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--         · ` Z
+--         · ` (S Z)))))
+--     · `suc (`suc `zero)
+--     · `suc (`suc `zero)
+--    —→⟨ ξ-·₁ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     (ƛ
+--      case (`suc (`suc `zero)) (` Z)
+--      (`suc
+--       ((μ
+--         (ƛ
+--          (ƛ
+--           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--        · ` Z
+--        · ` (S Z))))
+--     · `suc (`suc `zero)
+--    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+--     case (`suc (`suc `zero)) (`suc (`suc `zero))
+--     (`suc
+--      ((μ
+--        (ƛ
+--         (ƛ
+--          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--       · ` Z
+--       · `suc (`suc `zero)))
+--    —→⟨ β-suc (V-suc V-zero) ⟩
+--     `suc
+--     ((μ
+--       (ƛ
+--        (ƛ
+--         case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--      · `suc `zero
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (ξ-·₁ (ξ-·₁ β-μ)) ⟩
+--     `suc
+--     ((ƛ
+--       (ƛ
+--        case (` (S Z)) (` Z)
+--        (`suc
+--         ((μ
+--           (ƛ
+--            (ƛ
+--             case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--          · ` Z
+--          · ` (S Z)))))
+--      · `suc `zero
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (ξ-·₁ (β-ƛ (V-suc V-zero))) ⟩
+--     `suc
+--     ((ƛ
+--       case (`suc `zero) (` Z)
+--       (`suc
+--        ((μ
+--          (ƛ
+--           (ƛ
+--            case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--         · ` Z
+--         · ` (S Z))))
+--      · `suc (`suc `zero))
+--    —→⟨ ξ-suc (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     `suc
+--     case (`suc `zero) (`suc (`suc `zero))
+--     (`suc
+--      ((μ
+--        (ƛ
+--         (ƛ
+--          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--       · ` Z
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (β-suc V-zero) ⟩
+--     `suc
+--     (`suc
+--      ((μ
+--        (ƛ
+--         (ƛ
+--          case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--       · `zero
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (ξ-·₁ β-μ))) ⟩
+--     `suc
+--     (`suc
+--      ((ƛ
+--        (ƛ
+--         case (` (S Z)) (` Z)
+--         (`suc
+--          ((μ
+--            (ƛ
+--             (ƛ
+--              case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--           · ` Z
+--           · ` (S Z)))))
+--       · `zero
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (ξ-·₁ (β-ƛ V-zero))) ⟩
+--     `suc
+--     (`suc
+--      ((ƛ
+--        case `zero (` Z)
+--        (`suc
+--         ((μ
+--           (ƛ
+--            (ƛ
+--             case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--          · ` Z
+--          · ` (S Z))))
+--       · `suc (`suc `zero)))
+--    —→⟨ ξ-suc (ξ-suc (β-ƛ (V-suc (V-suc V-zero)))) ⟩
+--     `suc
+--     (`suc
+--      case `zero (`suc (`suc `zero))
+--      (`suc
+--       ((μ
+--         (ƛ
+--          (ƛ
+--           case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+--        · ` Z
+--        · `suc (`suc `zero))))
+--    —→⟨ ξ-suc (ξ-suc β-zero) ⟩
+--     `suc (`suc (`suc (`suc `zero)))
+--    ∎)
+--    (s≤s
+--     (s≤s
+--      (s≤s
+--       (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
+--    (V-suc (V-suc (V-suc (V-suc V-zero))))
+-- _ = refl
+```
+
+And the corresponding term for Church numerals:
+
+```agda
+-- _ : eval 100 (plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero) ≡
+--   terminates
+--    ((ƛ
+--      (ƛ
+--       (ƛ (ƛ ` (S (S (S Z))) · ` (S Z) · (` (S (S Z)) · ` (S Z) · ` Z)))))
+--     · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
+--     · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
+--     · (ƛ `suc ` Z)
+--     · `zero
+--    —→⟨ ξ-·₁ (ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ))) ⟩
+--     (ƛ
+--      (ƛ
+--       (ƛ
+--        (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) ·
+--        (` (S (S Z)) · ` (S Z) · ` Z))))
+--     · (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z)))
+--     · (ƛ `suc ` Z)
+--     · `zero
+--    —→⟨ ξ-·₁ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+--     (ƛ
+--      (ƛ
+--       (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) ·
+--       ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · ` (S Z) · ` Z)))
+--     · (ƛ `suc ` Z)
+--     · `zero
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ
+--      (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) ·
+--      ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · ` Z))
+--     · `zero
+--    —→⟨ β-ƛ V-zero ⟩
+--     (ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) ·
+--     ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero)
+--    —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
+--     ((ƛ (ƛ ` (S Z) · (` (S Z) · ` Z))) · (ƛ `suc ` Z) · `zero)
+--    —→⟨ ξ-·₂ V-ƛ (ξ-·₁ (β-ƛ V-ƛ)) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
+--     ((ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
+--     ((ƛ `suc ` Z) · ((ƛ `suc ` Z) · `zero))
+--    —→⟨ ξ-·₂ V-ƛ (ξ-·₂ V-ƛ (β-ƛ V-zero)) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) ·
+--     ((ƛ `suc ` Z) · `suc `zero)
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc V-zero)) ⟩
+--     (ƛ (ƛ `suc ` Z) · ((ƛ `suc ` Z) · ` Z)) · `suc (`suc `zero)
+--    —→⟨ β-ƛ (V-suc (V-suc V-zero)) ⟩
+--     (ƛ `suc ` Z) · ((ƛ `suc ` Z) · `suc (`suc `zero))
+--    —→⟨ ξ-·₂ V-ƛ (β-ƛ (V-suc (V-suc V-zero))) ⟩
+--     (ƛ `suc ` Z) · `suc (`suc (`suc `zero))
+--    —→⟨ β-ƛ (V-suc (V-suc (V-suc V-zero))) ⟩
+--     `suc (`suc (`suc (`suc `zero)))
+--    ∎)
+--    (s≤s
+--     (s≤s
+--      (s≤s
+--       (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s (s≤s z≤n)))))))))))))
+--    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
+-- _ = refl
+```
+-->

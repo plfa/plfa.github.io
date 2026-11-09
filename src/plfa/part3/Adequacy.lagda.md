@@ -7,7 +7,7 @@ permalink : /Adequacy/
 module plfa.part3.Adequacy where
 ```
 
-## Introduction
+# Introduction
 
 Having proved a preservation property in the last chapter, a natural
 next step would be to prove progress. That is, to prove a property
@@ -62,7 +62,7 @@ The rest of this chapter is organized as follows.
 * We prove adequacy as a corollary to the main lemma.
 
 
-## Imports
+# Imports
 
 ```agda
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -92,7 +92,7 @@ open import plfa.part3.Soundness using (soundness)
 ```
 
 
-## The property of being greater or equal to a function
+# The property of being greater or equal to a function
 
 We define the following short-hand for saying that a value is
 greater-than or equal to a function value.
@@ -187,7 +187,7 @@ above-fun? (u ⊔ u')
 ```
 
 
-## Relating values to closures
+# Relating values to closures
 
 Next we relate semantic values to closures.  The relation `𝕍` is for
 closures whose term is a lambda abstraction, i.e., in weak-head normal
@@ -447,7 +447,7 @@ obtain a closure `c` such that `γ ⊢ M ⇓ c` and `𝕍 v c`. We conclude with
 application of `sub-𝕍` with `v' ⊑ v` to show `𝕍 v' c`.
 
 
-## Programs with function denotation terminate via call-by-name
+# Programs with function denotation terminate via call-by-name
 
 The main lemma proves that if a term has a denotation that is above a
 function, then it terminates via call-by-name. More formally, if
@@ -572,7 +572,7 @@ kth-x{γ' = γ'}{x = x} with γ' x
   such that `γ' ⊢ M ⇓ c` and `𝕍 v c`. We conclude that `𝕍 v' c` by `sub-𝕍`.
 
 
-## Proof of denotational adequacy
+# Proof of denotational adequacy
 
 From the main lemma we can directly show that `ℰ M ≃ ℰ (ƛ N)` implies
 that `M` big-steps to a lambda, i.e., `∅ ⊢ M ⇓ clos (ƛ N′) γ`.
@@ -599,7 +599,7 @@ Now to prove the adequacy property. We apply the above
 lemma to obtain `∅ ⊢ M ⇓ clos (ƛ N′) γ` and then
 apply `cbn→reduce` to conclude.
 
-```
+```agda
 adequacy : ∀{M : ∅ ⊢ ★}{N : ∅ , ★ ⊢ ★}
    →  ℰ M ≃ ℰ (ƛ N)
    → Σ[ N′ ∈ (∅ , ★ ⊢ ★) ]
@@ -610,7 +610,7 @@ adequacy{M}{N} eq
     cbn→reduce M⇓
 ```
 
-## Call-by-name is equivalent to beta reduction
+# Call-by-name is equivalent to beta reduction
 
 As promised, we return to the question of whether call-by-name
 evaluation is equivalent to beta reduction. In chapter
@@ -620,7 +620,7 @@ beta reduces to a lambda abstraction (`cbn→reduce`).  We now prove the backwar
 direction of the if-and-only-if, leveraging our results about the
 denotational semantics.
 
-```
+```agda
 reduce→cbn : ∀ {M : ∅ ⊢ ★} {N : ∅ , ★ ⊢ ★}
            → M —↠ ƛ N
            → Σ[ Δ ∈ Context ] Σ[ N′ ∈ Δ , ★ ⊢ ★ ] Σ[ δ ∈ ClosEnv Δ ]
@@ -636,7 +636,7 @@ Putting the two directions of the if-and-only-if together, we
 establish that call-by-name evaluation is equivalent to beta reduction
 in the following sense.
 
-```
+```agda
 cbn↔reduce : ∀ {M : ∅ ⊢ ★}
            → (Σ[ N ∈ ∅ , ★ ⊢ ★ ] (M —↠ ƛ N))
              iff
@@ -647,7 +647,7 @@ cbn↔reduce {M} = ⟨ (λ x → reduce→cbn (proj₂ x)) ,
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

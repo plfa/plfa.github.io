@@ -3,19 +3,19 @@ title     : "Full beta reduction of the untyped lambda calculus"
 permalink : /LambdaReduction/
 ---
 
-```
+```agda
 module plfa.LambdaReduction where
 ```
 
 ## Imports
 
-```
+```agda
 open import plfa.Untyped using (_⊢_; ★; _·_; ƛ_; _,_; _[_])
 ```
 
 ## Full beta reduction
 
-```
+```agda
 infix 2 _—→_
 
 data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -40,7 +40,7 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → ƛ N —→ ƛ N′
 ```
 
-```
+```agda
 infix  2 _—↠_
 infix  1 start_
 infixr 2 _—→⟨_⟩_
@@ -65,7 +65,7 @@ start_ : ∀ {Γ} {A} {M N : Γ ⊢ A}
 start M—↠N = M—↠N
 ```
 
-```
+```agda
 —↠-trans : ∀{Γ}{A}{L M N : Γ ⊢ A}
          → L —↠ M
          → M —↠ N
@@ -76,7 +76,7 @@ start M—↠N = M—↠N
 
 ## Reduction is a congruence
 
-```
+```agda
 —→-app-cong : ∀{Γ}{L L' M : Γ ⊢ ★}
             → L —→ L'
             → L · M —→ L' · M
@@ -90,7 +90,7 @@ start M—↠N = M—↠N
 
 ## Multi-step reduction is a congruence
 
-```
+```agda
 abs-cong : ∀ {Γ} {N N' : Γ , ★ ⊢ ★}
          → N —↠ N'
            ----------
@@ -99,7 +99,7 @@ abs-cong (M []) = ƛ M []
 abs-cong (L —→⟨ r ⟩ rs) = ƛ L —→⟨ ζ r ⟩ abs-cong rs
 ```
 
-```
+```agda
 appL-cong : ∀ {Γ} {L L' M : Γ ⊢ ★}
          → L —↠ L'
            ---------------
@@ -108,7 +108,7 @@ appL-cong {Γ}{L}{L'}{M} (L []) = L · M []
 appL-cong {Γ}{L}{L'}{M} (L —→⟨ r ⟩ rs) = L · M —→⟨ ξ₁ r ⟩ appL-cong rs
 ```
 
-```
+```agda
 appR-cong : ∀ {Γ} {L M M' : Γ ⊢ ★}
          → M —↠ M'
            ---------------

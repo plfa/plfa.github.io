@@ -4,7 +4,7 @@ Siek, Thiemann, Wadler, 2 Aug 2022
 
 [Currently not compiling]
 
-```
+```agda
 module variants.CEK where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -23,7 +23,7 @@ open import variants.Frame
 
 Evaluation context as a stack of frames
 
-```
+```agda
 data _==>_ : Type → Type → Set where
 
   [] : A ==> A
@@ -40,7 +40,7 @@ variable
 
 Extending a substitution
 
-```
+```agda
 _►_ :
     Γ →ˢ Δ
   → Δ ⊢ A
@@ -51,7 +51,8 @@ _►_ :
 ```
 
 CEK configuration
-```
+
+```agda
 record CEK (A : Type) : Set where
   constructor cek
   field
@@ -63,7 +64,8 @@ record CEK (A : Type) : Set where
 ```
 
 CEK transitions
-```
+
+```agda
 data _~~>_ : CEK A → CEK A → Set where
 
   CEK-ξ-□· :

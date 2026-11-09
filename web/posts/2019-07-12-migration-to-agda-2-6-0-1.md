@@ -9,6 +9,7 @@ We upgraded to [Agda 2.6.0.1][agda-2.6.0.1] and [version 1.1 of the standard lib
 For this upgrade, we made several major changes to the PLFA infrastructure.
 
 We deprecated [agda2html][agda2html]. In version 2.6, Agda has added support for the `--html-highlight` flag. Using this command, Agda will highlight only the code in a file, and leave the rest untouched:
+
 ```bash
 agda --html --html-highlight=code FILE.lagda.md
 ```

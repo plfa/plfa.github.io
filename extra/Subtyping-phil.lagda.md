@@ -42,6 +42,7 @@ open import Relation.Nullary.Decidable using (True; toWitness)
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments, types, and terms:
+
 ```agda
 infix  4 _∈_
 
@@ -92,12 +93,14 @@ distinct {X} xs  =  ∀ (x : X) (x∈xs : x ∈ xs) (x∈xs′ : x ∈ xs) → x
 
 One list is a subset of another if every value that is an element of
 the first is also an element of the second.
+
 ```agda
 _⊆_ : ∀ {X} (xs ys : List X) → Set
 xs ⊆ ys  =  ∀ {x} → x ∈ xs → x ∈ ys
 ```
 
 Subset is reflexive and transitive.
+
 ```agda
 ⊆-refl : ∀ {X} (xs : List X) → xs ⊆ xs
 ⊆-refl xs  =  id
@@ -207,7 +210,7 @@ data _<:_ where
 
 ## Subtyping is Reflexive
 
-```
+```agda
 <:-refl : ∀ (A : Type) → A <: A
 <:-refl `ℕ                =  <:-ℕ
 <:-refl (A ⇒ B)           =  <:-⇒ (<:-refl A) (<:-refl B)
@@ -257,6 +260,7 @@ plays the role of a substructure of `⦗ as ⦂ AS ⦘{d}`.
     ... | a∈bs =
       <:-trans (AS<:BS a a∈as a∈bs) (BS<:CS a a∈bs a∈cs)
 ```
+
 In the final clause, we are given evidence that `a ∈ as` and `a ∈ cs`,
 and we use the fact that `cs ⊆ bs` to convert the second of these into
 evidence that `a ∈ bs`.
@@ -362,6 +366,7 @@ data _⊢_ where
 
 _⊢*_ {as} Γ AS = ∀ (a : Field) → (a∈as : a ∈ as) → Γ ⊢ AS a a∈as
 ```
+
 The right-hand side of `Γ ⊢* AS` is equivalent to `dMap as (map (Γ ⊢_) AS)`.
 
 
@@ -594,6 +599,7 @@ The statement and proof of progress is much as before,
 appropriately annotated.  We no longer need
 to explicitly refer to the Canonical Forms lemma, since it
 is built-in to the definition of value:
+
 ```agda
 progress : ∀ {A} → (M : ∅ ⊢ A) → Progress M
 progress (` ())
@@ -628,6 +634,7 @@ progress (M ↑ A<:B) with progress M
 
 The reflexive and transitive closure is exactly as before.
 We simply cut-and-paste the previous definition:
+
 ```agda
 infix  2 _—↠_
 infix  1 begin_
@@ -687,6 +694,7 @@ data Steps {A} : ∅ ⊢ A → Set where
 ```
 
 The evaluator takes gas and a term and returns the corresponding steps:
+
 ```agda
 eval : ∀ {A}
   → Gas
@@ -852,7 +860,7 @@ _ =
     `zero
   ∎
 
-```
+```agda
 
 -- -- -- #### Exercise `intrinsic-records` (stretch)
 

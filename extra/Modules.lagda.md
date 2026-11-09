@@ -6,7 +6,7 @@ permalink : /Modules/
 ** Turn this into a Setoid example. Copy equivalence relation and setoid
 from the standard library. **
 
-```
+```agda
 module plfa.Modules where
 ```
 
@@ -15,7 +15,7 @@ and proves some general results which will be useful later.
 
 ## Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
 open Eq.≡-Reasoning
@@ -43,7 +43,7 @@ some definitions, where we represent collections as lists.  (We would
 call collections *sets*, save that the name `Set` already plays a
 special role in Agda.)
 
-```
+```agda
 Coll′ : ∀ {ℓ : Level} → Set ℓ → Set ℓ
 Coll′ A  =  List A
 
@@ -60,7 +60,8 @@ essence of the definitions.
 
 Instead, we can define a module parameterised by the desired concepts,
 which are then available throughout.
-```
+
+```agda
 module Collection {ℓ : Level} (A : Set ℓ) (_≈_ : A → A → Set ℓ) where
 
   Coll : ∀ {ℓ : Level} → Set ℓ → Set ℓ
@@ -74,7 +75,8 @@ module Collection {ℓ : Level} (A : Set ℓ) (_≈_ : A → A → Set ℓ) wher
 ```
 
 Use of a module
-```
+
+```agda
 open Collection (ℕ) (_≡_)
 
 pattern [_] x  =  x ∷ []
@@ -93,7 +95,8 @@ ex (there (there ()))
 Say I want to define a type of stacks, with operations push and pop.
 I can define stacks in terms of lists, but hide the definitions from
 the rest of the program.
-```
+
+```agda
 abstract
 
   Stack : Set → Set
@@ -120,9 +123,11 @@ abstract
 ## Standard Library
 
 Definitions similar to those in this chapter can be found in the standard library.
-```
+
+```agda
 -- EDIT
 ```
+
 The standard library version of `IsMonoid` differs from the
 one given here, in that it is also parameterised on an equivalence relation.
 

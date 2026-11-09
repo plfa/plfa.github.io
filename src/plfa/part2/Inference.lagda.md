@@ -29,7 +29,7 @@ Chapter [Lambda](/Lambda/),
 and from it we compute an intrinsically-typed term, in the style of
 Chapter [DeBruijn](/DeBruijn/).
 
-## Introduction: Inference rules as algorithms {#algorithms}
+# Introduction: Inference rules as algorithms {#algorithms}
 
 In the calculus we have considered so far, a term may have more than
 one type.  For example,
@@ -118,7 +118,7 @@ judgments, one that produces the type as an output (as above), and
 another that takes it as an input.
 
 
-## Synthesising and inheriting types
+# Synthesising and inheriting types
 
 In addition to the lookup judgment for variables, which will remain
 as before, we now have two judgments for the type of the term:
@@ -198,7 +198,7 @@ We can extract the grammar for terms from the above:
 We will formalise the above shortly.
 
 
-## Soundness and completeness
+# Soundness and completeness
 
 What we intend to show is that the typing judgments are
 _decidable_:
@@ -242,7 +242,7 @@ may be less readable than a well-crafted error message.
 We are now ready to begin the formal development.
 
 
-## Imports
+# Imports
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
@@ -270,7 +270,7 @@ invoked as `Γ DB.⊢ A`, where `Γ` has type
 `DB.Context` and `A` has type `DB.Type`.
 
 
-## Syntax
+# Syntax
 
 First, we get all our infix declarations out of the way.
 We list separately operators for judgments and terms:
@@ -293,6 +293,7 @@ infix   9  `_
 ```
 
 Identifiers, types, and contexts are as before:
+
 ```agda
 Id : Set
 Id = String
@@ -311,6 +312,7 @@ We use `Term⁺` and `Term⁻`
 for terms with synthesized and inherited types, respectively.
 Note the inclusion of the switching forms,
 `M ↓ A` and `M ↑`:
+
 ```agda
 data Term⁺ : Set
 data Term⁻ : Set
@@ -328,16 +330,18 @@ data Term⁻ where
   μ_⇒_                     : Id → Term⁻ → Term⁻
   _↑                       : Term⁺ → Term⁻
 ```
+
 The choice as to whether each term is synthesized or
 inherited follows the discussion above, and can be read
 off from the informal grammar presented earlier.  Main terms in
 deconstructors synthesise, constructors and side terms
 in deconstructors inherit.
 
-## Example terms
+# Example terms
 
 We can recreate the examples from preceding chapters.
 First, computing two plus two on naturals:
+
 ```agda
 two : Term⁻
 two = `suc (`suc `zero)
@@ -351,10 +355,12 @@ plus = (μ "p" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
 2+2 : Term⁺
 2+2 = plus · two · two
 ```
+
 The only change is to decorate with down and up arrows as required.
 The only type decoration required is for `plus`.
 
 Next, computing two plus two with Church numerals:
+
 ```agda
 Ch : Type
 Ch = (`ℕ ⇒ `ℕ) ⇒ `ℕ ⇒ `ℕ
@@ -373,13 +379,15 @@ sucᶜ = ƛ "x" ⇒ `suc (` "x" ↑)
 2+2ᶜ : Term⁺
 2+2ᶜ = plusᶜ · twoᶜ · twoᶜ · sucᶜ · `zero
 ```
+
 The only type decoration required is for `plusᶜ`.  One is not even
 required for `sucᶜ`, which inherits its type as an argument of `plusᶜ`.
 
-## Bidirectional type checking
+# Bidirectional type checking
 
 The typing rules for variables are as in
 [Lambda](/Lambda/):
+
 ```agda
 data _∋_⦂_ : Context → Id → Type → Set where
 
@@ -396,6 +404,7 @@ data _∋_⦂_ : Context → Id → Type → Set where
 
 As with syntax, the judgments for synthesizing
 and inheriting types are mutually recursive:
+
 ```agda
 data _⊢_↑_ : Context → Term⁺ → Type → Set
 data _⊢_↓_ : Context → Term⁻ → Type → Set
@@ -452,6 +461,7 @@ data _⊢_↓_ where
       -------------
     → Γ ⊢ (M ↑) ↓ B
 ```
+
 We follow the same convention as
 Chapter [Lambda](/Lambda/),
 prefacing the constructor with `⊢` to derive the name of the
@@ -468,7 +478,7 @@ the equality test in the application rule in the first
 [section](/Inference/#algorithms).
 
 
-#### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
+## Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
 
 Rewrite your definition of multiplication from
 Chapter [Lambda](/Lambda/), decorated to support inference.
@@ -478,7 +488,7 @@ Chapter [Lambda](/Lambda/), decorated to support inference.
 ```
 
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+## Exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More](/More/).
@@ -488,7 +498,7 @@ Chapter [More](/More/).
 ```
 
 
-#### Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
+## Exercise `bidirectional-rest` (stretch) {#bidirectional-rest}
 
 Extend the bidirectional type rules to include the rest of the constructs from
 Chapter [More](/More/).
@@ -498,10 +508,11 @@ Chapter [More](/More/).
 ```
 
 
-## Prerequisites
+# Prerequisites
 
 The rule for `M ↑` requires the ability to decide whether two types
 are equal.  It is straightforward to code:
+
 ```agda
 _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 `ℕ      ≟Tp `ℕ              =  yes refl
@@ -516,6 +527,7 @@ _≟Tp_ : (A B : Type) → Dec (A ≡ B)
 
 We will also need a couple of obvious lemmas; the domain
 and range of equal function types are equal:
+
 ```agda
 dom≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → A ≡ A′
 dom≡ refl = refl
@@ -526,17 +538,19 @@ rng≡ refl = refl
 
 We will also need to know that the types `` `ℕ ``
 and `A ⇒ B` are not equal:
+
 ```agda
 ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
 ℕ≢⇒ ()
 ```
 
 
-## Unique types
+# Unique types
 
 Looking up a type in the context is unique.  Given two derivations,
 one showing `Γ ∋ x ⦂ A` and one showing `Γ ∋ x ⦂ B`, it follows that
 `A` and `B` must be identical:
+
 ```agda
 uniq-∋ : ∀ {Γ x A B} → Γ ∋ x ⦂ A → Γ ∋ x ⦂ B → A ≡ B
 uniq-∋ Z Z                 =  refl
@@ -544,6 +558,7 @@ uniq-∋ Z (S x≢y _)         =  contradiction refl x≢y
 uniq-∋ (S x≢y _) Z         =  contradiction refl x≢y
 uniq-∋ (S _ ∋x) (S _ ∋x′)  =  uniq-∋ ∋x ∋x′
 ```
+
 If both derivations are by rule `Z` then uniqueness
 follows immediately, while if both derivations are
 by rule `S` then uniqueness follows by induction.
@@ -556,12 +571,14 @@ it is not.
 Synthesizing a type is also unique.  Given two derivations,
 one showing `Γ ⊢ M ↑ A` and one showing `Γ ⊢ M ↑ B`, it follows
 that `A` and `B` must be identical:
+
 ```agda
 uniq-↑ : ∀ {Γ M A B} → Γ ⊢ M ↑ A → Γ ⊢ M ↑ B → A ≡ B
 uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
 uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
 uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
 ```
+
 There are three possibilities for the term. If it is a variable,
 uniqueness of synthesis follows from uniqueness of lookup.
 If it is an application, uniqueness follows by induction on
@@ -570,11 +587,12 @@ types are equal.  If it is a switch expression, uniqueness
 follows since both terms are decorated with the same type.
 
 
-## Lookup type of a variable in the context
+# Lookup type of a variable in the context
 
 Given `Γ` and two distinct variables `x` and `y`, if there is no type `A`
 such that `Γ ∋ x ⦂ A` holds, then there is also no type `A` such that
 `Γ , y ⦂ B ∋ x ⦂ A` holds:
+
 ```agda
 ext∋ : ∀ {Γ B x y}
   → x ≢ y
@@ -584,6 +602,7 @@ ext∋ : ∀ {Γ B x y}
 ext∋ x≢y _  ⟨ A , Z ⟩       =  x≢y refl
 ext∋ _   ¬∃ ⟨ A , S _ ∋x ⟩  =  ¬∃ ⟨ A , ∋x ⟩
 ```
+
 Given a type `A` and evidence that `Γ , y ⦂ B ∋ x ⦂ A` holds, we must
 demonstrate a contradiction.  If the judgment holds by `Z`, then we
 must have that `x` and `y` are the same, which contradicts the first
@@ -593,6 +612,7 @@ evidence that `Γ ∋ x ⦂ A`, which contradicts the second assumption.
 Given a context `Γ` and a variable `x`, we decide whether
 there exists a type `A` such that `Γ ∋ x ⦂ A` holds, or its
 negation:
+
 ```agda
 lookup : ∀ (Γ : Context) (x : Id)
          ------------------------
@@ -604,6 +624,7 @@ lookup (Γ , y ⦂ B) x with x ≟ y
 ...             | no  ¬∃          =  no  (ext∋ x≢y ¬∃)
 ...             | yes ⟨ A , ∋x ⟩  =  yes ⟨ A , S x≢y ∋x ⟩
 ```
+
 Consider the context:
 
 * If it is empty, then trivially there is no possible derivation.
@@ -623,7 +644,7 @@ Consider the context:
     - If lookup succeeds, we extend the derivation with `S`.
 
 
-## Promoting negations
+# Promoting negations
 
 For each possible term form, we need to show that if one of its
 components fails to type, then the whole fails to type.  Most of
@@ -632,6 +653,7 @@ auxiliary functions for a couple of the trickier cases.
 
 If `Γ ⊢ L ↑ A ⇒ B` holds but `Γ ⊢ M ↓ A` does not hold, then
 there is no type `B′` such that `Γ ⊢ L · M ↑ B′` holds:
+
 ```agda
 ¬arg : ∀ {Γ A B L M}
   → Γ ⊢ L ↑ A ⇒ B
@@ -640,6 +662,7 @@ there is no type `B′` such that `Γ ⊢ L · M ↑ B′` holds:
   → ¬ (∃[ B′ ] Γ ⊢ L · M ↑ B′)
 ¬arg ⊢L ¬⊢M ⟨ B′ , ⊢L′ · ⊢M′ ⟩ rewrite dom≡ (uniq-↑ ⊢L ⊢L′) = ¬⊢M ⊢M′
 ```
+
 Let `⊢L` be evidence that `Γ ⊢ L ↑ A ⇒ B` holds and `¬⊢M` be evidence
 that `Γ ⊢ M ↓ A` does not hold.  Given a type `B′` and evidence that
 `Γ ⊢ L · M ↑ B′` holds, we must demonstrate a contradiction.  The
@@ -653,6 +676,7 @@ type `A` and the other type `A′`.
 
 
 If `Γ ⊢ M ↑ A` holds and `A ≢ B`, then `Γ ⊢ (M ↑) ↓ B` does not hold:
+
 ```agda
 ¬switch : ∀ {Γ M A B}
   → Γ ⊢ M ↑ A
@@ -661,6 +685,7 @@ If `Γ ⊢ M ↑ A` holds and `A ≢ B`, then `Γ ⊢ (M ↑) ↓ B` does not ho
   → ¬ Γ ⊢ (M ↑) ↓ B
 ¬switch ⊢M A≢B (⊢↑ ⊢M′ A′≡B) rewrite uniq-↑ ⊢M ⊢M′ = A≢B A′≡B
 ```
+
 Let `⊢M` be evidence that `Γ ⊢ M ↑ A` holds, and `A≢B` be evidence
 that `A ≢ B`.  Given evidence that `Γ ⊢ (M ↑) ↓ B` holds, we must
 demonstrate a contradiction.  The evidence must take the form `⊢↑ ⊢M′
@@ -672,7 +697,7 @@ to derive a contradiction between `A≢B` and `A′≡B`, since one concerns
 type `A` and the other type `A′`.
 
 
-## Synthesize and inherit types
+# Synthesize and inherit types
 
 The table has been set and we are ready for the main course.
 We define two mutually recursive functions,
@@ -682,6 +707,7 @@ returns a type `A` and evidence that `Γ ⊢ M ↑ A`, or its negation.
 Inheritance is given a context `Γ`, an inheritance term `M`,
 and a type `A` and either returns evidence that `Γ ⊢ M ↓ A`,
 or its negation:
+
 ```agda
 synthesize : ∀ (Γ : Context) (M : Term⁺)
              ---------------------------
@@ -693,6 +719,7 @@ inherit : ∀ (Γ : Context) (M : Term⁻) (A : Type)
 ```
 
 We first consider the code for synthesis:
+
 ```agda
 synthesize Γ (` x) with lookup Γ x
 ... | no  ¬∃              =  no  (λ{ ⟨ A , ⊢` ∋x ⟩ → ¬∃ ⟨ A , ∋x ⟩ })
@@ -707,6 +734,7 @@ synthesize Γ (M ↓ A) with inherit Γ M A
 ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
 ... | yes ⊢M              =  yes ⟨ A , ⊢↓ ⊢M ⟩
 ```
+
 There are three cases:
 
 * If the term is a variable `` ` x ``, we use lookup as defined above:
@@ -756,6 +784,7 @@ There are three cases:
     and `⊢↓ ⊢M` provides evidence that `Γ ⊢ (M ↓ A) ↑ A`.
 
 We next consider the code for inheritance:
+
 ```agda
 inherit Γ (ƛ x ⇒ N) `ℕ      =  no  (λ())
 inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
@@ -784,6 +813,7 @@ inherit Γ (M ↑) B with synthesize Γ M
 ...   | no  A≢B             =  no  (¬switch ⊢M A≢B)
 ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
 ```
+
 We consider only the cases for abstraction and
 and for switching from inherited to synthesized:
 
@@ -824,11 +854,12 @@ and for switching from inherited to synthesized:
 The remaining cases are similar, and their code can pretty much be
 read directly from the corresponding typing rules.
 
-## Testing the example terms
+# Testing the example terms
 
 First, we copy the smart constructor `S′` introduced earlier that makes it easy to
 access a variable in a context:
-```
+
+```agda
 S′ : ∀ {Γ x y A B}
    → {x≢y : False (x ≟ y)}
    → Γ ∋ x ⦂ A
@@ -839,6 +870,7 @@ S′ {x≢y = x≢y} x = S (toWitnessFalse x≢y) x
 ```
 
 Here is the result of typing two plus two on naturals:
+
 ```agda
 ⊢2+2 : ∅ ⊢ 2+2 ↑ `ℕ
 ⊢2+2 =
@@ -859,18 +891,22 @@ Here is the result of typing two plus two on naturals:
    · ⊢suc (⊢suc ⊢zero)
    · ⊢suc (⊢suc ⊢zero))
 ```
+
 We confirm that synthesis on the relevant term returns
 natural as the type and the above derivation:
+
 ```agda
 _ : synthesize ∅ 2+2 ≡ yes ⟨ `ℕ , ⊢2+2 ⟩
 _ = refl
 ```
+
 Indeed, the above derivation was computed by evaluating the term on
 the left, with minor editing of the result.  The only editing required
 was to use the smart constructor `S′` to obtain the evidence that
 two variable names (as strings) are unequal (which it cannot print nor read).
 
 Here is the result of typing two plus two with Church numerals:
+
 ```agda
 ⊢2+2ᶜ : ∅ ⊢ 2+2ᶜ ↑ `ℕ
 ⊢2+2ᶜ =
@@ -913,70 +949,82 @@ Here is the result of typing two plus two with Church numerals:
   · ⊢ƛ (⊢suc (⊢↑ (⊢` Z) refl))
   · ⊢zero
 ```
+
 We confirm that synthesis on the relevant term returns
 natural as the type and the above derivation:
+
 ```agda
 _ : synthesize ∅ 2+2ᶜ ≡ yes ⟨ `ℕ , ⊢2+2ᶜ ⟩
 _ = refl
 ```
+
 Again, the above derivation was computed by evaluating the
 term on the left and editing.
 
-## Testing the error cases
+# Testing the error cases
 
 It is important not just to check that code works as intended,
 but also that it fails as intended.  Here are checks for
 several possible errors:
 
 Unbound variable:
+
 ```agda
 _ : synthesize ∅ ((ƛ "x" ⇒ ` "y" ↑) ↓ (`ℕ ⇒ `ℕ)) ≡ no _
 _ = refl
 ```
 
 Argument in application is ill typed:
+
 ```agda
 _ : synthesize ∅ (plus · sucᶜ) ≡ no _
 _ = refl
 ```
 
 Function in application is ill typed:
+
 ```agda
 _ : synthesize ∅ (plus · sucᶜ · two) ≡ no _
 _ = refl
 ```
 
 Function in application has type natural:
+
 ```agda
 _ : synthesize ∅ ((two ↓ `ℕ) · two) ≡ no _
 _ = refl
 ```
 
 Abstraction inherits type natural:
+
 ```agda
 _ : synthesize ∅ (twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
 ```
 
 Zero inherits a function type:
+
 ```agda
 _ : synthesize ∅ (`zero ↓ `ℕ ⇒ `ℕ) ≡ no _
 _ = refl
 ```
 
 Successor inherits a function type:
+
 ```agda
 _ : synthesize ∅ (two ↓ `ℕ ⇒ `ℕ) ≡ no _
 _ = refl
 ```
 
 Successor of an ill-typed term:
+
 ```agda
 _ : synthesize ∅ (`suc twoᶜ ↓ `ℕ) ≡ no _
 _ = refl
 ```
 
 Case of a term with a function type:
+
 ```agda
 _ : synthesize ∅
       ((`case (twoᶜ ↓ Ch) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
@@ -984,6 +1032,7 @@ _ = refl
 ```
 
 Case of an ill-typed term:
+
 ```agda
 _ : synthesize ∅
       ((`case (twoᶜ ↓ `ℕ) [zero⇒ `zero |suc "x" ⇒ ` "x" ↑ ] ↓ `ℕ) ) ≡ no _
@@ -991,13 +1040,14 @@ _ = refl
 ```
 
 Inherited and synthesised types disagree in a switch:
+
 ```agda
 _ : synthesize ∅ (((ƛ "x" ⇒ ` "x" ↑) ↓ `ℕ ⇒ (`ℕ ⇒ `ℕ))) ≡ no _
 _ = refl
 ```
 
 
-## Erasure
+# Erasure
 
 From the evidence that a decorated term has the correct type it is
 easy to extract the corresponding intrinsically-typed term.  We use the
@@ -1007,32 +1057,39 @@ It is easy to define an _erasure_ function that takes an extrinsic
 type judgment into the corresponding intrinsically-typed term.
 
 First, we give code to erase a type:
+
 ```agda
 ∥_∥Tp : Type → DB.Type
 ∥ `ℕ ∥Tp             =  DB.`ℕ
 ∥ A ⇒ B ∥Tp          =  ∥ A ∥Tp DB.⇒ ∥ B ∥Tp
 ```
+
 It simply renames to the corresponding constructors in module `DB`.
 
 Next, we give the code to erase a context:
+
 ```agda
 ∥_∥Cx : Context → DB.Context
 ∥ ∅ ∥Cx              =  DB.∅
 ∥ Γ , x ⦂ A ∥Cx      =  ∥ Γ ∥Cx DB., ∥ A ∥Tp
 ```
+
 It simply drops the variable names.
 
 Next, we give the code to erase a lookup judgment:
+
 ```agda
 ∥_∥∋ : ∀ {Γ x A} → Γ ∋ x ⦂ A → ∥ Γ ∥Cx DB.∋ ∥ A ∥Tp
 ∥ Z ∥∋               =  DB.Z
 ∥ S x≢ ∋x ∥∋         =  DB.S ∥ ∋x ∥∋
 ```
+
 It simply drops the evidence that variable names are distinct.
 
 Finally, we give the code to erase a typing judgment.
 Just as there are two mutually recursive typing judgments,
 there are two mutually recursive erasure functions:
+
 ```agda
 ∥_∥⁺ : ∀ {Γ M A} → Γ ⊢ M ↑ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
 ∥_∥⁻ : ∀ {Γ M A} → Γ ⊢ M ↓ A → ∥ Γ ∥Cx DB.⊢ ∥ A ∥Tp
@@ -1048,6 +1105,7 @@ there are two mutually recursive erasure functions:
 ∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
 ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
 ```
+
 Erasure replaces constructors for each typing judgment
 by the corresponding term constructor from `DB`.  The
 constructors that correspond to switching from synthesized
@@ -1056,6 +1114,7 @@ to inherited or vice versa are dropped.
 We confirm that the erasure of the type derivations in
 this chapter yield the corresponding intrinsically-typed terms
 from the earlier chapter:
+
 ```agda
 _ : ∥ ⊢2+2 ∥⁺ ≡ DB.2+2
 _ = refl
@@ -1063,6 +1122,7 @@ _ = refl
 _ : ∥ ⊢2+2ᶜ ∥⁺ ≡ DB.2+2ᶜ
 _ = refl
 ```
+
 Thus, we have confirmed that bidirectional type inference
 converts decorated versions of the lambda terms from
 Chapter [Lambda](/Lambda/)
@@ -1070,7 +1130,7 @@ to the intrinsically-typed terms of
 Chapter [DeBruijn](/DeBruijn/).
 
 
-#### Exercise `inference-multiplication` (recommended)
+## Exercise `inference-multiplication` (recommended)
 
 Apply inference to your decorated definition of multiplication from
 exercise [`bidirectional-mul`](/Inference/#bidirectional-mul), and show that
@@ -1081,7 +1141,7 @@ multiplication from Chapter [DeBruijn](/DeBruijn/).
 -- Your code goes here
 ```
 
-#### Exercise `inference-products` (recommended)
+## Exercise `inference-products` (recommended)
 
 Using your rules from exercise
 [`bidirectional-products`](/Inference/#bidirectional-products), extend
@@ -1091,7 +1151,7 @@ bidirectional inference to include products. Also extend erasure.
 -- Your code goes here
 ```
 
-#### Exercise `inference-rest` (stretch)
+## Exercise `inference-rest` (stretch)
 
 Using your rules from exercise
 [`bidirectional-rest`](/Inference/#bidirectional-rest), extend
@@ -1103,7 +1163,7 @@ Chapter [More](/More/). Also extend erasure.
 ```
 
 
-## Bidirectional inference in Agda
+# Bidirectional inference in Agda
 
 Agda itself uses bidirectional inference.  This explains why
 constructors can be overloaded while other defined names cannot ---
@@ -1118,12 +1178,13 @@ by inheritance, which is why Agda requires a type declaration for
 those definitions.  A definition with a right-hand side that is a term
 typed by synthesis, such as an application, does not require a type
 declaration.
+
 ```agda
 answer = 6 * 7
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

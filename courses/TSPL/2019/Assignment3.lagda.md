@@ -3,13 +3,13 @@ title     : "Assignment3: TSPL Assignment 3"
 permalink : /TSPL/2019/Assignment3/
 ---
 
-```
+```agda
 module Assignment3 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+# YOUR NAME AND EMAIL GOES HERE
 
-## Introduction
+# Introduction
 
 You must do _all_ the exercises labelled "(recommended)".
 
@@ -22,7 +22,7 @@ Submit your homework using the "submit" command.
 Please ensure your files execute correctly under Agda!
 
 
-## Good Scholarly Practice.
+# Good Scholarly Practice.
 
 Please remember the University requirement as
 regards all assessed work. Details about this can be found at:
@@ -36,9 +36,9 @@ permissions appropriately (generally permitting access only to
 yourself, or your group in the case of group practicals).
 
 
-## Imports
+# Imports
 
-```
+```agda
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
@@ -63,9 +63,9 @@ open import plfa.part2.Properties hiding (value?; unstuck; preserves; wttdgs)
 ```
 
 
-## Lists
+# Lists
 
-#### Exercise `reverse-++-distrib` (recommended)
+### Exercise `reverse-++-distrib` (recommended)
 
 Show that the reverse of one list appended to another is the
 reverse of the second appended to the reverse of the first:
@@ -73,7 +73,7 @@ reverse of the second appended to the reverse of the first:
     reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
 
 
-#### Exercise `reverse-involutive` (recommended)
+### Exercise `reverse-involutive` (recommended)
 
 A function is an _involution_ if when applied twice it acts
 as the identity function.  Show that reverse is an involution:
@@ -81,7 +81,7 @@ as the identity function.  Show that reverse is an involution:
     reverse (reverse xs) ≡ xs
 
 
-#### Exercise `map-compose` (practice)
+### Exercise `map-compose` (practice)
 
 Prove that the map of a composition is equal to the composition of two maps:
 
@@ -89,104 +89,116 @@ Prove that the map of a composition is equal to the composition of two maps:
 
 The last step of the proof requires extensionality.
 
-#### Exercise `map-++-distribute` (practice)
+### Exercise `map-++-distribute` (practice)
 
 Prove the following relationship between map and append:
 
    map f (xs ++ ys) ≡ map f xs ++ map f ys
 
-#### Exercise `map-Tree` (practice)
+### Exercise `map-Tree` (practice)
 
 Define a type of trees with leaves of type `A` and internal
 nodes of type `B`:
-```
+
+```agda
 data Tree (A B : Set) : Set where
   leaf : A → Tree A B
   node : Tree A B → B → Tree A B → Tree A B
 ```
+
 Define a suitable map operator over trees:
-```
+
+```agda
 postulate
   map-Tree : ∀ {A B C D : Set}
     → (A → C) → (B → D) → Tree A B → Tree C D
 ```
 
 
-#### Exercise `product` (recommended)
+### Exercise `product` (recommended)
 
 Use fold to define a function to find the product of a list of numbers.
 For example:
 
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `foldr-++` (recommended)
+### Exercise `foldr-++` (recommended)
 
 Show that fold and append are related as follows:
-```
+
+```agda
 postulate
   foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
     foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 ```
 
 
-#### Exercise `map-is-foldr` (practice)
+### Exercise `map-is-foldr` (practice)
 
 Show that map can be defined using fold:
-```
+
+```agda
 postulate
   map-is-foldr : ∀ {A B : Set} {f : A → B} →
     map f ≡ foldr (λ x xs → f x ∷ xs) []
 ```
+
 This requires extensionality.
 
-#### Exercise `fold-Tree` (practice)
+### Exercise `fold-Tree` (practice)
 
 Define a suitable fold function for the type of trees given earlier:
-```
+
+```agda
 postulate
   fold-Tree : ∀ {A B C : Set}
     → (A → C) → (C → B → C → C) → Tree A B → C
 ```
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `map-is-fold-Tree` (practice)
+### Exercise `map-is-fold-Tree` (practice)
 
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `sum-downFrom` (stretch)
+### Exercise `sum-downFrom` (stretch)
 
 Define a function that counts down as follows:
-```
+
+```agda
 downFrom : ℕ → List ℕ
 downFrom zero     =  []
 downFrom (suc n)  =  n ∷ downFrom n
 ```
+
 For example:
-```
+
+```agda
 _ : downFrom 3 ≡ [ 2 , 1 , 0 ]
 _ = refl
 ```
+
 Prove that the sum of the numbers `(n - 1) + ⋯ + 0` is
 equal to `n * (n ∸ 1) / 2`:
-```
+
+```agda
 postulate
   sum-downFrom : ∀ (n : ℕ)
     → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 ```
 
 
-#### Exercise `foldl` (practice)
+### Exercise `foldl` (practice)
 
 Define a function `foldl` which is analogous to `foldr`, but where
 operations associate to the left rather than the right.  For example:
@@ -194,42 +206,42 @@ operations associate to the left rather than the right.  For example:
     foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
     foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `foldr-monoid-foldl` (practice)
+### Exercise `foldr-monoid-foldl` (practice)
 
 Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `Any-++-⇔` (recommended)
+### Exercise `Any-++-⇔` (recommended)
 
 Prove a result similar to `All-++-⇔`, but with `Any` in place of `All`, and a suitable
 replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `All-++-≃` (stretch)
+### Exercise `All-++-≃` (stretch)
 
 Show that the equivalence `All-++-⇔` can be extended to an isomorphism.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `¬Any⇔All¬` (recommended)
+### Exercise `¬Any⇔All¬` (recommended)
 
 Show that `Any` and `All` satisfy a version of De Morgan's Law:
 
@@ -246,57 +258,58 @@ Do we also have the following?
 If so, prove; if not, explain why.
 
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `¬Any≃All¬` (stretch)
+### Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
 You will need to use extensionality.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `All-∀` (practice)
+### Exercise `All-∀` (practice)
 
 Show that `All P xs` is isomorphic to `∀ {x} → x ∈ xs → P x`.
 
-```
+```agda
 -- You code goes here
 ```
 
 
-#### Exercise `Any-∃` (practice)
+### Exercise `Any-∃` (practice)
 
 Show that `Any P xs` is isomorphic to `∃[ x ] (x ∈ xs × P x)`.
 
-```
+```agda
 -- You code goes here
 ```
 
 
-#### Exercise `any?` (stretch)
+### Exercise `any?` (stretch)
 
 Just as `All` has analogues `all` and `All?` which determine whether a
 predicate holds for every element of a list, so does `Any` have
 analogues `any` and `Any?` which determine whether a predicate holds
 for some element of a list.  Give their definitions.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `filter?` (stretch)
+### Exercise `filter?` (stretch)
 
 Define the following variant of the traditional `filter` function on lists,
 which given a decidable predicate and a list returns all elements of the
 list satisfying the predicate:
-```
+
+```agda
 postulate
   filter? : ∀ {A : Set} {P : A → Set}
     → (P? : Decidable P) → List A → ∃[ ys ]( All P ys )
@@ -304,37 +317,38 @@ postulate
 
 
 
-## Lambda
+# Lambda
 
-#### Exercise `mul` (recommended)
+### Exercise `mul` (recommended)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers.  Your definition may use `plus` as
 defined earlier.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `mulᶜ` (practice)
+### Exercise `mulᶜ` (practice)
 
 Write out the definition of a lambda term that multiplies
 two natural numbers represented as Church numerals. Your
 definition may use `plusᶜ` as defined earlier (or may not
 — there are nice definitions both ways).
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `primed` (stretch) {#primed}
+### Exercise `primed` (stretch) {#primed}
 
 Some people find it annoying to write `` ` "x" `` instead of `x`.
 We can make examples with lambda terms slightly easier to write
 by adding the following definitions:
-```
+
+```agda
 ƛ′_⇒_ : Term → Term → Term
 ƛ′ (` x) ⇒ N  =  ƛ x ⇒ N
 ƛ′ _ ⇒ _      =  ⊥-elim impossible
@@ -350,6 +364,7 @@ case′ _ [zero⇒ _ |suc _ ⇒ _ ]      =  ⊥-elim impossible
 μ′ _ ⇒ _      =  ⊥-elim impossible
   where postulate impossible : ⊥
 ```
+
 We intend to apply the function only when the first term is a variable, which we
 indicate by postulating a term `impossible` of the empty type `⊥`.  If we use
 C-c C-n to normalise the term
@@ -365,7 +380,8 @@ used with care, since such postulation could allow us to provide
 evidence of _any_ proposition whatsoever, regardless of its truth.
 
 The definition of `plus` can now be written as follows:
-```
+
+```agda
 plus′ : Term
 plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
           case′ m
@@ -376,10 +392,11 @@ plus′ = μ′ + ⇒ ƛ′ m ⇒ ƛ′ n ⇒
   m  =  ` "m"
   n  =  ` "n"
 ```
+
 Write out the definition of multiplication in the same style.
 
 
-#### Exercise `_[_:=_]′` (stretch)
+### Exercise `_[_:=_]′` (stretch)
 
 The definition of substitution above has three clauses (`ƛ`, `case`,
 and `μ`) that invoke a `with` clause to deal with bound variables.
@@ -387,30 +404,30 @@ Rewrite the definition to factor the common part of these three
 clauses into a single function, defined by mutual recursion with
 substitution.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `—↠≲—↠′` (practice)
+### Exercise `—↠≲—↠′` (practice)
 
 Show that the first notion of reflexive and transitive closure
 above embeds into the second. Why are they not isomorphic?
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `plus-example` (practice)
+### Exercise `plus-example` (practice)
 
 Write out the reduction sequence demonstrating that one plus one is two.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `Context-≃` (practice)
+### Exercise `Context-≃` (practice)
 
 Show that `Context` is isomorphic to `List (Id × Type)`.
 For instance, the isomorphism relates the context
@@ -421,60 +438,61 @@ to the list
 
     [ ⟨ "z" , `ℕ ⟩ , ⟨ "s" , `ℕ ⇒ `ℕ ⟩ ]
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `mul-type` (recommended)
+### Exercise `mul-type` (recommended)
 
 Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `mulᶜ-type` (practice)
+### Exercise `mulᶜ-type` (practice)
 
 Using the term `mulᶜ` you defined earlier, write out the derivation
 showing that it is well typed.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
 
-## Properties
+# Properties
 
-#### Exercise `Progress-≃` (practice)
+### Exercise `Progress-≃` (practice)
 
 Show that `Progress M` is isomorphic to `Value M ⊎ ∃[ N ](M —→ N)`.
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `progress′` (practice)
+### Exercise `progress′` (practice)
 
 Write out the proof of `progress′` in full, and compare it to the
 proof of `progress` above.
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `value?` (practice)
+### Exercise `value?` (practice)
 
 Combine `progress` and `—→¬V` to write a program that decides
 whether a well-typed term is a value:
-```
+
+```agda
 postulate
   value? : ∀ {A M} → ∅ ⊢ M ⦂ A → Dec (Value M)
 ```
 
-#### Exercise `subst′` (stretch)
+### Exercise `subst′` (stretch)
 
 Rewrite `subst` to work with the modified definition `_[_:=_]′`
 from the exercise in the previous chapter.  As before, this
@@ -482,31 +500,31 @@ should factor dealing with bound variables into a single function,
 defined by mutual recursion with the proof that substitution
 preserves types.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `mul-eval` (recommended)
+### Exercise `mul-eval` (recommended)
 
 Using the evaluator, confirm that two times two is four.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise: `progress-preservation` (practice)
+### Exercise: `progress-preservation` (practice)
 
 Without peeking at their statements above, write down the progress
 and preservation theorems for the simply typed lambda-calculus.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `subject_expansion` (practice)
+### Exercise `subject_expansion` (practice)
 
 We say that `M` _reduces_ to `N` if `M —→ N`,
 but we can also describe the same situation by saying
@@ -517,23 +535,23 @@ Its opposite is _subject expansion_, which holds if
 Find two counter-examples to subject expansion, one
 with case expressions and one not involving case expressions.
 
-```
+```agda
 -- Your code goes here
 ```
 
 
-#### Exercise `stuck` (practice)
+### Exercise `stuck` (practice)
 
 Give an example of an ill-typed term that does get stuck.
 
-```
+```agda
 -- Your code goes here
 ```
 
-#### Exercise `unstuck` (recommended)
+### Exercise `unstuck` (recommended)
 
 Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
-```
+```agda
 -- Your code goes here
 ```

@@ -7,7 +7,7 @@ permalink : /Compositional/
 module plfa.part3.Compositional where
 ```
 
-## Introduction
+# Introduction
 
 In this chapter we prove that the denotational semantics is compositional,
 which means we fill in the ellipses in the following equations.
@@ -21,7 +21,7 @@ instead defined as a recursive function. Indeed, we end this chapter
 with such a definition and prove that it is equivalent to ℰ.
 
 
-## Imports
+# Imports
 
 ```agda
 open import Data.Product.Base using (_×_; Σ; Σ-syntax; ∃; ∃-syntax; proj₁; proj₂)
@@ -39,7 +39,7 @@ open import plfa.part3.Denotational
 open plfa.part3.Denotational.≃-Reasoning
 ```
 
-## Equation for lambda abstraction
+# Equation for lambda abstraction
 
 Regarding the first equation
 
@@ -144,7 +144,7 @@ lam-equiv γ v = ⟨ ℰƛ→ℱℰ , ℱℰ→ℰƛ ⟩
 ```
 
 
-## Equation for function application
+# Equation for function application
 
 Next we fill in the ellipses for the equation concerning function
 application.
@@ -304,7 +304,7 @@ var-equiv γ v = ⟨ var-inv , (λ lt → sub var lt) ⟩
 
 
 
-## Congruence
+# Congruence
 
 The main work of this chapter is complete: we have established
 semantic equations that show how the denotational semantics is
@@ -404,7 +404,7 @@ app-cong {Γ}{L}{L′}{M}{M′} L≅L′ M≅M′ =
 ```
 
 
-## Compositionality
+# Compositionality
 
 The _compositionality property_ states that surrounding two terms that
 are denotationally equal in the same context produces two programs
@@ -474,7 +474,7 @@ The proof is a straightforward induction on the context `C`, using the
 congruence properties `lam-cong` and `app-cong` that we established
 above.
 
-## The denotational semantics defined as a function
+# The denotational semantics defined as a function
 
 Having established the three equations `var-equiv`, `lam-equiv`, and
 `app-equiv`, one should be able to define the denotational semantics
@@ -520,7 +520,7 @@ with the congruence lemmas for `ℱ` and `●`.
 ```
 
 
-## Unicode
+# Unicode
 
 This chapter uses the following unicode:
 

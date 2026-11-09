@@ -2,7 +2,7 @@ PCF with frames
 
 Philip Wadler, 2 Aug 2022
 
-```
+```agda
 module variants.Frame where
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -20,7 +20,7 @@ open import Relation.Nullary.Decidable using (⌊_⌋; True; toWitness; fromWitn
 
 ## Types
 
-```
+```agda
 infixr 7 _⇒_
 infix  8 `ℕ
 
@@ -34,7 +34,7 @@ variable
 
 * Type environments
 
-```
+```agda
 infixl 6 _▷_
 
 data Env : Set where
@@ -63,7 +63,7 @@ variable
 
 ## Terms
 
-```
+```agda
 infix  4  _⊢_
 infix  5  ƛ_
 infix  5  μ_
@@ -116,7 +116,7 @@ variable
 
 ## Type class to convert naturals to an arbitrary type
 
-```
+```agda
 variable
   n : ℕ
 
@@ -140,7 +140,7 @@ instance
 
 Testing!
 
-```
+```agda
 _ : Γ ▷ `ℕ ⊢ `ℕ
 _ = # 0
 
@@ -151,7 +151,7 @@ _ = # 1
 
 ## Renaming maps, substitution maps, term maps
 
-```
+```agda
 infix 4 _→ᴿ_
 infix 4 _→ˢ_
 infix 4 _→ᵀ_
@@ -174,7 +174,7 @@ variable
 
 ## Renaming
 
-```
+```agda
 ren▷ :
     (Γ →ᴿ Δ)
     ------------------
@@ -200,7 +200,7 @@ lift = ren S_
 
 ## Substitution
 
-```
+```agda
 sub▷ :
     (Γ →ˢ Δ)
     ------------------
@@ -222,7 +222,8 @@ sub σ (μ M)          =  μ (sub (sub▷ σ) M)
 ```
 
 Special case of substitution, used in beta rule
-```
+
+```agda
 σ₀ :
     Γ ⊢ A
     ------------
@@ -240,7 +241,7 @@ _[_] N M =  sub (σ₀ M) N
 
 ## Values
 
-```
+```agda
 data Value : (Γ ⊢ A) → Set where
 
   ƛ_ :
@@ -268,7 +269,8 @@ variable
 
 
 Extract term from evidence that it is a value.
-```
+
+```agda
 value : ∀ {Γ A} {V : Γ ⊢ A}
   → (v : Value V)
     -------------
@@ -279,7 +281,8 @@ value {V = V} v  =  V
 
 Renaming preserves values
 (not needed, but I wanted to check that automatic generalisation works)
-```
+
+```agda
 ren-val :
     (ρ : Γ →ᴿ Δ)
   → Value V
@@ -295,7 +298,7 @@ ren-val ρ (μ M)     = μ (ren (ren▷ ρ) M)
 
 ## Evaluation frames
 
-```
+```agda
 infix  6 □·_
 infix  6 _·□
 infix  7 `suc□
@@ -327,7 +330,8 @@ data _⊢_=>_ : Env → Type → Type → Set where
 ```
 
 The plug function inserts an expression into the hole of a frame.
-```
+
+```agda
 _⟦_⟧ :
     Γ ⊢ A => B
   → Γ ⊢ A
@@ -341,7 +345,7 @@ _⟦_⟧ :
 
 ## Reduction
 
-```
+```agda
 infix 2 _—→_
 
 data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
@@ -380,13 +384,14 @@ data _—→_ : (Γ ⊢ A) → (Γ ⊢ A) → Set where
 ```
 
 Notation
-```
+
+```agda
 pattern ξ E M—→N = ξ-refl E refl refl M—→N
 ```
 
 ## Reflexive and transitive closure of reduction
 
-```
+```agda
 infix  1 begin_
 infix  2 _—↠_
 infixr 2 _—→⟨_⟩_
@@ -415,7 +420,8 @@ begin M—↠N = M—↠N
 
 Values are irreducible.  The auxiliary definition rearranges the
 order of the arguments because it works better for Agda.
-```
+
+```agda
 value-irreducible : Value V → ¬ (V —→ M)
 value-irreducible v V—→M  =  nope V—→M v
   where
@@ -425,7 +431,8 @@ value-irreducible v V—→M  =  nope V—→M v
 ```
 
 Variables are irreducible.
-```
+
+```agda
 variable-irreducible :
     ------------
     ¬ (` x —→ M)
@@ -440,7 +447,7 @@ variable-irreducible (ξ-refl (case□ M N) () e x—→)
 Every term that is well typed and closed is either
 blame or a value or takes a reduction step.
 
-```
+```agda
 data Progress : (∅ ⊢ A) → Set where
 
   step :
@@ -483,15 +490,18 @@ progress (μ N)                           =  done (μ N)
 ## Evaluation
 
 Gas is specified by a natural number:
-```
+
+```agda
 record Gas : Set where
   constructor gas
   field
     amount : ℕ
 ```
+
 When our evaluator returns a term `N`, it will either give evidence that
 `N` is a value, or indicate that blame occurred or it ran out of gas.
-```
+
+```agda
 data Finished : (∅ ⊢ A) → Set where
 
    done :
@@ -503,10 +513,12 @@ data Finished : (∅ ⊢ A) → Set where
        ----------
        Finished N
 ```
+
 Given a term `L` of type `A`, the evaluator will, for some `N`, return
 a reduction sequence from `L` to `N` and an indication of whether
 reduction finished:
-```
+
+```agda
 data Steps : ∅ ⊢ A → Set where
 
   steps :
@@ -515,8 +527,10 @@ data Steps : ∅ ⊢ A → Set where
       ----------
     → Steps L
 ```
+
 The evaluator takes gas and a term and returns the corresponding steps:
-```
+
+```agda
 eval :
     Gas
   → (L : ∅ ⊢ A)
@@ -534,6 +548,7 @@ eval (gas (suc m)) L
 # Example
 
 Computing two plus two on naturals:
+
 ```agda
 two : Γ ⊢ `ℕ
 two = `suc `suc `zero
@@ -546,6 +561,7 @@ plus = μ ƛ ƛ (case (# 1) (# 0) (`suc (# 3 · # 0 · # 1)))
 ```
 
 Next, a sample reduction demonstrating that two plus two is four:
+
 ```agda
 _ : 2+2 —↠ `suc `suc `suc `suc `zero
 _ =

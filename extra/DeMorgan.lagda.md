@@ -1,4 +1,4 @@
-```
+```agda
 module DeMorgan where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
