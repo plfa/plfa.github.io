@@ -225,7 +225,7 @@ The proof is by induction on `M ⇛ N`.
 * Suppose `(ƛ N) · M  ⇛  N′ [ M′ ]` because `N ⇛ N′` and `M ⇛ M′`.
   By similar reasoning, we have
   `(ƛ N) · M —↠ (ƛ N′) · M′`
-  which we can following with the β reduction
+  which we can follow with the β reduction
   `(ƛ N′) · M′ —→ N′ [ M′ ]`.
 
 With this lemma in hand, we complete the proof that `M ⇛* N` implies
