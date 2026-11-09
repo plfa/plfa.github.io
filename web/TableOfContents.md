@@ -130,6 +130,7 @@ $endfor$
 
 * [PLFArend](https://github.com/marat-rkh/PLFArend): the PLFA book with all code snippets rewritten in Arend.
 * [PLFaLean](https://github.com/rami3l/PLFaLean): PLFA proofs implemented in Lean 4, covering Parts 2-3 of the v22.08 release of the book.
+* [PLFA Playground](https://plfa.isotopy.xyz): online PLFA playground running WASM compiled Agda in-browser.
 
 Please tell us of others!
 
