@@ -669,70 +669,72 @@ compose-rename {Γ}{Δ}{Σ}{A}{ƛ N}{ρ}{ρ′} = cong ƛ_ G
 compose-rename {M = L · M} = cong₂ _·_ compose-rename compose-rename
 ```
 
-The next lemma states that if a renaming and substitution commute on
-variables, then they also commute on terms. We explain the proof in
-detail below.
+We define a commutation relation `Commute σ₁ ρ₁ σ₂ ρ₂` between pairs `(σ₁, ρ₁)` and `(σ₂, ρ₂)`,
+states that for every variable `x`, applying `ρ₁` then `σ₁` is the same as applying `σ₂` then `ρ₂`.
 
+```agda
+Commute : ∀ {Γ₁ Γ₂ Δ₁ Δ₂} → Subst Γ₂ Δ₂ → Rename Γ₁ Γ₂ → Subst Γ₁ Δ₁ → Rename Δ₁ Δ₂ → Set
+Commute {Γ₁ = Γ₁} σ₁ ρ₁ σ₂ ρ₂ = ∀ (x : Γ₁ ∋ ★) → σ₁ (ρ₁ x) ≡ rename ρ₂ (σ₂ x)
+```
+
+An example of the `Commute` relation is `σ₁ = exts σ`, `ρ₁ = S_`, `σ₂ = σ`, and `ρ₂ = S_`,
+where `σ` is arbitrary substitution.
+
+```agda
+Commute-S : ∀ {Γ Δ} (σ : Subst Γ Δ)
+          → Commute {Γ₁ = Γ} {Γ₂ = Γ , ★} {Δ₁ = Δ} {Δ₂ = Δ , ★} (exts σ) S_ σ S_
+Commute-S σ x = refl
+```
+
+The `Commute` relation is closed under `ext/exts` operation.
+We prove it by case analysis on the input variable:
+
+```agda
+Commute-ext : ∀ {Γ₁ Γ₂ Δ₁ Δ₂}
+                {σ₁ : Subst Γ₂ Δ₂} {ρ₁ : Rename Γ₁ Γ₂} {σ₂ : Subst Γ₁ Δ₁} {ρ₂ : Rename Δ₁ Δ₂}
+            → Commute {Γ₁ = Γ₁} σ₁ ρ₁ σ₂ ρ₂
+            → Commute {Γ₁ = Γ₁ , ★} (exts σ₁) (ext ρ₁) (exts σ₂) (ext ρ₂)
+Commute-ext {σ₁ = σ₁} {ρ₁ = ρ₁} {σ₂ = σ₂} {ρ₂ = ρ₂} H Z     = refl
+Commute-ext {σ₁ = σ₁} {ρ₁ = ρ₁} {σ₂ = σ₂} {ρ₂ = ρ₂} H (S x) =
+  begin
+    exts σ₁ (ext ρ₁ (S x))
+  ≡⟨⟩
+    rename S_ (σ₁ (ρ₁ x))
+  ≡⟨ cong (rename S_) (H x) ⟩
+    rename S_ (rename ρ₂ (σ₂ x))
+  ≡⟨ compose-rename ⟩
+    rename (S_ ∘ ρ₂) (σ₂ x)
+  ≡⟨⟩
+    rename (ext ρ₂ ∘ S_) (σ₂ x)
+  ≡⟨ sym compose-rename ⟩
+    rename (ext ρ₂) (rename S_ (σ₂ x))
+  ≡⟨⟩
+    rename (ext ρ₂) (exts σ₂ (S x))
+  ∎
+```
+
+The next lemma states that if substitutions and renamings commute on variables,
+then they also commute on terms. The proof is by induction on the term `M`,
+using `Commute-ext` in the `ƛ_` case.
+
+```agda
+Commute-subst-rename : ∀ {Γ₁ Γ₂ Δ₁ Δ₂}
+                         {σ₁ : Subst Γ₂ Δ₂} {ρ₁ : Rename Γ₁ Γ₂} {σ₂ : Subst Γ₁ Δ₁} {ρ₂ : Rename Δ₁ Δ₂}
+                     → Commute σ₁ ρ₁ σ₂ ρ₂
+                     → ∀ (M : Γ₁ ⊢ ★) → subst σ₁ (rename ρ₁ M) ≡ rename ρ₂ (subst σ₂ M)
+Commute-subst-rename H (` x)   = H x
+Commute-subst-rename H (ƛ M)   = cong ƛ_ (Commute-subst-rename (Commute-ext H) M)
+Commute-subst-rename H (M · N) = cong₂ _·_ (Commute-subst-rename H M) (Commute-subst-rename H N)
+```
+
+From `Commute-subst-rename`, we obtain the following corollary.
 ```agda
 commute-subst-rename : ∀{Γ Δ}{M : Γ ⊢ ★}{σ : Subst Γ Δ}
                         {ρ₁ : Rename Γ (Γ , ★)}{ρ₂ : Rename Δ (Δ , ★)}
                      → (∀{x : Γ ∋ ★} → exts σ (ρ₁ x) ≡ rename ρ₂ (σ x))
                      → subst (exts σ) (rename ρ₁ M) ≡ rename ρ₂ (subst σ M)
-commute-subst-rename {M = ` x} H = H
-commute-subst-rename {Γ}{Δ}{ƛ N}{σ}{ρ₁}{ρ₂} H =
-   cong ƛ_ (commute-subst-rename{Γ , ★}{Δ , ★}{N}
-               {exts σ}{ext ρ₁}{ext ρ₂} (λ {x} → H′ {x}))
-   where
-   H′ : {x : Γ , ★ ∋ ★} → exts (exts σ) (ext ρ₁ x) ≡ rename (ext ρ₂) (exts σ x)
-   H′ {Z} = refl
-   H′ {S y} =
-     begin
-       exts (exts σ) (ext ρ₁ (S y))
-     ≡⟨⟩
-       rename S_ (exts σ (ρ₁ y))
-     ≡⟨ cong (rename S_) H ⟩
-       rename S_ (rename ρ₂ (σ y))
-     ≡⟨ compose-rename ⟩
-       rename (S_ ∘ ρ₂) (σ y)
-     ≡⟨⟩
-       rename ((ext ρ₂) ∘ S_) (σ y)
-     ≡⟨ sym compose-rename ⟩
-       rename (ext ρ₂) (rename S_ (σ y))
-     ≡⟨⟩
-       rename (ext ρ₂) (exts σ (S y))
-     ∎
-commute-subst-rename {M = L · N} H =
-  cong₂ _·_ (commute-subst-rename{M = L} H)
-            (commute-subst-rename{M = N} H)
+commute-subst-rename {M = M} H = Commute-subst-rename (λ x → H {x}) M
 ```
-
-The proof is by induction on the term `M`.
-
-* If `M` is a variable, then we use the premise to conclude.
-
-* If `M ≡ ƛ N`, we conclude using the induction hypothesis for
-  `N`. However, to use the induction hypothesis, we must show
-  that
-
-        exts (exts σ) (ext ρ₁ x) ≡ rename (ext ρ₂) (exts σ x)
-
-  We prove this equation by cases on x.
-
-    * If `x = Z`, the two sides are equal by definition.
-
-    * If `x = S y`, we obtain the goal by the following equational reasoning.
-
-            exts (exts σ) (ext ρ₁ (S y))
-          ≡ rename S_ (exts σ (ρ₁ y))
-          ≡ rename S_ (rename ρ₂ (σ y))        (by the premise)
-          ≡ rename (S_ ∘ ρ₂) (σ y)             (by compose-rename)
-          ≡ rename ((ext ρ₂) ∘ S_) (σ y)
-          ≡ rename (ext ρ₂) (rename S_ (σ y))  (by compose-rename)
-          ≡ rename (ext ρ₂) (exts σ (S y))
-
-* If `M` is an application, we obtain the goal using the induction
-  hypothesis for each subterm.
-
 
 The last lemma needed to prove `sub-sub` states that the `exts`
 function distributes with sequencing. It is a corollary of
